@@ -10,7 +10,7 @@ import Modal from '../components/modal'
 export const modalContext = createContext()
 
 const Body = styled.div`
-background-image: url(${background});
+/* background-image: url(${background}); */
 background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -23,20 +23,24 @@ top: 0;
 left: 0;
 `
 
-
 export default function Login() {
 
   const email = useField("email");
   const pass = useField("password");
-
-  const data = { "email": email.field, "password": pass.field }
-  const url = "http://127.0.0.1:8000/api/user/"
   const navigate = useNavigate()
-  const { result, getResult } = useFetch(data, "POST", url)
+
+
+  const [data, setData] = useState({})
+  const URL = "http://127.0.0.1:8000/api/user/"
+  const [result] = useFetch(URL, data, "POST")
   const [open, setOpen] = useState(false)
   const [modalText, setModalText] = useState('')
 
-
+  
+  const handleSubmit = (ev) =>{
+    ev.preventDefault()
+    setData({ "email": email.field, "password": pass.field })
+  }
 
   useEffect(() => {
     if (Object.keys(result).length) {
@@ -44,10 +48,11 @@ export default function Login() {
         setModalText(result.message)
         setOpen(true)
       } else {
-        navigate(`/manager/${result.id_employee}`)
+        navigate(`/${result.permission_employee != "User" ? "Manager" : "User"}/${result.id_employee}/`)
       }
     }
   }, [result])
+  
 
   return (
     <Body>
@@ -84,7 +89,7 @@ export default function Login() {
                 </div>
              {/*    <a href="#" className="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500">Olvidaste tu contraseña?</a> */}
               </div>
-              <button onClick={getResult} className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Sign in</button>
+              <button onClick={handleSubmit} className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Sign in</button>
             </form>
           </div>
         </div>

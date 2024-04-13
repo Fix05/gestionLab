@@ -9,7 +9,8 @@ const useField = () => {
   
     return {
       field,
-      handleChange
+      handleChange,
+      setField
     }
   }
   

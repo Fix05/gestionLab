@@ -1,4 +1,19 @@
 import mysql.connector
+
+def get_db():
+    db = mysql.connector.connect(
+        host="127.0.0.1",
+        user="root",
+        password="root",
+        database="gestionlab_schema"
+    )
+    return db
+
+def close_db(db):
+    db.close()
+
+
+""" import mysql.connector
 import os
 import json
 
@@ -16,3 +31,4 @@ def get_db():
 
 def close_db(db):
     db.close()
+ """

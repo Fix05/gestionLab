@@ -1,37 +1,73 @@
-import { useState } from "react";
+/* When using events which needs a fetch to be done for extracting updated
+data it's necessary to pass the paramters (like data or url with some params)
+directly with the doFetch function instead of defining the data and the url 
+in the calling of useFetch hook, because setting a data or the url state is
+an asynchronous event.
 
-const useFetch = (data, method, url) =>{
 
-    const [result, setResult] = useState({})
-    const errorCodes = {
-      402 : "Debe de completar todos los campos",
-      401: "Correo o contraseña incorrectos, por favor inténtelo de nuevo"
-    }
+*/
+
+
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from 'react-router-dom'
+
+const useFetch = (url, data, method, shouldFetch = true) => {
+
+  var POST_PUT
+
+  const navigate = useNavigate()
+  const [result, setResult] = useState({})
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  const errorCodes = {
+    402: "Debe de completar todos los campos",
+    401: "Correo o contraseña incorrectos, por favor inténtelo de nuevo",
+    403: "Empleado no encontrado",
+    407: "No hay registros aún"
+  }
+
+  const doFetch = async (inFunctionData, inFnctionUrlParams) => {
+
+    method == "DELETE" ? console.log("Delete", url) : null;
+
+
+    inFunctionData ? data = inFunctionData : null
+    inFnctionUrlParams ? url = url + inFnctionUrlParams : null
+
   
-    const getResult = (event) => {
-      event.preventDefault();
-      const options = {
-        method: `${method}`,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data), 
-      };
-  
-      const doFetch = async (options, url) => {
-        const response = await fetch(url, options)
-        const data = await response.json()
-        console.log(data);
-        data.status_code ? data.message = errorCodes[data.status_code] : null;
-        console.log(data);
-        setResult(data)
+    var options = {
+      method: method,
+      headers: {
+        "Content-Type": "application/json",
       }
-      doFetch(options, url)
+    };
+    if (method === "POST" || method === "PUT") {
+      options.body = JSON.stringify(data);
     }
-    return {
-      result,
-      getResult
+
+    setLoading(true)
+    if (url && !url.includes("undefined")) {
+      if (!("body" in options) || Object.keys(data).length) {
+        console.log(url);
+        const response = await fetch(url, options)
+        const jsonResponse = await response.json()
+        if (jsonResponse && jsonResponse.status_code) {
+          jsonResponse.message = errorCodes[jsonResponse.status_code];
+          if (jsonResponse.status_code == 403) {
+            navigate("/Error")
+          }
+        }
+        setResult(jsonResponse)
+        setLoading(false)
+      }
     }
   }
 
-  export default useFetch;
+  useEffect(() => {
+    shouldFetch ? doFetch() : null;
+  }, [url, data, method])
+
+  return [result, doFetch, error, loading]
+}
+
+export default useFetch;
