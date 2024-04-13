@@ -4,11 +4,11 @@
 /_pycache_
 /gestionlab-env
 /node_modules
-/DB/
-/backup/
+
 
 venv/
 virtualenv/
 
 GestionLab.rar
 __init__.py
+
