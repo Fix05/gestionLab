@@ -4,8 +4,8 @@
 /_pycache_
 /gestionlab-env
 /node_modules
-/DB
-/backup
+/DB/
+/backup/
 
 venv/
 virtualenv/
