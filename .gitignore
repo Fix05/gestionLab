@@ -1,15 +1,12 @@
 
 /**/*.json
 /front-end/node_modules
-/_pycache_
-/gestionlab-env
+
 /node_modules
 
 
-venv/
-virtualenv/
-/backup/
+**/_pycache_
+**/gestionlab-env
 
-GestionLab.rar
-__init__.py
+
 
