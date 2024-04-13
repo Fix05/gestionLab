@@ -8,6 +8,7 @@
 
 venv/
 virtualenv/
+/backup/
 
 GestionLab.rar
 __init__.py
