@@ -11,6 +11,7 @@ border-color: rgb(156 163 175);
 `
 
 export const Container = styled.div`
+max-height: 360px;
 overflow: scroll;
 overflow-x: hidden;
 

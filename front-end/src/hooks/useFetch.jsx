@@ -28,12 +28,8 @@ const useFetch = (url, data, method, shouldFetch = true) => {
 
   const doFetch = async (inFunctionData, inFnctionUrlParams) => {
 
-    method == "DELETE" ? console.log("Delete", url) : null;
-
-
     inFunctionData ? data = inFunctionData : null
     inFnctionUrlParams ? url = url + inFnctionUrlParams : null
-
   
     var options = {
       method: method,

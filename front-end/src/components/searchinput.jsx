@@ -5,7 +5,7 @@ const Form = styled.form`
 position: absolute;
 top: -66px;
 right: 0px;
-z-index: 2000;
+z-index: 10;
 `
 export default function SearchInput({onSearchChange}) {
 

@@ -1,4 +1,3 @@
-import useFetch from '../hooks/useFetch'
 import {Container} from '../styledComponents/detailsBox'
 import { useState, useEffect } from 'react'
 
@@ -7,11 +6,7 @@ import { useState, useEffect } from 'react'
 
 export default function AddingTable({ values, total, handleDelete }) {
 
-
     const keysArray = Object.keys(values[0])
-    const [result, doFetch] = useFetch()
-
-
 
     return (
         <Container className="max-h-[147px]">

@@ -10,7 +10,7 @@ position: fixed;
 
 background: rgb(255,255,255);
 background: linear-gradient(173deg, rgba(255,255,255,1) 0%, rgba(214,214,214,1) 53%, rgba(185,185,185,1) 100%); 
-z-index: 5000;
+z-index: 20;
 min-height: 10px;
 `
 

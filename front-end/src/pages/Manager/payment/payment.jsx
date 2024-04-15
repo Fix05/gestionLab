@@ -18,7 +18,7 @@ export default function Payment() {
         start_date: YEAR_MONTH
     })
     const [dateRange] = useFetch("http://127.0.0.1:8000/api/payment/payment-date-range", null, "GET")
-    const [listResult] = useFetch(PAYMENT_LIST_URL, date, "POST")
+    const [listResult, getListResult] = useFetch(PAYMENT_LIST_URL, date, "POST")
     const {changedList, setChangedList, originalValues, setOriginalValues} = useTransformData(listResult, PaymentMapping, ELEMENTS_PER_PAGE)
     const {id, setId, modalData} = useBasicData(originalValues)
     const [open, setOpen] = useState(false)
@@ -32,7 +32,7 @@ export default function Payment() {
     return (
 
         <div className="mt-6 rounded-lg border-2 border-gray-400 bg-white">
-            <AddPaymentModal open={open} setOpen={setOpen} id={id} employeeData={modalData}/>
+            <AddPaymentModal open={open} setOpen={setOpen} id={id} employeeData={modalData} paymentData={changedList} reloadResults={getListResult}/>
             <Table values={changedList} setValues={setChangedList} originalValues={originalValues} bgcolor={"bg-orange-200"} numberOfElements={ELEMENTS_PER_PAGE} setOpen={setOpen} sthElse={true} setId={setId}/>
             <div className="flex flex-row justify-between rounded-b-lg border-t border-gray-200 px-4 py-2">
                 <div className='text-gray-700 text-sm'>

@@ -164,7 +164,8 @@ def get_employess_extras(id: int, db: mysql.connector.MySQLConnection = Depends(
             JOIN remuneration_record ON extras_record.fk_remuneration_record = id_remuneration_record
             JOIN employee ON id_employee = remuneration_record.fk_employee
             WHERE employee.id_employee = %s
-            AND DATE_FORMAT(date_extras, '%Y-%m') = %s;
+            AND DATE_FORMAT(date_extras, '%Y-%m') = %s
+            AND state_extra = 'Por pagar';
         """
 
         """

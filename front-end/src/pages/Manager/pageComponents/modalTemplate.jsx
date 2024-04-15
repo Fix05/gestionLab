@@ -8,7 +8,7 @@ export default function ModalTemplate({open, setOpen, header, employeeData, hand
 
     return(
         <Transition.Root show={open} as={Fragment}>
-            <Dialog as="div" className="relative z-10" onClose={setOpen}>
+            <Dialog as="div" className="relative z-50" onClose={setOpen}>
                 <Transition.Child
                     as={Fragment}
                     enter="ease-out duration-300"

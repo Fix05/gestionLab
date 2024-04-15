@@ -165,7 +165,8 @@ def get_employees_advances(id: int, db: mysql.connector.MySQLConnection = Depend
             JOIN remuneration_record ON advance_record.fk_remuneration_record = id_remuneration_record
             JOIN employee ON id_employee = remuneration_record.fk_employee
             WHERE employee.id_employee = %s
-            AND DATE_FORMAT(date_advance, '%Y-%m') = %s;
+            AND DATE_FORMAT(date_advance, '%Y-%m') = %s
+            AND state_advance = 'Por cobrar';
         """
 
         """ 
@@ -204,7 +205,7 @@ def add_advance(id: int, data: NewAdvance, db: mysql.connector.MySQLConnection =
         cursor = db.cursor(dictionary=True)
         query = f"""
             INSERT INTO advance_record 
-            VALUES (0, %s, %s, 'Por pagar', %s,
+            VALUES (0, %s, %s, 'Por cobrar', %s,
             (SELECT id_remuneration_record 
             FROM remuneration_record 
             WHERE %s <= max_pay_date_remuneration 

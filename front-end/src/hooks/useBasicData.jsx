@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react'
-import Months from '../dictionaries/months.json'
+import MonthTranslates from '../dictionaries/monthTranslates.json'
 
 export default function useBasicData(originalValues) {
 
@@ -16,7 +16,7 @@ export default function useBasicData(originalValues) {
             const selectedEmployee = originalValues.find((element) => element.Id == id)
             const { Nombre, Sueldo } = selectedEmployee
             console.log(selectedEmployee);
-            setModalData({ name: Nombre, salary: Sueldo, date: ` de ${Months[currentMonth]} de ${currentYear}` })
+            setModalData({ name: Nombre, salary: Sueldo, date: ` de ${MonthTranslates[currentMonth]} de ${currentYear}` })
         }
     }, [id])
 
