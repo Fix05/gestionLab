@@ -243,12 +243,10 @@ def add_new_payment(id: int, data: PaymentData, db: mysql.connector.MySQLConnect
         """
 
         cursor.execute(updatePayment, (data.amount, data.description, id))
-        
         if(data.extras):
              cursor.execute(updateExtras, (id,))
         if(data.advances):
              cursor.execute(updateAdvances, (id,))
-        
         db.commit()   
 
     except mysql.connector.Error as e:
@@ -259,6 +257,58 @@ def add_new_payment(id: int, data: PaymentData, db: mysql.connector.MySQLConnect
             status_code=500, detail=f"An unexpected error occurred: {str(e)}")
 
 
+
+@router.get("/get-payment-info/{id}")
+def get_payment_info(id: int, db: mysql.connector.MySQLConnection = Depends(get_db)):
+    try:
+        cursor = db.cursor(dictionary=True)
+        paymentQuery = f"""
+            SELECT date_remuneration, amount_remuneration, description_remuneration
+            FROM remuneration_record
+            WHERE id_remuneration_record = %s;
+        """
+        advanceQuery = f"""
+            SELECT amount_advance, date_advance, id_advance_record, 
+            description_advance, state_advance
+            FROM advance_record
+            JOIN remuneration_record ON advance_record.fk_remuneration_record = id_remuneration_record
+            WHERE id_remuneration_record = %s;
+        """
+        extraQuery = f"""
+            SELECT amount_extras, date_extras, id_extras_record, 
+            hours_extras, description_extras, state_extra
+            FROM extras_record
+            JOIN remuneration_record ON extras_record.fk_remuneration_record = id_remuneration_record
+            WHERE id_remuneration_record = %s;
+        """
+
+        queriesList = [{"query": paymentQuery, "name": "payment"}, {"query": advanceQuery, "name": "advances"}, {"query": extraQuery, "name": "extras"}]
+        result = []
+
+        for query in queriesList:
+            cursor.execute(query, (id,))
+            query_results = cursor.fetchall()
+            if query_results:
+                result[query] = query_results
+
+        """ cursor.execute(paymentQuery, (id, ))
+        paymentResult = cursor.fetchone()
+        cursor.execute(advanceQuery, (id, ))
+        advancesResult = cursor.fetchall()
+        cursor.execute(extraQuery, (id, ))
+        extrasResult = cursor.fetchall() """
+        cursor.close()
+
+        if result:
+            return result
+        else:
+            return {"status_code": 403, "message": "Not found"}
+    except mysql.connector.Error as e:
+        raise HTTPException(
+            status_code=500, detail=f"Database error: {str(e)}")
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, detail=f"An unexpected error occurred: {str(e)}")
 
 
 

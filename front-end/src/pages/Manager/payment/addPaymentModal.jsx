@@ -56,7 +56,7 @@ export default function AddPaymentModal({ open, setOpen, id, employeeData, payme
                 description: description.field
             })
         }
-    }, [amount, total, description])
+    }, [amount, total, description.field])
 
     return (
 

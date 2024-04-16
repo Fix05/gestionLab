@@ -43,12 +43,12 @@ export default function Table({ values, setValues, bgcolor, originalValues, numb
     }, [tablePage, values]);
 
 
-    const handleClick = (id) => { 
-        setOpen(true) 
+    const handleClick = (id) => {
+        setOpen(true)
         console.log("ID:", id);
         setId(id)
 
-     }
+    }
 
     useEffect(() => {
         if (searchQuery != "") {
@@ -75,6 +75,27 @@ export default function Table({ values, setValues, bgcolor, originalValues, numb
         }
     }, [searchQuery])
 
+
+    const getCellValues = (key, value) => {
+        const OPTIONS = ['Sueldo', 'Monto', 'Salario']
+        if (OPTIONS.includes(key) && value !== '---') {
+            return `$${value}`;
+        }
+        return value;
+    }
+
+
+    const getCellProperties = (key, value) => {
+        let classNames
+        if (key === 'Id' || key === 'Page') {
+            return { ignore: true }
+        }
+        const isNumberColumn = key === 'N°';
+        classNames = `whitespace-nowrap px-4 py-2 ${isNumberColumn ? 'font-medium text-gray-900' : 'text-gray-700'}`;
+        const cellValue = getCellValues(key, value)
+        return { cellValue, classNames }
+    }
+
     return (
 
         <div className='relative'>
@@ -86,20 +107,26 @@ export default function Table({ values, setValues, bgcolor, originalValues, numb
                             {valuesArray.map((value) => (
                                 value != "Id" && <th key={value} className="text-left whitespace-nowrap px-4 py-2 font-medium text-gray-900">{value != "Page" && value}</th>
                             ))}
-                            <th className="text-left whitespace-nowrap px-4 py-2 font-medium text-gray-900"></th>
                         </tr>
                     </thead>
 
                     <tbody className="divide-y divide-gray-200">
                         {currentPageElements.map((element) => (
                             <tr id={element.Id} key={element.Id}>
-                                {Object.entries(element).map(([key, value], index) => (
-                                    PAYMENT_STATES[value] ?
-                                        key != "Id" && <td key={index} className={`text-center whitespace-nowrap px-4 py-2 ${key == 'N°' ? 'font-medium text-gray-900' : 'text-gray-700'}`}>
-                                            <div className={`${PAYMENT_STATES[value]} text-xs text-center rounded w-16`}>{key != "Page" && value}</div></td>
-                                        :
-                                        key != "Id" && <td key={index} className={`whitespace-nowrap px-4 py-2 ${key == 'N°' ? 'font-medium text-gray-900' : 'text-gray-700'}`}>{key != "Page" && value}</td>
-                                ))}
+                                {Object.entries(element).map(([key, value], index) => {
+                                    const { ignore, cellValue, classNames } = getCellProperties(key, value)
+                                    if (ignore) return null;
+                                    return (
+                                        <td key={index} className={classNames}>
+                                        {PAYMENT_STATES[value] ? (
+                                            <div className={`${PAYMENT_STATES[value]} text-xs text-center rounded w-16`}>
+                                                {cellValue}
+                                            </div>
+                                        ) : (
+                                            cellValue
+                                        )}
+                                    </td>
+                                )})}
                                 <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                                     {sthElse ? (
                                         <button onClick={() => handleClick(element.Id)}>
