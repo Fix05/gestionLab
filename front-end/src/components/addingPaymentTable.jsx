@@ -61,7 +61,7 @@ export default function AddingPaymentTable({ values, setValues, total, setTotal 
                             ${values[0].amount}
                         </td>
                         <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                            <div class="flex items-center me-4">
+                            <div className="flex items-center me-4">
                                 <input disabled checked id="teal-checkbox" type="checkbox" value="" className="w-4 h-4 text-black bg-gray-100 border-gray-300 rounded " />
                             </div>
                         </td>
@@ -78,7 +78,7 @@ export default function AddingPaymentTable({ values, setValues, total, setTotal 
                             +${values[1].amount ? values[1].amount : 0}
                         </td>
                         <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                            <div class="flex items-center me-4">
+                            <div className="flex items-center me-4">
                                 <input disabled={values[1].amount ? false : true} onClick={handleChecking} id="1" type="checkbox" value="" className="w-4 h-4 text-black bg-gray-100 border-gray-300 rounded " />
                             </div>
                         </td>
@@ -95,7 +95,7 @@ export default function AddingPaymentTable({ values, setValues, total, setTotal 
                             -${values[2].amount ? values[2].amount : 0}
                         </td>
                         <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                            <div class="flex items-center me-4">
+                            <div className="flex items-center me-4">
                                 <input disabled={values[2].amount ? false : true} onClick={handleChecking} id="2" type="checkbox" value="" className="w-4 h-4 text-black bg-gray-100 border-gray-300 rounded " />
                             </div>
                         </td>

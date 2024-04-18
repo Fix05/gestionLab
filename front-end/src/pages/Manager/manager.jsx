@@ -12,7 +12,7 @@ import PrettyView from '../../components/prettyview'
 
 export const paginationContext = createContext()
 export const pageContext = createContext()
-
+export const breadcrumbContext = createContext()
 
 const Container = styled.div`
 
@@ -41,12 +41,13 @@ export default function Manager() {
     const [result] = useFetch(DATA_URL, null, "GET", id)
     const [page, setPage] = useState("Manager")
     const [tablePage, setTablePage] = useState(1)
-
+    const [breadcrumbNames, setBreadcrumbNames] = useState()
 
     return (
         <Container className='bg-rose-50'>
             <paginationContext.Provider value={{ tablePage, setTablePage }}>
                 <pageContext.Provider value={{ page, setPage }}>
+                    <breadcrumbContext.Provider value={(breadcrumbNames, setBreadcrumbNames)}>
                     <Header name={result.name} image={image} lastname={result.lastname} email={result.email} style={HEADER_BG} message={MESSAGE} />
                     <Aside />
                     <Div className='relative top-24 py-4 px-6'>
@@ -55,6 +56,7 @@ export default function Manager() {
                         </div>
                         <Outlet /> 
                     </Div>
+                    </breadcrumbContext.Provider>
                 </pageContext.Provider>
             </paginationContext.Provider>
         </Container>

@@ -20,3 +20,24 @@ export const PaymentMapping = (element, index) => ({
     Monto: `${element.amount ? element.amount : "---"}`,
     Id: element.id_payment,
 });
+
+
+export const PaymentInfoMapping = (element, index, FieldsDictionary) => {
+
+    const newObj = {}
+        for(let cat in element){
+            if(element.hasOwnProperty(cat))
+            newObj[cat] = element[cat].map((sect)=>{
+                const newSec = {}
+                for(let att in sect){
+                    if(sect.hasOwnProperty(att)){
+                        if(FieldsDictionary[att]){
+                            newSec[FieldsDictionary[att]]=sect[att]
+                        }
+                    }
+                }
+                return newSec
+            })
+        }
+        return newObj
+};

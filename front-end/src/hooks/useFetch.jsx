@@ -50,6 +50,7 @@ const useFetch = (url, data, method, shouldFetch = true) => {
         if (jsonResponse && jsonResponse.status_code) {
           jsonResponse.message = errorCodes[jsonResponse.status_code];
           if (jsonResponse.status_code == 403) {
+            console.log("error", url);
             navigate("/Error")
           }
         }

@@ -263,7 +263,7 @@ def get_payment_info(id: int, db: mysql.connector.MySQLConnection = Depends(get_
     try:
         cursor = db.cursor(dictionary=True)
         paymentQuery = f"""
-            SELECT date_remuneration, amount_remuneration, description_remuneration
+            SELECT date_remuneration, amount_remuneration, description_remuneration, id_remuneration_record
             FROM remuneration_record
             WHERE id_remuneration_record = %s;
         """
@@ -286,17 +286,11 @@ def get_payment_info(id: int, db: mysql.connector.MySQLConnection = Depends(get_
         result = []
 
         for query in queriesList:
-            cursor.execute(query, (id,))
+            cursor.execute(query["query"], (id,))
             query_results = cursor.fetchall()
             if query_results:
-                result[query] = query_results
+                result.append({query["name"]: query_results})
 
-        """ cursor.execute(paymentQuery, (id, ))
-        paymentResult = cursor.fetchone()
-        cursor.execute(advanceQuery, (id, ))
-        advancesResult = cursor.fetchall()
-        cursor.execute(extraQuery, (id, ))
-        extrasResult = cursor.fetchall() """
         cursor.close()
 
         if result:

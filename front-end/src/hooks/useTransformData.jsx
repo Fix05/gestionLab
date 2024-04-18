@@ -1,5 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { paginationContext } from '../pages/Manager/manager'
+import FieldsDictionary from '../dictionaries/paymentFieldsTranslates.json'
 
 export default function useTransformData(list, dataMapping, elementsPerPage) {
 
@@ -14,7 +15,7 @@ export default function useTransformData(list, dataMapping, elementsPerPage) {
         if (list && list.length) {
             const newEmployeeList = list.map((element, index) => ({
                 "N°": index + 1,
-                ...dataMapping(element, index),
+                ...dataMapping(element, index, FieldsDictionary),
                 Page: Math.ceil((index + 1) / elementsPerPage)
             }));
             setChangedList(newEmployeeList);

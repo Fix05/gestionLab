@@ -13,6 +13,7 @@ import AddAdvances from './pages/Manager/advances/addAdvances'
 import RecordAdvance from './pages/Manager/advances/recordAdvance'
 import AddExtra from './pages/Manager/extras/addExtra'
 import RecordExtra from "./pages/Manager/extras/recordExtra"
+import PaymentInfo from './pages/Manager/payment/paymentInfo'
 
 import './App.css'
 
@@ -27,6 +28,7 @@ function App() {
         <Route path="/Manager/:id/requests" element={<Requests />} />
         <Route path="/Manager/:id/requests/:requestId" element={<RequestInfo />} />
         <Route path="/Manager/:id/payment" element={<Payment />} />
+        <Route path="/Manager/:id/payment/:paymentId" element={<PaymentInfo />} />
         <Route path="/Manager/:id/addAdvance" element={<AddAdvances />} />
         <Route path="/Manager/:id/recordAdvance" element={<RecordAdvance />} />
         <Route path="/Manager/:id/addExtra" element={<AddExtra />} />

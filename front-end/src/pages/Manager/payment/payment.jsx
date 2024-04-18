@@ -22,6 +22,7 @@ export default function Payment() {
     const {changedList, setChangedList, originalValues, setOriginalValues} = useTransformData(listResult, PaymentMapping, ELEMENTS_PER_PAGE)
     const {id, setId, modalData} = useBasicData(originalValues)
     const [open, setOpen] = useState(false)
+    const [sthElse, setSthElse] = useState(false)
     const handleDateChange = (ev) => {
         const selectedDate = ev.target.value
         setDate({
@@ -29,11 +30,17 @@ export default function Payment() {
         })
     }
 
+    useEffect(()=>{
+        console.log(modalData.Estado);
+        setSthElse(modalData.Estado != 'Pagado')
+
+    }, [modalData])
+
     return (
 
         <div className="mt-6 rounded-lg border-2 border-gray-400 bg-white">
             <AddPaymentModal open={open} setOpen={setOpen} id={id} employeeData={modalData} paymentData={changedList} reloadResults={getListResult}/>
-            <Table values={changedList} setValues={setChangedList} originalValues={originalValues} bgcolor={"bg-orange-200"} numberOfElements={ELEMENTS_PER_PAGE} setOpen={setOpen} sthElse={true} setId={setId}/>
+            <Table values={changedList} setValues={setChangedList} originalValues={originalValues} bgcolor={"bg-orange-200"} numberOfElements={ELEMENTS_PER_PAGE} setOpen={setOpen} sthElse={sthElse} setId={setId}/>
             <div className="flex flex-row justify-between rounded-b-lg border-t border-gray-200 px-4 py-2">
                 <div className='text-gray-700 text-sm'>
                     <label htmlFor="monthLimited">Escoja el mes: </label>

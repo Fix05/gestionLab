@@ -1,7 +1,8 @@
 import { Link, useLocation } from 'react-router-dom';
 import useFetch from '../hooks/useFetch'
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import translates from '../dictionaries/breadcrumbTranslates.json'
+import {breadcrumbContext} from '../pages/Manager/manager'
 
 export default function Breadcurmb() {
 
@@ -11,16 +12,17 @@ export default function Breadcurmb() {
         null,
         "GET"
     )
+    const {breadcrumbNames, setBreadcrumbNames} = useContext(breadcrumbContext)
     const [breadcumbElements, setBreadcumbElements] = useState([])
     const location = useLocation();
     const paths = location.pathname.split('/').filter(pathSegment => pathSegment)
     const firstNumber = paths.findIndex(element => !isNaN(element))
     firstNumber != -1 ? paths.splice(firstNumber, 1) : null
 
-        
+    console.log(paths);    
     useEffect(() => {
         const newArray = paths.map(element => {
-            if (!isNaN(element) && !paths.includes("requests")) {
+            if (!isNaN(element) && !paths.includes("requests") && !paths.includes("payment")) {
                 setId(element)
                 return result.name ? `${result.name} ${result.lastname}` : "";        
             } 

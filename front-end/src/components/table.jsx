@@ -37,6 +37,9 @@ export default function Table({ values, setValues, bgcolor, originalValues, numb
     const [currentPageElements, setCurrentPageElements] = useState([])
     const location = useLocation();
     const page = location.pathname.split('/')[3]
+
+    
+
     useEffect(() => {
         const filteredElements = values.filter((element) => element.Page === tablePage);
         setCurrentPageElements(filteredElements);
@@ -112,6 +115,7 @@ export default function Table({ values, setValues, bgcolor, originalValues, numb
 
                     <tbody className="divide-y divide-gray-200">
                         {currentPageElements.map((element) => (
+                            
                             <tr id={element.Id} key={element.Id}>
                                 {Object.entries(element).map(([key, value], index) => {
                                     const { ignore, cellValue, classNames } = getCellProperties(key, value)
@@ -128,7 +132,7 @@ export default function Table({ values, setValues, bgcolor, originalValues, numb
                                     </td>
                                 )})}
                                 <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                                    {sthElse ? (
+                                    {sthElse && element.Estado != 'Pagado' ? (
                                         <button onClick={() => handleClick(element.Id)}>
                                             {ICONS[page]}
                                         </button>
