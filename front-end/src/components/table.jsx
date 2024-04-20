@@ -4,15 +4,10 @@ import SearchInput from '../components/searchinput'
 import { Link, useLocation } from 'react-router-dom'
 import styled from 'styled-components'
 import { AddIcon, DetailsIcon, InfoIcon } from '../components/tableIcons'
+import payment_states from '../dictionaries/paymentState.json'
 
 
-const PAYMENT_STATES = {
-    "Por pagar": "bg-sky-200",
-    "Pagado": "bg-green-200",
-    "Atrasado": "bg-red-200",
-    "Cobrado": "bg-green-200",
-    "Por cobrar": "bg-violet-200"
-}
+
 
 const ICONS = {
     "addAdvance": <AddIcon />,
@@ -30,6 +25,14 @@ const Container = styled.div`
 `
 
 export default function Table({ values, setValues, bgcolor, originalValues, numberOfElements, setOpen, sthElse, setId }) {
+
+/*     const payment_states = {
+        "Por pagar": "bg-blue-200",
+        "Pagado": "bg-green-200",
+        "Atrasado": "bg-red-200",
+        "Cobrado": "bg-green-200",
+        "Por cobrar": "bg-violet-200"
+    } */
 
     const { tablePage, setTablePage } = useContext(paginationContext);
     const [searchQuery, setSearchQuery] = useState('');
@@ -122,8 +125,9 @@ export default function Table({ values, setValues, bgcolor, originalValues, numb
                                     if (ignore) return null;
                                     return (
                                         <td key={index} className={classNames}>
-                                        {PAYMENT_STATES[value] ? (
-                                            <div className={`${PAYMENT_STATES[value]} text-xs text-center rounded w-16`}>
+                                        {payment_states[value] ? (
+                                            
+                                            <div className={`${payment_states[value]} text-xs text-center rounded w-16`}>
                                                 {cellValue}
                                             </div>
                                         ) : (

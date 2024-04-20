@@ -19,6 +19,7 @@ class PaymentData(BaseModel):
     advances: bool
     description: str
 
+
 class Dates(BaseModel):
     start_date: str
 
@@ -243,11 +244,11 @@ def add_new_payment(id: int, data: PaymentData, db: mysql.connector.MySQLConnect
         """
 
         cursor.execute(updatePayment, (data.amount, data.description, id))
-        if(data.extras):
-             cursor.execute(updateExtras, (id,))
-        if(data.advances):
-             cursor.execute(updateAdvances, (id,))
-        db.commit()   
+        if (data.extras):
+            cursor.execute(updateExtras, (id,))
+        if (data.advances):
+            cursor.execute(updateAdvances, (id,))
+        db.commit()
 
     except mysql.connector.Error as e:
         raise HTTPException(
@@ -255,7 +256,6 @@ def add_new_payment(id: int, data: PaymentData, db: mysql.connector.MySQLConnect
     except Exception as e:
         raise HTTPException(
             status_code=500, detail=f"An unexpected error occurred: {str(e)}")
-
 
 
 @router.get("/get-payment-info/{id}")
@@ -282,7 +282,8 @@ def get_payment_info(id: int, db: mysql.connector.MySQLConnection = Depends(get_
             WHERE id_remuneration_record = %s;
         """
 
-        queriesList = [{"query": paymentQuery, "name": "payment"}, {"query": advanceQuery, "name": "advances"}, {"query": extraQuery, "name": "extras"}]
+        queriesList = [{"query": paymentQuery, "name": "payment"}, {
+            "query": advanceQuery, "name": "advances"}, {"query": extraQuery, "name": "extras"}]
         result = []
 
         for query in queriesList:
@@ -304,6 +305,42 @@ def get_payment_info(id: int, db: mysql.connector.MySQLConnection = Depends(get_
         raise HTTPException(
             status_code=500, detail=f"An unexpected error occurred: {str(e)}")
 
+
+@router.get("/paid-extras-and-advances/{id}")
+def get_paid_extras_and_advances(id: int, db: mysql.connector.MySQLConnection = Depends(get_db)):
+    try:
+        cursor = db.cursor(dictionary=True)
+        Query = f"""
+            SELECT 
+            (SELECT SUM(amount_extras)
+            FROM extras_record 
+            JOIN remuneration_record ON id_remuneration_record = fk_remuneration_record 
+            WHERE id_remuneration_record = %s AND state_extra = 'Pagado') AS extra,
+            (SELECT SUM(amount_advance)
+            FROM advance_record 
+            JOIN remuneration_record ON id_remuneration_record = fk_remuneration_record 
+            WHERE id_remuneration_record = %s AND state_advance = 'Cobrado') AS advance,
+            (SELECT base_salary_employee 
+            FROM employee 
+            JOIN remuneration_record ON fk_employee = id_employee 
+            WHERE id_remuneration_record = %s) AS base_salary;
+        """
+        
+
+        cursor.execute(Query, (id, id, id))
+        result = cursor.fetchone()
+        cursor.close()
+
+        if result:
+            return result
+        else:
+            return {"status_code": 407, "message": "No info yet"}
+    except mysql.connector.Error as e:
+        raise HTTPException(
+            status_code=500, detail=f"Database error: {str(e)}")
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, detail=f"An unexpected error occurred: {str(e)}")
 
 
 def run_tasks():
