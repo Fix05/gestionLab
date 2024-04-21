@@ -1,5 +1,5 @@
-
 import styled from 'styled-components'
+import BoxDivider from '../../../styledComponents/boxDivider'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import useFetch from '../../../hooks/useFetch'
@@ -13,12 +13,9 @@ span {
     transition: background-color 0.3s ease; /* Añadir transición a background-color */
   }
 `
-
 const Svg = styled.svg`
 transition: background-color 0.3s ease;
-
 `
-
 const Textarea = styled.textarea`
 resize: none;
 outline: none;
@@ -53,9 +50,7 @@ export default function RequestInfo() {
     };
 
     useEffect(()=>{
-
         doFetch()
-
     },[open])
 
 
@@ -63,13 +58,9 @@ export default function RequestInfo() {
 
         <EmployeeData>
             <Container>
-                <SetResponseModal open={open} setOpen={setOpen} action={activeButton} body={rquestResponse.field} id={requestId}/>
-                <span className="mt-4 relative flex justify-center">
-                    <div
-                        className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-transparent bg-gradient-to-r from-transparent via-black to-transparent opacity-75"
-                    ></div>
-                    <span className="relative z-10 bg-slate-200 px-6 text-black font-bold text-lg">Solicitud Nº{requestId}</span>
-                </span>
+                <SetResponseModal open={open} setOpen={setOpen} action={activeButton} body={rquestResponse.field} id={requestId}/>    
+                <BoxDivider text={`Solicitud Nº${requestId}`}/>
+                
                 <Div>
                     <Info flexbasis={'calc(50% - 10px)'}>
                         <h1 className='text-gray-600 font-bold text-xs'>Razón:</h1>
@@ -78,7 +69,6 @@ export default function RequestInfo() {
                                 {result.reason}
                             </span>
                         </div>
-
                     </Info>
                     <Info flexbasis={'calc(25% - 10px)'}>
                         <h1 className='text-gray-600 font-bold text-xs'>Tipo:</h1>
@@ -95,7 +85,6 @@ export default function RequestInfo() {
                             <span className='text-gray-800 text-sm ml-2 flex direction-row justify-between items-center'>
                                 {result.date}
                             </span>
-
                         </div>
                     </Info>
                     <Info flexbasis={'calc(100% - 10px)'}>
@@ -104,7 +93,6 @@ export default function RequestInfo() {
                             <span className='text-gray-800 text-sm ml-2 flex direction-row justify-between items-center'>
                                 {result.explanation}
                             </span>
-
                         </div>
                     </Info>
 
@@ -117,7 +105,6 @@ export default function RequestInfo() {
                                     <Svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="-1 -1 26 26" strokeWidth={1.5} stroke="currentColor" className="flex justify-center items-center hover:text-blue-600 hover:bg-blue-50 rounded-full w-6 h-6 cursor-pointer ">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
                                     </Svg>
-
                                 </span>
                             </div>
                         </Info>

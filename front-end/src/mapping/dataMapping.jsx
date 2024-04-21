@@ -22,21 +22,32 @@ export const PaymentMapping = (element, index) => ({
 });
 
 
+export const AdvanceRecordMapping = (element, index) => ({
+    "N°": index + 1,
+    Nombre: element.name + ' ' + element.lastname,
+    Salario: element.base_salary,
+    "Fecha": element.date,
+    Estado: element.state,
+    Monto: `${element.amount ? element.amount : "---"}`,
+    Id: element.id_advance,
+});
+
+
 export const PaymentInfoMapping = (element, index, FieldsDictionary) => {
 
     const newObj = {}
         for(let cat in element){
             if(element.hasOwnProperty(cat))
             newObj[cat] = element[cat].map((sect)=>{
-                const newSec = {}
+                const newSection = {}
                 for(let att in sect){
                     if(sect.hasOwnProperty(att)){
                         if(FieldsDictionary[att]){
-                            newSec[FieldsDictionary[att]]=sect[att]
+                            newSection[FieldsDictionary[att]]=sect[att]
                         }
                     }
                 }
-                return newSec
+                return newSection
             })
         }
         return newObj

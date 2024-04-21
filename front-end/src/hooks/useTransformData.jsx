@@ -11,7 +11,6 @@ export default function useTransformData(list, dataMapping, elementsPerPage) {
 
     useEffect(() => {
         setTablePage(1)
-        console.log(list);
         if (list && list.length) {
             const newEmployeeList = list.map((element, index) => ({
                 "N°": index + 1,
@@ -31,7 +30,8 @@ export default function useTransformData(list, dataMapping, elementsPerPage) {
         setChangedList,
         originalValues,
         setOriginalValues,
-        message
+        message,
+        setMessage
     }
 
 }

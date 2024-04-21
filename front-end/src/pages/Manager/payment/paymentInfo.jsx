@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react'
-import second from '../../../hooks/useFetch'
 import { useParams } from 'react-router-dom'
+import BoxDivider from '../../../styledComponents/boxDivider'
 import useFetch from '../../../hooks/useFetch'
-
 import { PaymentInfoMapping } from '../../../mapping/dataMapping'
 import useTransformData from '../../../hooks/useTransformData'
 import PaymentInfoTable from '../../../components/paymentInfoTable'
 import PaidTable from '../../../components/paidTable'
-import { EmployeeData, Container, Div, Info } from '../../../styledComponents/detailsBox'
+import { EmployeeData, Container, Div } from '../../../styledComponents/detailsBox'
 
 export default function PaymentInfo() {
 
@@ -33,23 +32,28 @@ export default function PaymentInfo() {
     }, [changedList])
 
     return (
-        <EmployeeData>
-            {cleanData.payment && <Container className=''>
-                <Div>
-                    <PaidTable values={cleanData.payment} paidInfo={paidInfo}/>
-                </Div>
-            </Container>}
-            {cleanData.advances && <Container>
-                <Div>
-                    <PaymentInfoTable values={cleanData.advances} />
-                </Div>
-            </Container>}
-            {cleanData.extras && <Container>
-                <p>Extras</p>
-                <Div>
-                    <PaymentInfoTable values={cleanData.extras} />
-                </Div>
-            </Container>}
+        <EmployeeData >
+            <Container>
+                {cleanData.payment && <>
+                    <BoxDivider text={"Pago"} />
+                    <Div>
+                        <PaidTable values={cleanData.payment} paidInfo={paidInfo} />
+                    </Div>
+                </>}
+                {cleanData.advances && <>
+                    <BoxDivider text={"Adelantos"} />
+                    <Div>
+                        <PaymentInfoTable values={cleanData.advances} totalPaid={paidInfo.advance} />
+                    </Div>
+                </>
+                }
+                {cleanData.extras && <>
+                    <BoxDivider text={"Horas extras"} />
+                    <Div>
+                        <PaymentInfoTable values={cleanData.extras} totalPaid={paidInfo.extra} />
+                    </Div>
+                </>}
+            </Container>
         </EmployeeData>
     )
 }

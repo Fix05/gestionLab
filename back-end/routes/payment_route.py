@@ -268,15 +268,15 @@ def get_payment_info(id: int, db: mysql.connector.MySQLConnection = Depends(get_
             WHERE id_remuneration_record = %s;
         """
         advanceQuery = f"""
-            SELECT amount_advance, date_advance, id_advance_record, 
-            description_advance, state_advance
+            SELECT date_advance, amount_advance, description_advance,
+            state_advance, id_advance_record 
             FROM advance_record
             JOIN remuneration_record ON advance_record.fk_remuneration_record = id_remuneration_record
             WHERE id_remuneration_record = %s;
         """
         extraQuery = f"""
-            SELECT amount_extras, date_extras, id_extras_record, 
-            hours_extras, description_extras, state_extra
+            SELECT date_extras, amount_extras, hours_extras, 
+            description_extras, state_extra, id_extras_record 
             FROM extras_record
             JOIN remuneration_record ON extras_record.fk_remuneration_record = id_remuneration_record
             WHERE id_remuneration_record = %s;
