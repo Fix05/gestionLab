@@ -1,46 +1,52 @@
 import GenericModalTemplate from '../../../components/genericModalTemplate'
+import useFetch from '../../../hooks/useFetch'
+import { useState, useEffect } from 'react'
 
 
-export default function RecordDetailedInfo({open, setOpen, endpoint, values }) {
+const infoRecordDictionary = {
+
+    name: "Nombre",
+    salary: "Salario",
+    date: "Fecha",
+    state: "Estado",
+    amount: "Monto",
+    hours: "Horas",
+    description: "Descripción"
+}
 
 
+export default function RecordDetailedInfo({ open, setOpen, endpoint, values }) {
+
+    const [result] = useFetch(endpoint, null, "GET")
+    const [newValues, setNewValues] = useState()
+    const HandleClick = () => {
+        setOpen(false)
+    }
+
+    useEffect(() => {
+        if (result && Object.keys(result).length) {
+            console.log(newValues);
+            setNewValues({ ...values, ...result })
+        }
+    }, [result])
 
     return (
-
-        <GenericModalTemplate open={open} setOpen={setOpen}>
-            <div className="flow-root">
-                <dl className="-my-3 divide-y divide-gray-100 text-sm">
-                    <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
-                        <dt className="font-medium text-gray-900">Title</dt>
-                        <dd className="text-gray-700 sm:col-span-2">Mr</dd>
-                    </div>
-
-                    <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
-                        <dt className="font-medium text-gray-900">Name</dt>
-                        <dd className="text-gray-700 sm:col-span-2">John Frusciante</dd>
-                    </div>
-
-                    <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
-                        <dt className="font-medium text-gray-900">Occupation</dt>
-                        <dd className="text-gray-700 sm:col-span-2">Guitarist</dd>
-                    </div>
-
-                    <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
-                        <dt className="font-medium text-gray-900">Salary</dt>
-                        <dd className="text-gray-700 sm:col-span-2">$1,000,000+</dd>
-                    </div>
-
-                    <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
-                        <dt className="font-medium text-gray-900">Bio</dt>
-                        <dd className="text-gray-700 sm:col-span-2">
-                        </dd>
-                    </div>
-                </dl>
+        <GenericModalTemplate open={open} setOpen={setOpen} handleClick={HandleClick}>
+            <div className="flow-root px-8">
+                <dl className="flex flex-wrap mt-9 divide-y divide-gray-100 text-sm">
+                    {newValues && Object.entries(newValues).map((element, index) => {
+                        const [key, value] = element
+                        const translatedKey = infoRecordDictionary[key]
+                        if (value) {
+                            return (
+                                <div key={index} className="w-[16rem] min-w-[10rem] grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4 px-5">
+                                    <dt className="font-medium text-gray-900">{translatedKey || key}:</dt>
+                                    <dd className="pl-5 text-gray-700 sm:col-span-2 ">{translatedKey == 'Monto' || translatedKey == 'Salario' ? "$" + value : value}</dd>
+                                </div>)
+                        }
+                    })}
+                </dl>    
             </div>
-
         </GenericModalTemplate>
-
-
-
     )
 }

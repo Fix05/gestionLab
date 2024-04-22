@@ -255,4 +255,28 @@ def delete_extras(id: int, db: mysql.connector.MySQLConnection = Depends(get_db)
             status_code=500, detail=f"An unexpected error occurred: {str(e)}")
 
 
+@router.get("/get-extra-description/{id}")
+def get_extra_description(id: int, db: mysql.connector.MySQLConnection = Depends(get_db)):
+    try:
+        cursor = db.cursor(dictionary=True)
+        query = f"""
+            SELECT description_extras as description
+            FROM extras_record
+            WHERE id_extras_record = %s
+        """
 
+        cursor.execute(query, (id,))
+        result = cursor.fetchone()
+        cursor.close()
+
+        if result:
+            return result
+        else:
+            return {"status_code": 407, "message": "No info yet"}
+
+    except mysql.connector.Error as e:
+        raise HTTPException(
+            status_code=500, detail=f"Database error: {str(e)}")
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, detail=f"An unexpected error occurred: {str(e)}")

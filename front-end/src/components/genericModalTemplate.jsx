@@ -32,17 +32,19 @@ export default function GenericModalTemplate({ open, setOpen, handleClick, child
                             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
                             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                         >
-                            <Dialog.Panel className="flex flex-col px-4 items-center relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all w-1/2">
+                            <Dialog.Panel className="flex flex-col w-[600px] items-center relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all ">
 
                                 {children}
-                                
-                                <button
-                                    type="button"
-                                    className="my-2 inline-flex w-1/4 justify-center rounded-md bg-cyan-800 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-700 focus:outline-none"
-                                    onClick={handleClick}
-                                >
-                                    Aceptar
-                                </button>
+
+                                <div className='bg-gray-50 w-full flex justify-center mt-4'>
+                                    <button
+                                        type="button"
+                                        className="my-4 inline-flex w-1/4 justify-center rounded-md bg-cyan-800 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-700 focus:outline-none"
+                                        onClick={handleClick}
+                                    >
+                                        Aceptar
+                                    </button>
+                                </div>
                             </Dialog.Panel>
                         </Transition.Child>
                     </div>

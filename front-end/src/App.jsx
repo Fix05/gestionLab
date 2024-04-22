@@ -14,6 +14,8 @@ import RecordAdvance from './pages/Manager/advances/recordAdvance'
 import AddExtra from './pages/Manager/extras/addExtra'
 import RecordExtra from "./pages/Manager/extras/recordExtra"
 import PaymentInfo from './pages/Manager/payment/paymentInfo'
+import AddVacations from './pages/Manager/vacations/addVacations'
+import RecordVacations from './pages/Manager/vacations/recordVacations'
 
 import './App.css'
 
@@ -33,6 +35,8 @@ function App() {
         <Route path="/Manager/:id/recordAdvance" element={<RecordAdvance />} />
         <Route path="/Manager/:id/addExtra" element={<AddExtra />} />
         <Route path="/Manager/:id/recordExtra" element={<RecordExtra />} />
+        <Route path="/Manager/:id/addVacations" element={<AddVacations />} />
+        <Route path="/Manager/:id/recordVacations" element={<RecordVacations />} />
       </Route>
       <Route path="/Admin/:id/:page" element={<AdminPage />} />
       <Route path="/User/:id" element={<EmployeePage />} />

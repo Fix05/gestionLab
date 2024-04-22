@@ -52,7 +52,6 @@ export default function Table({ values, setValues, bgcolor, originalValues, numb
     const handleClick = (id) => {
         setOpen(true)
         setId(id)
-
     }
 
     useEffect(() => {
@@ -135,7 +134,7 @@ export default function Table({ values, setValues, bgcolor, originalValues, numb
                                     </td>
                                 )})}
                                 <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                                 
+                                    
                                     {(sthElse && element["Fecha mínima"] == undefined) || (sthElse && element.Estado != 'Pagado') ? (
                                         <button onClick={() => handleClick(element.Id)}>
                                             {ICONS[page]}

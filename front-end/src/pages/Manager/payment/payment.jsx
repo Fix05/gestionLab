@@ -14,9 +14,7 @@ export default function Payment() {
     const CURRENT_DATE = new Date();
     const YEAR_MONTH = CURRENT_DATE.toISOString().split('T')[0].slice(0, 7)
     const PAYMENT_LIST_URL = "http://127.0.0.1:8000/api/payment/get-payment-overall"
-    const [date, setDate] = useState({
-        start_date: YEAR_MONTH
-    })
+    const [date, setDate] = useState({start_date: YEAR_MONTH})
     const [dateRange] = useFetch("http://127.0.0.1:8000/api/payment/payment-date-range", null, "GET")
     const [listResult, getListResult] = useFetch(PAYMENT_LIST_URL, date, "POST")
     const {changedList, setChangedList, originalValues, setOriginalValues} = useTransformData(listResult, PaymentMapping, ELEMENTS_PER_PAGE)
@@ -31,8 +29,8 @@ export default function Payment() {
     }
 
     useEffect(()=>{
-        console.log(modalData.Estado);
-        setSthElse(modalData.Estado != 'Pagado')
+        console.log(modalData.state);
+        setSthElse(modalData.state != 'Pagado')
 
     }, [modalData])
 
@@ -40,7 +38,7 @@ export default function Payment() {
 
         <div className="mt-6 rounded-lg border-2 border-gray-400 bg-white">
             <AddPaymentModal open={open} setOpen={setOpen} id={id} employeeData={modalData} paymentData={changedList} reloadResults={getListResult}/>
-            <Table values={changedList} setValues={setChangedList} originalValues={originalValues} bgcolor={"bg-orange-200"} numberOfElements={ELEMENTS_PER_PAGE} setOpen={setOpen} sthElse={sthElse} setId={setId}/>
+            <Table values={changedList} setValues={setChangedList} originalValues={originalValues} bgcolor={"bg-orange-200"} numberOfElements={ELEMENTS_PER_PAGE} setOpen={setOpen} sthElse={true} setId={setId}/>
             <div className="flex flex-row justify-between rounded-b-lg border-t border-gray-200 px-4 py-2">
                 <div className='text-gray-700 text-sm'>
                     <label htmlFor="monthLimited">Escoja el mes: </label>

@@ -14,13 +14,14 @@ export default function useBasicData(originalValues) {
     useEffect(() => {
         if (originalValues.length > 1) {
             const selectedEmployee = originalValues.find((element) => element.Id == id)
-            const { Nombre, Sueldo, Estado, Fecha, Monto, Horas } = selectedEmployee
+            const { Nombre, Sueldo, Estado, Fecha, Monto, Horas, Salario, Id } = selectedEmployee
             console.log(selectedEmployee);
             setModalData({ 
+                Id: Id,
                 name: Nombre, 
-                salary: Sueldo, 
+                salary: Sueldo || Salario, 
                 date: Fecha || ` de ${MonthTranslates[currentMonth]} de ${currentYear}`, 
-                Estado: Estado,
+                state: Estado,
                 hours: Horas, 
                 amount: Monto
             })

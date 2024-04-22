@@ -254,3 +254,31 @@ def delete_advance(id: int, db: mysql.connector.MySQLConnection = Depends(get_db
     except Exception as e:
         raise HTTPException(
             status_code=500, detail=f"An unexpected error occurred: {str(e)}")
+    
+
+
+@router.get("/get-advance-description/{id}")
+def get_advance_description(id: int, db: mysql.connector.MySQLConnection = Depends(get_db)):
+    try:
+        cursor = db.cursor(dictionary=True)
+        query = f"""
+            SELECT description_advance as description
+            FROM advance_record
+            WHERE id_advance_record = %s
+        """
+
+        cursor.execute(query, (id,))
+        result = cursor.fetchone()
+        cursor.close()
+
+        if result:
+            return result
+        else:
+            return {"status_code": 407, "message": "No info yet"}
+
+    except mysql.connector.Error as e:
+        raise HTTPException(
+            status_code=500, detail=f"Database error: {str(e)}")
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, detail=f"An unexpected error occurred: {str(e)}")

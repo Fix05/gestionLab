@@ -21,6 +21,7 @@ export default function RecordAdvance() {
             setOriginalValues, message, setMessage} = useTransformData(listResult, AdvanceRecordMapping, ELEMENTS_PER_PAGE)
     const [open, setOpen] = useState(false)
     const {id, setId, modalData} = useBasicData(originalValues)    
+    const DESCRIPTION_ENDPOINT = `http://127.0.0.1:8000/api/advances/get-advance-description/${id}`
 
 
     useEffect(() => {
@@ -48,7 +49,7 @@ export default function RecordAdvance() {
                     </p>
                 </div>) : (
                 <>
-                    <RecordDetailedInfo open={open} setOpen={setOpen} id={id} values={modalData}/>
+                    <RecordDetailedInfo open={open} setOpen={setOpen} endpoint={DESCRIPTION_ENDPOINT} values={modalData}/>
                     <Table values={changedList} setValues={setChangedList} originalValues={originalValues} bgcolor={"bg-emerald-200"} numberOfElements={ELEMENTS_PER_PAGE} setOpen={setOpen} sthElse={true} setId={setId}/>
                     <div className="flex flex-row justify-between rounded-b-lg border-t border-gray-200 px-4 py-2">
                         <div className='text-gray-700 text-sm'>

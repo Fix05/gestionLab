@@ -102,12 +102,11 @@ def get_all_employee_info(id: int, db: mysql.connector.MySQLConnection = Depends
             gender_person, duration_contract, start_day_contract, 
             description_contract, benefits_contract,
             hours_per_day, bonuses_contract, special_requirements, 
-            department_employee, state_employee, base_salary, 
+            department_employee, state_employee, base_salary_employee, 
             days_vacation
             FROM person 
             JOIN employee on id_person = fk_person
             JOIN contract on fk_contract = id_contract
-            JOIN salary_info on id_salary_info = fk_salary_info
             WHERE id_employee = %s;
         """
         cursor.execute(query, (id,))

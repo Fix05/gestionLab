@@ -83,6 +83,31 @@ export default function Aside() {
                             <span className="flex-1 ms-3 whitespace-nowrap">Asistencia</span>
                         </a>
                     </li>
+                    <Expansible isselected={openElement === "vacations" ? "120px" : "36px"}>
+                        <a id="vacations" onClick={handleExpansibleClick} className={`flex cursor-pointer transition-colors duration-300 items-center px-2 py-1.5 text-gray-200 rounded-lg dark:text-white group ${page == "vacations" ? 'dark:bg-gray-700 bg-gray-300 text-gray-900' : 'hover:bg-gray-300 hover:text-gray-900 dark:hover:bg-gray-700'} `}>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={`flex-shrink-0 w-5 h-5 text-gray-200 transition duration-75 dark:text-gray-400 ${page == "vacations" ? 'text-gray-900 dark:text-white' : 'group-hover:text-gray-900 dark:group-hover:text-white'} `}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z" />
+                            </svg>
+                            <span className="flex-1 ms-3 whitespace-nowrap">Vacaciones</span>
+                            <span className={`shrink-0 transition-transform ${openElement == "vacations" ? "rotate-180" : ""}`}>
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                                </svg>
+                            </span>
+                        </a>
+                        <ExpansibleElements className="space-y-1 font-medium ml-8">
+                            <li>
+                                <Link to={"addVacations"} id="addVacations" href="#" className={`flex transition-colors duration-300 items-center text-gray-200 rounded-lg dark:text-white group ${page == "vacations" ? 'dark:bg-gray-700 text-gray-900 bg-gray-300' : 'hover:bg-gray-300 hover:text-gray-900 dark:hover:bg-gray-700'} `}>
+                                    <div className={`w-3 h-3 ${page == "addVacations" ? "bg-gray-200" : "bg-gray-400"}  border-gray-500 rounded-full ml-2 mr-1 border-2 `}></div>Añadir
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to={"recordVacations"} id="recordVacations" href="#" className={`flex transition-colors duration-300 items-center text-gray-200 rounded-lg dark:text-white group ${page == "advance" ? 'dark:bg-gray-700 text-gray-900 bg-gray-300' : 'hover:bg-gray-300 hover:text-gray-900 dark:hover:bg-gray-700'} `}>
+                                    <div className={`w-3 h-3 ${page == "recordVacations" ? "bg-gray-200" : "bg-gray-400"}  border-gray-500 rounded-full ml-2 mr-1 border-2 `}></div>Registro
+                                </Link>
+                            </li>
+                        </ExpansibleElements>
+                    </Expansible>
                     <li>
                         <a id="vacations" href="#" className={`flex transition-colors duration-300 items-center px-2 py-1.5 text-gray-200 rounded-lg dark:text-white group ${page == "vacations" ? 'dark:bg-gray-700 bg-gray-300 text-gray-900' : 'hover:bg-gray-300 hover:text-gray-900 dark:hover:bg-gray-700'} `}>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={`flex-shrink-0 w-5 h-5 text-gray-200 transition duration-75 dark:text-gray-400 ${page == "vacations" ? 'text-gray-900 dark:text-white' : 'group-hover:text-gray-900 dark:group-hover:text-white'} `}>
