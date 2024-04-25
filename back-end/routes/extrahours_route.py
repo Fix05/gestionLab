@@ -124,17 +124,6 @@ def get_add_extras_overall(roles: List[str] = Query(['User'], description='List 
             WHERE permission_employee IN ({in_clause});
         """
 
-
-        #query = f
-        """
-            SELECT person.lastname_person as lastname, person.name_person as name,
-            person.dni_person as dni, department_employee as department, id_employee as id, 
-            state_employee as state, base_salary_employee as base_salary
-            FROM person 
-            JOIN employee ON person.id_person = employee.fk_person
-            JOIN remuneration_record ON remuneration_record.fk_employee = employee.id_employee
-            WHERE permission_employee IN ({in_clause});
-        """
         cursor.execute(query, roles)
         result = cursor.fetchall()
         cursor.close()
@@ -168,17 +157,6 @@ def get_employess_extras(id: int, db: mysql.connector.MySQLConnection = Depends(
             AND state_extra = 'Por pagar';
         """
 
-        """
-           SELECT amount_extras as amount, date_extras as date, id_extras_record as id,
-            hours_extras as hours
-            FROM extras_record
-            JOIN salary_info ON extras_record.fk_salary_info = id_salary_info
-            JOIN employee ON id_salary_info = employee.fk_salary_info
-            WHERE employee.id_employee = %s
-            AND DATE_FORMAT(date_extras, '%Y-%m') = %s; 
-        """
-
-
         print(id, current_date)
         cursor.execute(query, (id, current_date))
         result = cursor.fetchall()
@@ -210,12 +188,6 @@ def add_extras(id: int, data: NewExtras, db: mysql.connector.MySQLConnection = D
             WHERE %s <= max_pay_date_remuneration 
             AND %s >= min_pay_date_remuneration
             AND fk_employee = %s)); 
-        """
-
-        """ 
-            INSERT INTO extras_record 
-            VALUES (0, %s, %s, %s, 'Por pagar', %s, 
-            (SELECT fk_salary_info FROM employee WHERE id_employee = %s));
         """
         
         cursor.execute(query, (data.hours, current_date, data.amount, data.description, current_date, current_date, id))

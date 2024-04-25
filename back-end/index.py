@@ -7,6 +7,7 @@ from routes.payment_route import router as payment_router
 from routes.payment_route import run_scheduled_task
 from routes.advances_route import router as advances_router
 from routes.extrahours_route import router as extrahours_router
+from routes.vacations_route import router as vacations_router
 import asyncio
 import uvicorn
 import threading
@@ -37,6 +38,7 @@ APP.include_router(employee_router, prefix="/api/rh", tags=["employee"])
 APP.include_router(payment_router, prefix="/api/payment", tags=["payment"])
 APP.include_router(advances_router, prefix="/api/advances", tags=["advances"])
 APP.include_router(extrahours_router, prefix="/api/extras", tags=["extras"])
+APP.include_router(vacations_router, prefix="/api/vacations", tags=["vacations"])
 
 
 """ def background_task():

@@ -2,13 +2,13 @@ import {Fragment} from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 
 
-export default function ModalTemplate({open, setOpen, header, employeeData, handleClick, children}) {
+export default function ModalTemplate({open, setOpen, header, secondHeader, employeeData, handleClick, children}) {
 
 
 
     return(
         <Transition.Root show={open} as={Fragment}>
-            <Dialog as="div" className="relative z-50" onClose={setOpen}>
+            <Dialog as="div" className="relative z-40" onClose={setOpen}>
                 <Transition.Child
                     as={Fragment}
                     enter="ease-out duration-300"
@@ -35,11 +35,11 @@ export default function ModalTemplate({open, setOpen, header, employeeData, hand
                             <Dialog.Panel className="flex flex-col px-4 items-center relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all w-1/2">
 
                                 <div className='flex self-start w-full border-solid border-b-2 border-b-gray-400  pl-2'>
-                                    <h1 className='text-gray-900 text-base font-semibold my-5'>{header + employeeData.date}</h1>
+                                    <h1 className='text-gray-900 text-base font-semibold my-5'>{header + (secondHeader || "")}</h1>
                                 </div>
 
                                 <div className='flex flex-col w-full mt-2 items-center justify-center border-solid border-b-2 border-b-gray-400 p-2'>
-                                    <div className='flex self-start mb-4 text-sm'>
+                                    {/* <div className='flex self-start mb-4 text-sm'>
                                         <div className='flex flex-row mr-4'>
                                             <p className='font-medium '>Empleado:&nbsp;&nbsp;</p>
                                             <span>{employeeData.name}</span>
@@ -48,7 +48,7 @@ export default function ModalTemplate({open, setOpen, header, employeeData, hand
                                             <p className='font-medium '>Salario:&nbsp;&nbsp;</p>
                                             <span>${employeeData.salary}</span>
                                         </div>
-                                    </div>
+                                    </div> */}
 
                                     {children}
 

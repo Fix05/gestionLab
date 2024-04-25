@@ -3,13 +3,13 @@ import { Dialog, Transition } from '@headlessui/react'
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import {modalContext} from '../pages/login'
 
-export default function Modal({text}) {
+export default function Modal({open, setOpen, header, text}) {
 
-  const {open, setOpen} = useContext(modalContext) 
+  /* const {open, setOpen} = useContext(modalContext)  */
 
   return (
     <Transition.Root show={open} as={Fragment}>
-      <Dialog as="div" className="relative z-10" onClose={setOpen}>
+      <Dialog as="div" className="relative z-50" onClose={setOpen}>
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
@@ -41,7 +41,7 @@ export default function Modal({text}) {
                     </div>
                     <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
                       <Dialog.Title as="h3" className="text-base font-semibold leading-6 text-gray-900">
-                        Inicio fallido
+                        {header}
                       </Dialog.Title>
                       <div className="mt-2">
                         <p className="text-sm text-gray-500">

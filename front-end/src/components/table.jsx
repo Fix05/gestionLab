@@ -16,23 +16,15 @@ const ICONS = {
     "payment": <DetailsIcon />,
     "employees": <DetailsIcon />,
     "recordExtra": <InfoIcon />,
-    "recordAdvance": <InfoIcon />
-
-
+    "recordAdvance": <InfoIcon />,
+    "addVacations": <AddIcon />,
+    "recordVacations": <InfoIcon />
 }
 
 const Container = styled.div`
 `
 
 export default function Table({ values, setValues, bgcolor, originalValues, numberOfElements, setOpen, sthElse, setId }) {
-
-/*     const payment_states = {
-        "Por pagar": "bg-blue-200",
-        "Pagado": "bg-green-200",
-        "Atrasado": "bg-red-200",
-        "Cobrado": "bg-green-200",
-        "Por cobrar": "bg-violet-200"
-    } */
 
     const { tablePage, setTablePage } = useContext(paginationContext);
     const [searchQuery, setSearchQuery] = useState('');

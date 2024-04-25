@@ -71,7 +71,7 @@ export default function AddAdvanceModal({ open, setOpen, id, employeeData }) {
 
     return (
 
-        <ModalTemplate open={open} setOpen={setOpen} header={HEADER} employeeData={employeeData} handleClick={handleClick}>
+        <ModalTemplate open={open} setOpen={setOpen} header={HEADER} secondHeader={employeeData.date} employeeData={employeeData} handleClick={handleClick}>
             <div className='flex flex-row w-full items-center mb-4 text-sm'>
                 <p className='font-medium '>Ingrese Monto:&nbsp;&nbsp;</p>
                 <input

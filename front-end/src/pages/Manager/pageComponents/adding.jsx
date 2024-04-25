@@ -14,20 +14,11 @@ export default function Adding({apiEndpoint, ModalComponent, bgcolor, dataMappin
     const {changedList, setChangedList, originalValues, setOriginalValues} = useTransformData(listResult, dataMapping, ELEMENTS_PER_PAGE)
     const [open, setOpen] = useState(false)
     const {id, setId, modalData} = useBasicData(originalValues)
-    /* const [id, setId] = useState()
-    const [modalData, setModalData] = useState({}) */
 
     const HandleChange = (ev) => {
         console.log(ev.target.value);
     }
 
-    /* useEffect(() => {
-        if (originalValues.length > 1) {
-            const selectedEmployee = originalValues.find((element) => element.Id == id)
-            const { Nombre, Sueldo } = selectedEmployee
-            setModalData({ name: Nombre, salary: Sueldo })
-        }
-    }, [id]) */
 
     return (
         <div className="mt-6 rounded-lg border-2 border-gray-400 bg-white ">

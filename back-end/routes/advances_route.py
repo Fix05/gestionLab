@@ -46,18 +46,6 @@ def get_advances_record(dates: Dates, roles: List[str] = Query(['User'], descrip
             AND permission_employee IN ({in_clause});
         """
 
-        """
-            SELECT name_person as name, lastname_person as lastname, id_employee, id_salary_info as id_salary,
-            base_salary_employee as base_salary, id_advance_record as id_advance, date_advance as date, state_advance as state,
-            amount_advance as amount
-            FROM advance_record
-            INNER JOIN salary_info on advance_record.fk_salary_info = id_salary_info
-            INNER JOIN employee on id_salary_info = employee.fk_salary_info
-            INNER JOIN person on id_person = fk_person
-            WHERE date_advance >= %s
-            AND date_advance < %s
-            AND permission_employee IN ({in_clause});
-        """
         params = (formated_start, formated_end, *roles)
         cursor.execute(query, params)
         result = cursor.fetchall()
@@ -125,16 +113,6 @@ def get_add_advances_overall(roles: List[str] = Query(['User'], description='Lis
             JOIN salary_info ON id_salary_info = employee.fk_salary_info
             WHERE permission_employee IN ({in_clause});
         """
-        
-        """
-            SELECT person.lastname_person as lastname, person.name_person as name,
-            person.dni_person as dni, department_employee as department, id_employee as id, 
-            state_employee as state, base_salary_employee as base_salary
-            FROM person 
-            JOIN employee ON person.id_person = employee.fk_person
-            JOIN remuneration_record ON remuneration_record.fk_employee = employee.id_employee
-            WHERE permission_employee IN ({in_clause});
-        """
 
         cursor.execute(query, roles)
         result = cursor.fetchall()
@@ -169,16 +147,6 @@ def get_employees_advances(id: int, db: mysql.connector.MySQLConnection = Depend
             AND state_advance = 'Por cobrar';
         """
 
-        """ 
-            SELECT amount_advance as amount, date_advance as date, id_advance_record as id
-            FROM advance_record
-            JOIN salary_info ON advance_record.fk_salary_info = id_salary_info
-            JOIN employee ON id_salary_info = employee.fk_salary_info
-            WHERE employee.id_employee = %s
-            AND DATE_FORMAT(date_advance, '%Y-%m') = %s;
-        """
-
-
         cursor.execute(query, (id, current_date))
         result = cursor.fetchall()
         cursor.close()
@@ -211,13 +179,6 @@ def add_advance(id: int, data: NewAdvance, db: mysql.connector.MySQLConnection =
             WHERE %s <= max_pay_date_remuneration 
             AND %s >= min_pay_date_remuneration
             AND fk_employee = %s)); 
-        """
-
-        """ 
-            INSERT INTO advance_record 
-            VALUES (0, %s, %s,
-            (SELECT fk_salary_info FROM employee WHERE id_employee = %s),
-            'Por cobrar', %s);
         """
 
         cursor.execute(query, (data.amount, current_date, data.description, current_date, current_date, id))
