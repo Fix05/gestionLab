@@ -9,8 +9,8 @@ router = APIRouter()
 
 
 class NewAbsence(BaseModel):
-    start_date: str
-    end_date: str
+    startDate: str
+    endDate: str
     description: str
     type: str
     days: int
@@ -58,6 +58,15 @@ def get_vacation_days_left(id: int, data: NewAbsence, db: mysql.connector.MySQLC
         formated_date = current_date.strftime("%Y-%m-%d")
         cursor = db.cursor(dictionary=True)
 
+        startDate_datetime = datetime.fromisoformat(data.startDate)
+        endDate_datetime = datetime.fromisoformat(data.endDate)
+        
+        formatedStartDate = startDate_datetime.strftime("%Y-%m-%d")
+        formatedEndDate = endDate_datetime.strftime("%Y-%m-%d")
+
+
+        print(formatedStartDate, formatedEndDate)
+
         validationQuery = f""" 
             SELECT * FROM absences 
             WHERE (
@@ -67,10 +76,11 @@ def get_vacation_days_left(id: int, data: NewAbsence, db: mysql.connector.MySQLC
             AND fk_employee = %s;
         """
 
-        cursor.execute(validationQuery, (data.start_date, data.start_date, data.end_date, data.end_date, id))
+        cursor.execute(validationQuery, (formatedStartDate, formatedStartDate, formatedEndDate, formatedEndDate, id))
         result = cursor.fetchall()
-
-        if(result):
+        
+        print(len(result)>0)
+        if(len(result)>0):
             return {"status_code": 410, "message": "Date range already in use"}
         
         query = f"""
@@ -80,11 +90,11 @@ def get_vacation_days_left(id: int, data: NewAbsence, db: mysql.connector.MySQLC
            VALUES (%s, %s, %s, null, %s, %s, %s, %s)
         """
         
-        if (data.start_date == formated_date):
+        if (formatedStartDate == formated_date):
             state = "En curso"
         state = "Pendiente"
 
-        cursor.execute(query, (data.start_date, data.end_date,
+        cursor.execute(query, (formatedStartDate, formatedEndDate,
                        data.description, state, data.type, data.days, id))
         db.commit()
         cursor.close()

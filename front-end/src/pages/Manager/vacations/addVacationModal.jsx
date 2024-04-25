@@ -9,15 +9,14 @@ import DateeRangePicker from '../../../components/dateRangePicker'
 
 
 
-export default function AddVacationModal({ open, setOpen, id, employeeData }) {
+export default function AddVacationModal({ open, setOpen, id, employeeData, setAnimation }) {
 
     const HEADER = "Registro de vacaciones o ausencias"
     const DAYS_LEFT_ENDPOINT = `http://127.0.0.1:8000/api/vacations/get-vacation-days-left/${id}`
     const ADD_VACATION_ENDPOINT = `http://127.0.0.1:8000/api/vacations/insert-new-absence/${id}`
 
-    const [daysLeft] = useFetch(DAYS_LEFT_ENDPOINT, null, "GET")
-    const [data, setData] = useState({})
-    const [addingResult, addVacation] = useFetch(ADD_VACATION_ENDPOINT, data, "POST")
+    const [daysLeft, getDaysLeft] = useFetch(DAYS_LEFT_ENDPOINT, null, "GET")
+    const [addingResult, addVacation] = useFetch(ADD_VACATION_ENDPOINT, {}, "POST", false)
     const [newDaysLeft, setNewDaysLeft] = useState()
     const [pickedDays, setPickedDays] = useState()
     const type = useField()
@@ -45,18 +44,51 @@ export default function AddVacationModal({ open, setOpen, id, employeeData }) {
         return count;
     }
 
-    const resetFormatedRange = () => { 
+    const resetFormatedRange = () => {
         setFormatedRange({
             start: format(new Date(), 'yyyy/MM/dd', { locale: es }),
             end: ""
         })
-     }
+    }
 
 
     const handleClick = () => {
-        if (range[0].startDate && range[0].endDate && type.field && reason.field)
-            setOpen(false)
+        if (range[0].endDate && type.field && reason.field) {
+            const dataToLoad = {
+                startDate: range[0].startDate,
+                endDate: range[0].endDate,
+                description: reason.field,
+                type: type.field,
+                days: pickedDays,
+            }
+
+            addVacation(dataToLoad).then(()=>{
+                getDaysLeft()
+            })
+        }
+
     }
+
+    useEffect(() => {
+
+        console.log(addingResult);
+
+        if (Object.keys(addingResult).length > 0) {
+            if (addingResult.message) {
+                setAlertMessage(addingResult.message)
+                console.log("Mensaje");
+                setOpenAlert(true)
+            } else {
+                setAlertMessage("Vacaciones registrada")
+                console.log("Vacaciones registrada");
+                setOpen(false)
+                setAnimation(true)
+                
+            }
+            
+        }
+
+    }, [addingResult])
 
 
     const handleDatePicker = () => {
@@ -65,14 +97,15 @@ export default function AddVacationModal({ open, setOpen, id, employeeData }) {
 
 
     useEffect(() => {
-
         setFormatedRange({
             start: format(range[0].startDate, 'yyyy/MM/dd', { locale: es }),
             end: range[0].endDate ? format(range[0].endDate, 'yyyy/MM/dd', { locale: es }) : ""
         })
+        const days = getDays()
+        setPickedDays(days)
 
         if (type.field == "Vacaciones") {
-            const days = getDays()
+
             if ((daysLeft.days_left - days) < 0) {
                 setAlertMessage(`El empleado no tiene tantos días de vacaciones,
                 le quedan ${daysLeft.days_left} días, el rango de fecha que elegiste tiene ${days} días`)
@@ -87,11 +120,13 @@ export default function AddVacationModal({ open, setOpen, id, employeeData }) {
                 setPickedDays(days)
                 setNewDaysLeft(daysLeft.days_left - days)
             }
+        } else {
+            setNewDaysLeft()
         }
 
+    }, [openDatePicker, type.field, range])
 
 
-    }, [openDatePicker, type.field])
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -107,6 +142,7 @@ export default function AddVacationModal({ open, setOpen, id, employeeData }) {
 
 
     useEffect(() => {
+
         type.setField("")
         setPickedDays()
         resetFormatedRange()
@@ -119,28 +155,25 @@ export default function AddVacationModal({ open, setOpen, id, employeeData }) {
 
 
     return (
-
         <ModalTemplate open={open} setOpen={setOpen} header={HEADER} employeeData={employeeData} handleClick={handleClick}>
             <Modal open={openAlert} setOpen={setOpenAlert} header={"Tenemos un problema!!"} text={alertMessage} />
-            <div className='flex self-start mb-4 text-sm'>
+            <div className='flex flex-wrap self-start mb-4 text-sm'>
                 <div className='flex flex-row mr-4'>
                     <p className='font-medium '>Empleado:&nbsp;&nbsp;</p>
                     <span>{employeeData.name}</span>
                 </div>
                 <div className='flex flex-row mr-4'>
-                    <p className='font-medium '>Salario:&nbsp;&nbsp;</p>
-                    <span>${employeeData.salary}</span>
+                    <p className='font-medium '>Días tomados:&nbsp;&nbsp;</p>
+                    <span className='text-rose-700'>{range[0].endDate ? pickedDays : 0}</span>
                 </div>
-                <div className='flex flex-row'>
+                <div className='flex flex-row mr-4'>
                     <p className='font-medium '>Vacaciones restantes:&nbsp;&nbsp;</p>
-                    <span className='font-medium text-rose-700'>{daysLeft.days_left}{pickedDays ? `-${pickedDays} = ${newDaysLeft}` : null}</span>
+                    <span className='text-rose-700'>{daysLeft.days_left}{type.field == 'Vacaciones' && range[0].endDate ? `-${pickedDays} = ${newDaysLeft}` : null}</span>
                 </div>
             </div>
-
             <div className={`top-0 w-full h-full absolute flex items-center justify-center bg-gray-500/75 ${openDatePicker ? '' : "hidden"}`}>
                 <div ref={datePickerRef} className='shadow-md'><DateeRangePicker ranges={range} setRanges={setRange} /></div>
             </div>
-
             <div className='flex flex-wrap flex-row w-full items-center mb-4 text-sm justify-between'>
                 <div className='flex flex-col w-40 my-4 '>
                     <p className='font-medium mb-2'>Fecha de inicio:&nbsp;&nbsp;</p>
@@ -151,8 +184,8 @@ export default function AddVacationModal({ open, setOpen, id, employeeData }) {
                         min="0"
                         className="cursor-pointer outline-none h-8 w-5/6 rounded-md border-solid border border-gray-200 shadow-sm sm:text-sm"
                         onClick={handleDatePicker}
-                        autocomplete="off"
-                        value={formatedRange.start}
+                        autoComplete="off"
+                        defaultValue={formatedRange.start}
                     />
                 </div>
                 <div className='flex flex-col w-40 my-4'>
@@ -164,8 +197,8 @@ export default function AddVacationModal({ open, setOpen, id, employeeData }) {
                         min="0"
                         className="cursor-pointer outline-none h-8 w-5/6 rounded-md border-solid border border-gray-200 shadow-sm sm:text-sm"
                         onClick={handleDatePicker}
-                        autocomplete="off"
-                        value={formatedRange.end}
+                        autoComplete="off"
+                        defaultValue={formatedRange.end}
                     />
                 </div>
                 <div className='flex flex-col w-56 my-4'>
@@ -179,12 +212,10 @@ export default function AddVacationModal({ open, setOpen, id, employeeData }) {
                         <option value="">Selccione</option>
                         <option value="Vacaciones">Vacaciones</option>
                         <option value="Salud">Salud</option>
+                        <option value="Calamidad doméstica">Calamidad doméstica</option>
                         <option value="Otro">Otro</option>
                     </select>
-
-
                 </div>
-
                 <div className='flex flex-col w-full my-4'>
                     <p className='font-semibold mb-2'>Descripción:&nbsp;&nbsp;</p>
                     <textarea
@@ -196,9 +227,6 @@ export default function AddVacationModal({ open, setOpen, id, employeeData }) {
                         onChange={reason.handleChange}
                     />
                 </div>
-
-
-
             </div>
         </ModalTemplate >
     )

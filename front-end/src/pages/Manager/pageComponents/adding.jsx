@@ -4,6 +4,7 @@ import useBasicData from '../../../hooks/useBasicData'
 import Table from '../../../components/table'
 import {useState} from 'react';
 import Pagination from '../../../components/pagination'
+import DoneAnimation from '../../../components/doneAnimationWindow'
 
 
 export default function Adding({apiEndpoint, ModalComponent, bgcolor, dataMapping}) {
@@ -15,6 +16,8 @@ export default function Adding({apiEndpoint, ModalComponent, bgcolor, dataMappin
     const [open, setOpen] = useState(false)
     const {id, setId, modalData} = useBasicData(originalValues)
 
+    const [openAnimation, setOpenAnimation] = useState(false)
+
     const HandleChange = (ev) => {
         console.log(ev.target.value);
     }
@@ -22,7 +25,8 @@ export default function Adding({apiEndpoint, ModalComponent, bgcolor, dataMappin
 
     return (
         <div className="mt-6 rounded-lg border-2 border-gray-400 bg-white ">
-            <ModalComponent open={open} setOpen={setOpen} id={id} employeeData={modalData} />
+            <DoneAnimation open={openAnimation} setOpen={setOpenAnimation}/>
+            <ModalComponent open={open} setOpen={setOpen} id={id} employeeData={modalData} setAnimation={setOpenAnimation}/>
             <Table values={changedList} setValues={setChangedList} originalValues={originalValues} bgcolor={bgcolor} numberOfElements={ELEMENTS_PER_PAGE} setOpen={setOpen} sthElse={true} setId={setId}/>
             <div className="rounded-b-lg border-t border-gray-200 px-4 py-2">
                 <Pagination totalPages={Math.ceil(changedList.length / 10)} />

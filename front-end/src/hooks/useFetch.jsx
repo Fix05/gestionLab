@@ -23,7 +23,8 @@ const useFetch = (url, data, method, shouldFetch = true) => {
     402: "Debe de completar todos los campos",
     401: "Correo o contraseña incorrectos, por favor inténtelo de nuevo",
     403: "Empleado no encontrado",
-    407: "No hay registros aún"
+    407: "No hay registros aún",
+    410: "Este empleado ya tiene ausencias registradas para el rango de días escogido"
   }
 
   const doFetch = async (inFunctionData, inFnctionUrlParams) => {
