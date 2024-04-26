@@ -1,4 +1,4 @@
-import { Fragment, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import useFetch from '../../../hooks/useFetch'
 import useField from '../../../hooks/useField'
 import ModalTemplate from '../pageComponents/modalTemplate'
@@ -60,7 +60,17 @@ export default function AddPaymentModal({ open, setOpen, id, employeeData, payme
 
     return (
 
-        <ModalTemplate open={open} setOpen={setOpen} header={HEADER} employeeData={employeeData} handleClick={handleClick}>
+        <ModalTemplate open={open} setOpen={setOpen} header={HEADER} secondHeader={employeeData.date} employeeData={employeeData} handleClick={handleClick}>
+            <div className='flex self-start mb-4 text-sm'>
+                <div className='flex flex-row mr-4'>
+                    <p className='font-medium '>Empleado:&nbsp;&nbsp;</p>
+                    <span>{employeeData.name}</span>
+                </div>
+                <div className='flex flex-row'>
+                    <p className='font-medium '>Salario:&nbsp;&nbsp;</p>
+                    <span>${employeeData.salary}</span>
+                </div>
+            </div>
             <div className='flex flex-row w-full items-center mb-2 text-sm justify-left'>
                 <p className='font-medium '>Ingrese Monto:&nbsp;&nbsp;</p>
                 <input

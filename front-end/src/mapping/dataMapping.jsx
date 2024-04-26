@@ -62,3 +62,18 @@ export const PaymentInfoMapping = (element, index, FieldsDictionary) => {
     }
     return newObj
 };
+
+export const AdvanceListMapping = (element, index) => ({
+    "N°": index + 1,
+    Fecha: element.date,
+    Monto: element.amount,
+    Id: element.id
+});
+
+export const ExtraListMapping = (element, index) => ({
+    "N°": index + 1,
+    Fecha: element.date,
+    Monto: element.amount,
+    Horas: element.hours,
+    Id: element.id
+});

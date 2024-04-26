@@ -1,9 +1,10 @@
 
-import {useEffect} from 'react'
+import { useEffect } from 'react'
 import DoneGif from '../assets/gif/cuaderno.gif'
+import GenericModalTemplate from '../components/genericModalTemplate'
 
 
-export default function DoneAnimation({ open, setOpen }) {
+export default function DoneAnimation({ open, setOpen, message }) {
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -11,12 +12,15 @@ export default function DoneAnimation({ open, setOpen }) {
         }, 2500);
 
         return () => clearTimeout(timer);
-    }, []);
-
+    }, [open]);
 
     return (
-        <div className={`bg-black fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-40 ${open ? 'block': 'auto'}`}>
-            <img className='w-28' src={DoneGif} alt="Loading" />
-        </div>
+        <GenericModalTemplate open={open} setOpen={setOpen}>
+            <div className="flex flex-row font-semibold text-cyan-950 items-center m-2">
+                <img className='w-12' src={DoneGif} alt="Loading" />
+                {message}
+            </div>
+            
+        </GenericModalTemplate>
     );
 }

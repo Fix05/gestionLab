@@ -1,11 +1,9 @@
-import { Fragment, useState, useEffect } from 'react'
-import { Dialog, Transition } from '@headlessui/react'
+import { useState, useEffect } from 'react'
 import useFetch from '../../../hooks/useFetch'
 import useField from '../../../hooks/useField'
 import AddingTable from '../../../components/addingTable'
 import ModalTemplate from '../pageComponents/modalTemplate'
-
-
+import {AdvanceListMapping} from '../../../mapping/dataMapping'
 
 export default function AddAdvanceModal({ open, setOpen, id, employeeData }) {
 
@@ -45,17 +43,11 @@ export default function AddAdvanceModal({ open, setOpen, id, employeeData }) {
 
         if (result.length) {
             const newAdvanceList = result.map((element, index) => ({
-                "N°": index + 1,
-                Fecha: element.date,
-                Monto: element.amount,
-                Id: element.id,
+                ...AdvanceListMapping(element, index)
             }));
             setChangedList(newAdvanceList);
-
             const totals = newAdvanceList.reduce((prev, accum) => {
-                return {
-                    Monto: prev.Monto + accum.Monto,
-                }
+                return { Monto: prev.Monto + accum.Monto }
             })
             setTotal(totals)
         } else {
@@ -68,10 +60,19 @@ export default function AddAdvanceModal({ open, setOpen, id, employeeData }) {
         description.setField()
     }, [open])
 
-
     return (
 
         <ModalTemplate open={open} setOpen={setOpen} header={HEADER} secondHeader={employeeData.date} employeeData={employeeData} handleClick={handleClick}>
+            <div className='flex self-start mb-4 text-sm'>
+                <div className='flex flex-row mr-4'>
+                    <p className='font-medium '>Empleado:&nbsp;&nbsp;</p>
+                    <span>{employeeData.name}</span>
+                </div>
+                <div className='flex flex-row'>
+                    <p className='font-medium '>Salario:&nbsp;&nbsp;</p>
+                    <span>${employeeData.salary}</span>
+                </div>
+            </div>
             <div className='flex flex-row w-full items-center mb-4 text-sm'>
                 <p className='font-medium '>Ingrese Monto:&nbsp;&nbsp;</p>
                 <input

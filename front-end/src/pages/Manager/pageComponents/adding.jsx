@@ -7,7 +7,7 @@ import Pagination from '../../../components/pagination'
 import DoneAnimation from '../../../components/doneAnimationWindow'
 
 
-export default function Adding({apiEndpoint, ModalComponent, bgcolor, dataMapping}) {
+export default function Adding({apiEndpoint, ModalComponent, bgcolor, dataMapping, addingDoneMessage}) {
 
 
     const ELEMENTS_PER_PAGE = 10
@@ -25,7 +25,7 @@ export default function Adding({apiEndpoint, ModalComponent, bgcolor, dataMappin
 
     return (
         <div className="mt-6 rounded-lg border-2 border-gray-400 bg-white ">
-            <DoneAnimation open={openAnimation} setOpen={setOpenAnimation}/>
+            <DoneAnimation open={openAnimation} setOpen={setOpenAnimation} message={addingDoneMessage}/>
             <ModalComponent open={open} setOpen={setOpen} id={id} employeeData={modalData} setAnimation={setOpenAnimation}/>
             <Table values={changedList} setValues={setChangedList} originalValues={originalValues} bgcolor={bgcolor} numberOfElements={ELEMENTS_PER_PAGE} setOpen={setOpen} sthElse={true} setId={setId}/>
             <div className="rounded-b-lg border-t border-gray-200 px-4 py-2">

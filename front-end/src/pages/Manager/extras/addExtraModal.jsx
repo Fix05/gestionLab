@@ -1,9 +1,9 @@
-import { Fragment, useState, useEffect } from 'react'
-import { Dialog, Transition } from '@headlessui/react'
+import { useState, useEffect } from 'react'
 import useFetch from '../../../hooks/useFetch'
 import useField from '../../../hooks/useField'
 import AddingTable from '../../../components/addingTable'
 import ModalTemplate from '../pageComponents/modalTemplate'
+import {ExtraListMapping} from '../../../mapping/dataMapping'
 
 
 export default function AddExtraModal({ open, setOpen, id, employeeData }) {
@@ -32,7 +32,6 @@ export default function AddExtraModal({ open, setOpen, id, employeeData }) {
 
     const handleClick = () => {
         setOpen(false)
-
     }
 
     const handleDelete = (id) => {
@@ -45,11 +44,7 @@ export default function AddExtraModal({ open, setOpen, id, employeeData }) {
 
         if (result.length) {
             const newExtraList = result.map((element, index) => ({
-                "N°": index + 1,
-                Fecha: element.date,
-                Monto: element.amount,
-                Horas: element.hours,
-                Id: element.id,
+                ...ExtraListMapping(element, index)
             }));
             setChangedList(newExtraList);
 
@@ -75,6 +70,16 @@ export default function AddExtraModal({ open, setOpen, id, employeeData }) {
     return (
 
         <ModalTemplate open={open} setOpen={setOpen} header={HEADER} secondHeader={employeeData.date} employeeData={employeeData} handleClick={handleClick}>
+            <div className='flex self-start mb-4 text-sm'>
+                <div className='flex flex-row mr-4'>
+                    <p className='font-medium '>Empleado:&nbsp;&nbsp;</p>
+                    <span>{employeeData.name}</span>
+                </div>
+                <div className='flex flex-row'>
+                    <p className='font-medium '>Salario:&nbsp;&nbsp;</p>
+                    <span>${employeeData.salary}</span>
+                </div>
+            </div>
             <div className='flex flex-row w-full items-center mb-4 text-sm justify-between'>
                 <p className='font-medium '>Ingrese Monto:&nbsp;&nbsp;</p>
                 <input

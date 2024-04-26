@@ -21,7 +21,7 @@ export default function GenericModalTemplate({ open, setOpen, handleClick, child
                     <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
                 </Transition.Child>
 
-                <div className="fixed top-16 inset-0 z-10 w-screen overflow-y-auto">
+                <div className="fixed top-14 inset-0 z-50 w-screen overflow-y-auto">
                     <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0 ">
                         <Transition.Child
                             as={Fragment}
@@ -32,19 +32,20 @@ export default function GenericModalTemplate({ open, setOpen, handleClick, child
                             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
                             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                         >
-                            <Dialog.Panel className="flex flex-col w-[600px] items-center relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all ">
+                            <Dialog.Panel className="flex flex-col items-center relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all ">
 
                                 {children}
 
-                                <div className='bg-gray-50 w-full flex justify-center mt-4'>
-                                    <button
-                                        type="button"
-                                        className="my-4 inline-flex w-1/4 justify-center rounded-md bg-cyan-800 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-700 focus:outline-none"
-                                        onClick={handleClick}
-                                    >
-                                        Aceptar
-                                    </button>
-                                </div>
+                                {handleClick &&
+                                    <div className='bg-gray-50 w-full flex justify-center mt-4'>
+                                        <button
+                                            type="button"
+                                            className="my-4 inline-flex w-1/4 justify-center rounded-md bg-cyan-800 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-700 focus:outline-none"
+                                            onClick={handleClick}
+                                        >
+                                            Aceptar
+                                        </button>
+                                    </div>}
                             </Dialog.Panel>
                         </Transition.Child>
                     </div>

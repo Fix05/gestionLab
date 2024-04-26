@@ -15,7 +15,6 @@ export default function useBasicData(originalValues) {
         if (originalValues.length > 1) {
             const selectedEmployee = originalValues.find((element) => element.Id == id)
             const { Nombre, Sueldo, Estado, Fecha, Monto, Horas, Salario, Id } = selectedEmployee
-            console.log(selectedEmployee);
             setModalData({ 
                 Id: Id,
                 name: Nombre, 

@@ -6,6 +6,9 @@ import useField from '../../../hooks/useField'
 import ModalTemplate from '../pageComponents/modalTemplate'
 import Modal from '../../../components/modal'
 import DateeRangePicker from '../../../components/dateRangePicker'
+import GenericModalTemplate from '../../../components/genericModalTemplate'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {faCircleExclamation} from '@fortawesome/free-solid-svg-icons'
 
 
 
@@ -19,10 +22,10 @@ export default function AddVacationModal({ open, setOpen, id, employeeData, setA
     const [addingResult, addVacation] = useFetch(ADD_VACATION_ENDPOINT, {}, "POST", false)
     const [newDaysLeft, setNewDaysLeft] = useState()
     const [pickedDays, setPickedDays] = useState()
+    const [errorMessage, setErrorMessage] = useState(false)
     const type = useField()
     const reason = useField()
     const [openDatePicker, setOpenDatePicker] = useState(false)
-    const datePickerRef = useRef(null);
     const [openAlert, setOpenAlert] = useState(false)
     const [alertMessage, setAlertMessage] = useState('')
     const [range, setRange] = useState([{
@@ -52,8 +55,9 @@ export default function AddVacationModal({ open, setOpen, id, employeeData, setA
     }
 
 
-    const handleClick = () => {
+    const handleSubmit = () => {
         if (range[0].endDate && type.field && reason.field) {
+            setErrorMessage(false)
             const dataToLoad = {
                 startDate: range[0].startDate,
                 endDate: range[0].endDate,
@@ -62,32 +66,26 @@ export default function AddVacationModal({ open, setOpen, id, employeeData, setA
                 days: pickedDays,
             }
 
-            addVacation(dataToLoad).then(()=>{
+            addVacation(dataToLoad).then(() => {
                 getDaysLeft()
             })
+        }else{
+            setErrorMessage(true)
         }
 
     }
 
     useEffect(() => {
-
-        console.log(addingResult);
-
         if (Object.keys(addingResult).length > 0) {
             if (addingResult.message) {
                 setAlertMessage(addingResult.message)
-                console.log("Mensaje");
                 setOpenAlert(true)
             } else {
                 setAlertMessage("Vacaciones registrada")
-                console.log("Vacaciones registrada");
                 setOpen(false)
                 setAnimation(true)
-                
             }
-            
         }
-
     }, [addingResult])
 
 
@@ -105,7 +103,6 @@ export default function AddVacationModal({ open, setOpen, id, employeeData, setA
         setPickedDays(days)
 
         if (type.field == "Vacaciones") {
-
             if ((daysLeft.days_left - days) < 0) {
                 setAlertMessage(`El empleado no tiene tantos días de vacaciones,
                 le quedan ${daysLeft.days_left} días, el rango de fecha que elegiste tiene ${days} días`)
@@ -123,26 +120,10 @@ export default function AddVacationModal({ open, setOpen, id, employeeData, setA
         } else {
             setNewDaysLeft()
         }
-
     }, [openDatePicker, type.field, range])
 
 
-
     useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (datePickerRef.current && !datePickerRef.current.contains(event.target)) {
-                setOpenDatePicker(false);
-            }
-        };
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, []);
-
-
-    useEffect(() => {
-
         type.setField("")
         setPickedDays()
         resetFormatedRange()
@@ -151,11 +132,21 @@ export default function AddVacationModal({ open, setOpen, id, employeeData, setA
             endDate: null,
             key: 'selection'
         }])
+        setErrorMessage(false)
     }, [open])
 
 
+    useEffect(()=>{
+        const timer = setTimeout(()=>{
+            setErrorMessage(false)
+        }, 1500);
+
+        return () => clearTimeout(timer);
+    },[errorMessage])
+
+
     return (
-        <ModalTemplate open={open} setOpen={setOpen} header={HEADER} employeeData={employeeData} handleClick={handleClick}>
+        <ModalTemplate open={open} setOpen={setOpen} header={HEADER} employeeData={employeeData} handleClick={handleSubmit}>
             <Modal open={openAlert} setOpen={setOpenAlert} header={"Tenemos un problema!!"} text={alertMessage} />
             <div className='flex flex-wrap self-start mb-4 text-sm'>
                 <div className='flex flex-row mr-4'>
@@ -171,42 +162,31 @@ export default function AddVacationModal({ open, setOpen, id, employeeData, setA
                     <span className='text-rose-700'>{daysLeft.days_left}{type.field == 'Vacaciones' && range[0].endDate ? `-${pickedDays} = ${newDaysLeft}` : null}</span>
                 </div>
             </div>
-            <div className={`top-0 w-full h-full absolute flex items-center justify-center bg-gray-500/75 ${openDatePicker ? '' : "hidden"}`}>
-                <div ref={datePickerRef} className='shadow-md'><DateeRangePicker ranges={range} setRanges={setRange} /></div>
-            </div>
+
+            <GenericModalTemplate open={openDatePicker} setOpen={setOpenDatePicker}>
+                <div className='shadow-md'><DateeRangePicker ranges={range} setRanges={setRange} /></div>
+            </GenericModalTemplate>
+
             <div className='flex flex-wrap flex-row w-full items-center mb-4 text-sm justify-between'>
                 <div className='flex flex-col w-40 my-4 '>
                     <p className='font-medium mb-2'>Fecha de inicio:&nbsp;&nbsp;</p>
-                    <input
-                        type="text"
-                        id="start_date"
-                        placeholder=""
-                        min="0"
-                        className="cursor-pointer outline-none h-8 w-5/6 rounded-md border-solid border border-gray-200 shadow-sm sm:text-sm"
-                        onClick={handleDatePicker}
-                        autoComplete="off"
-                        defaultValue={formatedRange.start}
-                    />
+                    <div onClick={handleDatePicker} className='flex justify-left items-center pl-2 cursor-pointer outline-none h-8 w-5/6 rounded-md border-solid border border-gray-300 shadow-sm sm:text-sm'>
+                        {formatedRange.start}
+                    </div>
                 </div>
                 <div className='flex flex-col w-40 my-4'>
                     <p className='font-semibold mb-2'>Fecha de fin:&nbsp;&nbsp;</p>
-                    <input
-                        type="text"
-                        id="end_date"
-                        placeholder=""
-                        min="0"
-                        className="cursor-pointer outline-none h-8 w-5/6 rounded-md border-solid border border-gray-200 shadow-sm sm:text-sm"
-                        onClick={handleDatePicker}
-                        autoComplete="off"
-                        defaultValue={formatedRange.end}
-                    />
+                    <div onClick={handleDatePicker} className='flex justify-left items-center pl-2 cursor-pointer outline-none h-8 w-5/6 rounded-md border-solid border border-gray-300 shadow-sm sm:text-sm'>
+                        {formatedRange.end}
+                    </div>
+
                 </div>
                 <div className='flex flex-col w-56 my-4'>
                     <p className='font-semibold mb-2'>Motivo:&nbsp;&nbsp;</p>
                     <select
                         name="type"
                         id="type"
-                        className="py-1 outline-none h-8 w-5/6 rounded-md border-solid border border-gray-200 shadow-sm sm:text-sm"
+                        className="py-1 outline-none h-8 w-5/6 rounded-md border-solid border border-gray-300 shadow-sm sm:text-sm"
                         onChange={type.handleChange}
                     >
                         <option value="">Selccione</option>
@@ -216,16 +196,24 @@ export default function AddVacationModal({ open, setOpen, id, employeeData, setA
                         <option value="Otro">Otro</option>
                     </select>
                 </div>
-                <div className='flex flex-col w-full my-4'>
+                <div className='flex flex-col w-full mt-4'>
                     <p className='font-semibold mb-2'>Descripción:&nbsp;&nbsp;</p>
                     <textarea
                         type="textarea"
                         id="description"
                         placeholder=""
                         min="0"
-                        className="outline-none h-16 w-full rounded-md border-solid border border-gray-200 shadow-sm sm:text-sm"
+                        className="outline-none h-16 w-full rounded-md border-solid border border-gray-300 shadow-sm sm:text-sm"
                         onChange={reason.handleChange}
                     />
+                    <p className={`cursor-default text-red-800 w-full text-center transition-opacity duration-200 ease-out delay-75 ${errorMessage ? 'opacity-100' : 'opacity-0'}`}>
+                    <FontAwesomeIcon icon={faCircleExclamation} style={{color: "#940000",}} />  Todos los campos deben de ser completados
+                    </p>
+
+                    
+                    
+    
+                    
                 </div>
             </div>
         </ModalTemplate >
