@@ -7,9 +7,8 @@ from db_connection import get_db
 
 router = APIRouter()
 
-
 class Dates(BaseModel):
-    start_date: str
+    month: str
 
 
 class NewExtras(BaseModel):
@@ -19,16 +18,13 @@ class NewExtras(BaseModel):
 
 
 @router.post("/get-extrahours-record")
-def get_extrahours_record(dates: Dates, roles: List[str] = Query(['User'], description='List of roles'), db: mysql.connector.MySQLConnection = Depends(get_db)):
+def get_vacations_record(dates: Dates, roles: List[str] = Query(['User'], description='List of roles'), db: mysql.connector.MySQLConnection = Depends(get_db)):
     try:
 
-        DATE_FORMAT = "%Y-%m-%d"
-        print(dates.start_date)
-        formated_start = dates.start_date + "-01"
-        date = datetime.strptime(formated_start, DATE_FORMAT)
-        new_date = date + timedelta(days=32)
-        new_date = new_date.replace(day=1)
-        formated_end = new_date.strftime(DATE_FORMAT)
+        formated_start = dates.month
+        date = datetime.strptime(formated_start, "%Y-%m")
+        month = date.month
+        year = date.year
 
         cursor = db.cursor(dictionary=True)
         in_clause = ', '.join(['%s' for _ in roles])
@@ -40,25 +36,13 @@ def get_extrahours_record(dates: Dates, roles: List[str] = Query(['User'], descr
             INNER JOIN remuneration_record on extras_record.fk_remuneration_record = id_remuneration_record
             INNER JOIN employee on id_employee = remuneration_record.fk_employee
             INNER JOIN person on id_person = fk_person
-            WHERE date_extras >= %s
-            AND date_extras < %s
+            WHERE YEAR(date_extras) = %s
+            AND MONTH(date_extras) =  %s
             AND permission_employee IN ({in_clause});            
         """
 
-        """
-            SELECT name_person as name, lastname_person as lastname, id_employee, id_salary_info as id_salary,
-            base_salary_employee as base_salary, id_extras_record as id_extra, date_extras as date, state_extra as state,
-            amount_extras as amount, hours_extras as hours
-            FROM extras_record
-            INNER JOIN salary_info on extras_record.fk_salary_info = id_salary_info
-            INNER JOIN employee on id_salary_info = employee.fk_salary_info
-            INNER JOIN person on id_person = fk_person
-            WHERE date_extras >= %s
-            AND date_extras < %s
-            AND permission_employee IN ({in_clause});
-        """
 
-        params = (formated_start, formated_end, *roles)
+        params = (year, month, *roles)
         cursor.execute(query, params)
         result = cursor.fetchall()
         cursor.close()
@@ -73,6 +57,8 @@ def get_extrahours_record(dates: Dates, roles: List[str] = Query(['User'], descr
     except Exception as e:
         raise HTTPException(
             status_code=500, detail=f"An unexpected error occurred: {str(e)}")
+
+
 
 
 @router.get("/extrahours-date-range")

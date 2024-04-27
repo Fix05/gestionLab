@@ -34,7 +34,6 @@ export default function PaymentInfoTable({ values, totalPaid }) {
                                             <td key={index} className={`flex justify-center whitespace-nowrap text-center px-4 py-2 text-gray-700`}>
                                                 <div className={`${payment_states[value]} flex justify-center items-center text-xs rounded w-16 h-5`}>
                                                     {value}
-                                                    {console.log(payment_states[value])}
                                                 </div>
                                             </td>
                                         ) : (
@@ -46,9 +45,9 @@ export default function PaymentInfoTable({ values, totalPaid }) {
                     })}
 
                     <tr className="bg-gray-100">
-                        <td className="whitespace-nowrap text-center px-4 py-2 font-medium text-gray-900">Total</td>
+                        <td className="whitespace-nowrap text-center px-4 py-2 font-medium text-gray-900">Total pagado</td>
                         {keysArray.map((totalCell, index) => (
-                            <td key={index} className="whitespace-nowrap text-center px-4 py-2 text-gray-700">{totalCell.includes("Monto")? "$"+totalPaid : null}</td>
+                            <td key={index} className="whitespace-nowrap text-center px-4 py-2 text-gray-700">{totalCell.includes("Monto")? "$"+(totalPaid || 0) : null}</td>
                         ))}
                     </tr>
 

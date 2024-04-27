@@ -3,8 +3,8 @@ import useFetch from '../../../hooks/useFetch'
 import useField from '../../../hooks/useField'
 import AddingTable from '../../../components/addingTable'
 import ModalTemplate from '../pageComponents/modalTemplate'
-import {ExtraListMapping} from '../../../mapping/dataMapping'
-
+import { ExtraListMapping } from '../../../mapping/dataMapping'
+import WarningMessage from '../../../components/warningMessage'
 
 export default function AddExtraModal({ open, setOpen, id, employeeData }) {
 
@@ -20,6 +20,7 @@ export default function AddExtraModal({ open, setOpen, id, employeeData }) {
     const hours = useField()
     const amount = useField()
     const description = useField("")
+    const [warningMessage, setWarningMessage] = useState(false)
 
 
     const handleAddClic = () => {
@@ -27,6 +28,8 @@ export default function AddExtraModal({ open, setOpen, id, employeeData }) {
             addExtra({ hours: hours.field, amount: amount.field, description: description.field }).then(() => {
                 getResult()
             });
+        } else {
+            setWarningMessage(true)
         }
     }
 
@@ -64,6 +67,7 @@ export default function AddExtraModal({ open, setOpen, id, employeeData }) {
         hours.setField()
         amount.setField()
         description.setField()
+        setWarningMessage(false)
     }, [open])
 
 
@@ -105,7 +109,7 @@ export default function AddExtraModal({ open, setOpen, id, employeeData }) {
                     </svg>
                 </button>
             </div>
-            <div className='flex flex-row w-full items-center mb-4 text-sm justify-between'>
+            <div className='flex flex-row w-full items-center  text-sm justify-between'>
                 <p className='font-medium '>Descripción:&nbsp;&nbsp;</p>
                 <input
                     type="text"
@@ -115,7 +119,12 @@ export default function AddExtraModal({ open, setOpen, id, employeeData }) {
                     className="outline-none h-8 pl-2 ml-2 w-full rounded-md border-solid border border-gray-200 shadow-sm sm:text-sm"
                     onChange={description.handleChange}
                 />
+                
             </div>
+            <WarningMessage className={'mt-2'} open={warningMessage} setOpen={setWarningMessage}>
+                    <p className="ml-2 text-xs">Todos los campos deben ser completados</p>    
+            </WarningMessage>
+
             <div className='w-full mb-2'>
                 {changedList && changedList.length > 0 && <AddingTable values={changedList} total={total} handleDelete={handleDelete} />}
             </div>

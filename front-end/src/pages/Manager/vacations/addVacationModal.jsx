@@ -7,14 +7,14 @@ import ModalTemplate from '../pageComponents/modalTemplate'
 import Modal from '../../../components/modal'
 import DateeRangePicker from '../../../components/dateRangePicker'
 import GenericModalTemplate from '../../../components/genericModalTemplate'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {faCircleExclamation} from '@fortawesome/free-solid-svg-icons'
+import WarningMessage from '../../../components/warningMessage'
 
 
 
 export default function AddVacationModal({ open, setOpen, id, employeeData, setAnimation }) {
 
     const HEADER = "Registro de vacaciones o ausencias"
+    const BUTTON_TEXT = "Registrar ausencia"
     const DAYS_LEFT_ENDPOINT = `http://127.0.0.1:8000/api/vacations/get-vacation-days-left/${id}`
     const ADD_VACATION_ENDPOINT = `http://127.0.0.1:8000/api/vacations/insert-new-absence/${id}`
 
@@ -22,7 +22,6 @@ export default function AddVacationModal({ open, setOpen, id, employeeData, setA
     const [addingResult, addVacation] = useFetch(ADD_VACATION_ENDPOINT, {}, "POST", false)
     const [newDaysLeft, setNewDaysLeft] = useState()
     const [pickedDays, setPickedDays] = useState()
-    const [errorMessage, setErrorMessage] = useState(false)
     const type = useField()
     const reason = useField()
     const [openDatePicker, setOpenDatePicker] = useState(false)
@@ -34,6 +33,7 @@ export default function AddVacationModal({ open, setOpen, id, employeeData, setA
         key: 'selection'
     }]);
     const [formatedRange, setFormatedRange] = useState({})
+    const [warningMessage, setWarningMessage] = useState(false)
 
     const getDays = () => {
         let count = 0;
@@ -57,7 +57,7 @@ export default function AddVacationModal({ open, setOpen, id, employeeData, setA
 
     const handleSubmit = () => {
         if (range[0].endDate && type.field && reason.field) {
-            setErrorMessage(false)
+            setWarningMessage(false)
             const dataToLoad = {
                 startDate: range[0].startDate,
                 endDate: range[0].endDate,
@@ -69,8 +69,8 @@ export default function AddVacationModal({ open, setOpen, id, employeeData, setA
             addVacation(dataToLoad).then(() => {
                 getDaysLeft()
             })
-        }else{
-            setErrorMessage(true)
+        } else {
+            setWarningMessage(true)
         }
 
     }
@@ -132,21 +132,12 @@ export default function AddVacationModal({ open, setOpen, id, employeeData, setA
             endDate: null,
             key: 'selection'
         }])
-        setErrorMessage(false)
+        setWarningMessage(false)
     }, [open])
 
 
-    useEffect(()=>{
-        const timer = setTimeout(()=>{
-            setErrorMessage(false)
-        }, 1500);
-
-        return () => clearTimeout(timer);
-    },[errorMessage])
-
-
     return (
-        <ModalTemplate open={open} setOpen={setOpen} header={HEADER} employeeData={employeeData} handleClick={handleSubmit}>
+        <ModalTemplate open={open} setOpen={setOpen} header={HEADER} employeeData={employeeData} handleClick={handleSubmit} buttonText={BUTTON_TEXT}>
             <Modal open={openAlert} setOpen={setOpenAlert} header={"Tenemos un problema!!"} text={alertMessage} />
             <div className='flex flex-wrap self-start mb-4 text-sm'>
                 <div className='flex flex-row mr-4'>
@@ -206,14 +197,9 @@ export default function AddVacationModal({ open, setOpen, id, employeeData, setA
                         className="outline-none h-16 w-full rounded-md border-solid border border-gray-300 shadow-sm sm:text-sm"
                         onChange={reason.handleChange}
                     />
-                    <p className={`cursor-default text-red-800 w-full text-center transition-opacity duration-200 ease-out delay-75 ${errorMessage ? 'opacity-100' : 'opacity-0'}`}>
-                    <FontAwesomeIcon icon={faCircleExclamation} style={{color: "#940000",}} />  Todos los campos deben de ser completados
-                    </p>
-
-                    
-                    
-    
-                    
+                    <WarningMessage open={warningMessage} setOpen={setWarningMessage}>
+                        <p className="ml-2">Todos los campos deben ser completados</p>    
+                    </WarningMessage>
                 </div>
             </div>
         </ModalTemplate >

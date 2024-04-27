@@ -2,7 +2,7 @@ import {Fragment} from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 
 
-export default function ModalTemplate({open, setOpen, header, secondHeader, employeeData, handleClick, children}) {
+export default function ModalTemplate({open, setOpen, header, secondHeader, handleClick, buttonText, children, }) {
 
 
 
@@ -35,7 +35,7 @@ export default function ModalTemplate({open, setOpen, header, secondHeader, empl
                             <Dialog.Panel className="flex flex-col px-4 items-center relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all w-1/2">
 
                                 <div className='flex self-start w-full border-solid border-b-2 border-b-gray-400  pl-2'>
-                                    <h1 className='text-gray-900 text-base font-semibold my-5'>{header + (secondHeader || "")}</h1>
+                                    <h1 className='text-gray-900 text-base font-semibold my-5'>{header + (" "+secondHeader || "")}</h1>
                                 </div>
 
                                 <div className='flex flex-col w-full mt-2 items-center justify-center border-solid border-b-2 border-b-gray-400 p-2'>
@@ -60,7 +60,7 @@ export default function ModalTemplate({open, setOpen, header, secondHeader, empl
                                     className="my-2 inline-flex w-1/4 justify-center rounded-md bg-cyan-800 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-700 focus:outline-none"
                                     onClick={handleClick}
                                 >
-                                    Aceptar
+                                    {buttonText || "Aceptar"}
                                 </button>
                             </Dialog.Panel>
                         </Transition.Child>

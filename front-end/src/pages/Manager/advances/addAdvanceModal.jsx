@@ -4,6 +4,7 @@ import useField from '../../../hooks/useField'
 import AddingTable from '../../../components/addingTable'
 import ModalTemplate from '../pageComponents/modalTemplate'
 import {AdvanceListMapping} from '../../../mapping/dataMapping'
+import WarningMessage from '../../../components/warningMessage'
 
 export default function AddAdvanceModal({ open, setOpen, id, employeeData }) {
 
@@ -18,12 +19,15 @@ export default function AddAdvanceModal({ open, setOpen, id, employeeData }) {
     const [total, setTotal] = useState()
     const amount = useField()
     const description = useField("")
+    const [warningMessage, setWarningMessage] = useState(false)
 
     const handleAddClic = () => {
         if (amount.field && description.field) {
             addAdvance({ amount: amount.field, description: description.field }).then(() => {
                 getResult()
             });
+        }else{
+            setWarningMessage(true)
         }
     }
 
@@ -58,6 +62,7 @@ export default function AddAdvanceModal({ open, setOpen, id, employeeData }) {
     useEffect(() => {
         amount.setField()
         description.setField()
+        setWarningMessage(false)
     }, [open])
 
     return (
@@ -92,7 +97,7 @@ export default function AddAdvanceModal({ open, setOpen, id, employeeData }) {
                 </button>
             </div>
 
-            <div className='flex flex-row w-full items-center mb-4 text-sm justify-between'>
+            <div className='flex flex-row w-full items-center text-sm justify-between'>
                 <p className='font-medium '>Descripción:&nbsp;&nbsp;</p>
                 <input
                     type="text"
@@ -103,6 +108,9 @@ export default function AddAdvanceModal({ open, setOpen, id, employeeData }) {
                     onChange={description.handleChange}
                 />
             </div>
+            <WarningMessage className={'mt-2'} open={warningMessage} setOpen={setWarningMessage}>
+                    <p className="ml-2 text-xs">Todos los campos deben ser completados</p>    
+            </WarningMessage>
 
             <div className='w-full mb-2'>
                 {changedList && changedList.length > 0 && <AddingTable values={changedList} total={total} handleDelete={handleDelete} />}

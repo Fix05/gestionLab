@@ -59,7 +59,7 @@ export default function PaidTable({ values, paidInfo }) {
                         </tr>
                         <tr className="bg-gray-100">
                             <td className="whitespace-nowrap text-center px-4 py-2 font-medium text-gray-900>">4</td>
-                            <td className="whitespace-nowrap px-4 py-2 text-gray-700">Total</td>
+                            <td className="whitespace-nowrap px-4 py-2 text-gray-700">Total pagado</td>
                             {Object.entries(values[0]).map(([key, value], index) => (
                                 <td key={index} className={`whitespace-nowrap text-center px-4 py-2 text-gray-700`}>{key.includes('Monto') ? `$${value}` : value}</td>
                             ))}

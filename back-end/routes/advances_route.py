@@ -9,7 +9,7 @@ router = APIRouter()
 
 
 class Dates(BaseModel):
-    start_date: str
+    month: str
 
 class NewAdvance(BaseModel):
     amount: float
@@ -20,16 +20,10 @@ class NewAdvance(BaseModel):
 @router.post("/get-advances-record")
 def get_advances_record(dates: Dates, roles: List[str] = Query(['User'], description='List of roles'), db: mysql.connector.MySQLConnection = Depends(get_db)):
     try:    
-        print("getdata Executed")
-
-        DATE_FORMAT = "%Y-%m-%d"
-        formated_start = dates.start_date + "-01"
-        date = datetime.strptime(formated_start, DATE_FORMAT)
-        new_date = date + timedelta(days=32)
-        new_date = new_date.replace(day=1)
-        formated_end = new_date.strftime(DATE_FORMAT)
-
-        print(formated_start, formated_end)
+        formated_start = dates.month
+        date = datetime.strptime(formated_start, "%Y-%m")
+        month = date.month
+        year = date.year
 
         cursor = db.cursor(dictionary=True)
         in_clause = ', '.join(['%s' for _ in roles])
@@ -41,12 +35,12 @@ def get_advances_record(dates: Dates, roles: List[str] = Query(['User'], descrip
             INNER JOIN remuneration_record on advance_record.fk_remuneration_record = id_remuneration_record
             INNER JOIN employee on id_employee = remuneration_record.fk_employee
             INNER JOIN person on id_person = fk_person
-            WHERE date_advance >= %s
-            AND date_advance < %s
+            WHERE YEAR(date_advance) = %s
+            AND MONTH(date_advance) =  %s
             AND permission_employee IN ({in_clause});
         """
 
-        params = (formated_start, formated_end, *roles)
+        params = (year, month, *roles)
         cursor.execute(query, params)
         result = cursor.fetchall()
         cursor.close()

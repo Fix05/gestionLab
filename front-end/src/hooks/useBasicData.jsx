@@ -2,7 +2,6 @@ import {useEffect, useState} from 'react'
 import MonthTranslates from '../dictionaries/monthTranslates.json'
 
 export default function useBasicData(originalValues) {
-
     const currentDate = new Date()
     const currentMonth = currentDate.getMonth()+1
     const currentYear = currentDate.getFullYear()
@@ -11,18 +10,33 @@ export default function useBasicData(originalValues) {
     const [id, setId] = useState()
     const [modalData, setModalData] = useState({})
 
+    const getDate = (dateString) => { 
+
+        const date = new Date(dateString+'T00:00:00')
+        const month = date.getMonth()+1
+        const year = date.getFullYear()
+        return(
+            `${MonthTranslates[month]} de ${year}`
+        )
+     }
+
+
     useEffect(() => {
-        if (originalValues.length > 1) {
+        if (originalValues.length >= 1) {
+
             const selectedEmployee = originalValues.find((element) => element.Id == id)
-            const { Nombre, Sueldo, Estado, Fecha, Monto, Horas, Salario, Id } = selectedEmployee
+            const { Nombre, Sueldo, Estado, Fecha, Monto, Horas, Salario, Id, "Fecha de fin": endDate, "Fecha de inicio": startDate, Tipo, "Fecha mínima": minDate, "Fecha máxima": maxDate} = selectedEmployee
             setModalData({ 
                 Id: Id,
                 name: Nombre, 
                 salary: Sueldo || Salario, 
-                date: Fecha || ` de ${MonthTranslates[currentMonth]} de ${currentYear}`, 
+                date:  !startDate ? Fecha || getDate(minDate): null, 
                 state: Estado,
                 hours: Horas, 
-                amount: Monto
+                amount: Monto,
+                startDate: startDate,
+                endDate: endDate,
+                typeAbsence: Tipo
             })
         }
     }, [id])

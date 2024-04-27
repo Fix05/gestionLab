@@ -2,7 +2,7 @@ import { Container } from '../styledComponents/detailsBox'
 import MonthTranslates from '../dictionaries/monthTranslates.json'
 import { useState, useEffect } from 'react';
 
-export default function AddingPaymentTable({ values, setValues, total, setTotal }) {
+export default function AddingPaymentTable({ values, setValues, total, setTotal, monthOfPayment }) {
 
     const currentDate = new Date()
     var year = currentDate.getFullYear();
@@ -12,7 +12,6 @@ export default function AddingPaymentTable({ values, setValues, total, setTotal 
 
     useEffect(() => {
         const checkedValues = values.filter((element) => element.checked == true)
-        console.log(checkedValues);
         const totalAmount = checkedValues.reduce((accumulador, current) => {
 
             if(current.name == 'advances'){
@@ -38,8 +37,8 @@ export default function AddingPaymentTable({ values, setValues, total, setTotal 
                 <thead className="ltr:text-left rtl:text-right">
                     <tr>
                         <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Pago</th>
-                        <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Fecha</th>
-                        <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Mes</th>
+                        <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Fecha actual</th>
+                        <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Mes del pago</th>
                         <th className="flex justify-center whitespace-nowrap px-4 py-2 font-medium text-gray-900">Monto</th>
                         <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900"></th>
                     </tr>
@@ -55,7 +54,7 @@ export default function AddingPaymentTable({ values, setValues, total, setTotal 
                             {formatedDate}
                         </td>
                         <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                            {MonthTranslates[month]}
+                            {monthOfPayment}
                         </td>
                         <td className="flex justify-center whitespace-nowrap px-4 py-2 text-gray-700">
                             ${values[0].amount}

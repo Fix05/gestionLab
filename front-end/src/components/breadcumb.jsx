@@ -18,8 +18,7 @@ export default function Breadcurmb() {
     const paths = location.pathname.split('/').filter(pathSegment => pathSegment)
     const firstNumber = paths.findIndex(element => !isNaN(element))
     firstNumber != -1 ? paths.splice(firstNumber, 1) : null
-
-    console.log(paths);    
+    
     useEffect(() => {
         const newArray = paths.map(element => {
             if (!isNaN(element) && !paths.includes("requests") && !paths.includes("payment")) {

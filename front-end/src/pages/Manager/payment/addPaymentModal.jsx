@@ -3,11 +3,13 @@ import useFetch from '../../../hooks/useFetch'
 import useField from '../../../hooks/useField'
 import ModalTemplate from '../pageComponents/modalTemplate'
 import AddingPaymentTable from '../../../components/addingPaymentTable'
+import WarningMessage from '../../../components/warningMessage'
 
 
-export default function AddPaymentModal({ open, setOpen, id, employeeData, paymentData, reloadResults }) {
+export default function AddPaymentModal({ open, setOpen, id, employeeData, paymentData, reloadResults, setAnimation }) {
 
     const HEADER = "Registro de pago"
+    const BUTON_TEXT = "Registrar pago"
     const PAYMENT_ENDPOINT = `http://127.0.0.1:8000/api/payment/payment-extras-and-advances/${id}`
     const ADD_PAYMENT_ENDPOINT = `http://127.0.0.1:8000/api/payment/add-new-payment/${id}`
     const [result] = useFetch(PAYMENT_ENDPOINT, null, "GET")
@@ -18,6 +20,7 @@ export default function AddPaymentModal({ open, setOpen, id, employeeData, payme
     const [amount, setAmount] = useState([])
     const inputAmount = useField("")
     const description = useField("")
+    const [warningMessage, setWarningMessage] = useState(false)
 
 
 
@@ -26,15 +29,17 @@ export default function AddPaymentModal({ open, setOpen, id, employeeData, payme
             const newAmount = [...amount]
             newAmount[0] = { ...amount[0], amount: +inputAmount.field }
             setAmount(newAmount)
+        } else {
+            setWarningMessage(true)
         }
     }
 
-    const handleClick = () => {
-        console.log(dataToAdd);
+    const handleSubmit = () => {
         addPayment(dataToAdd).then(() => {
             reloadResults()
         })
         setOpen(false)
+        setAnimation(true)
     }
 
 
@@ -44,6 +49,7 @@ export default function AddPaymentModal({ open, setOpen, id, employeeData, payme
             { name: "extras", amount: result.extras, checked: false },
             { name: "advances", amount: result.advances, checked: false }
         ])
+        setWarningMessage(false)
     }, [result, open]);
 
 
@@ -60,7 +66,7 @@ export default function AddPaymentModal({ open, setOpen, id, employeeData, payme
 
     return (
 
-        <ModalTemplate open={open} setOpen={setOpen} header={HEADER} secondHeader={employeeData.date} employeeData={employeeData} handleClick={handleClick}>
+        <ModalTemplate open={open} setOpen={setOpen} header={HEADER} secondHeader={employeeData.date} handleClick={handleSubmit} buttonText={BUTON_TEXT}>
             <div className='flex self-start mb-4 text-sm'>
                 <div className='flex flex-row mr-4'>
                     <p className='font-medium '>Empleado:&nbsp;&nbsp;</p>
@@ -71,16 +77,20 @@ export default function AddPaymentModal({ open, setOpen, id, employeeData, payme
                     <span>${employeeData.salary}</span>
                 </div>
             </div>
-            <div className='flex flex-row w-full items-center mb-2 text-sm justify-left'>
-                <p className='font-medium '>Ingrese Monto:&nbsp;&nbsp;</p>
+
+            <div className='flex relative flex-row w-full items-center mb-2 text-sm justify-left'>
+                <p className='font-medium no-wrap'>Ingrese Monto:&nbsp;&nbsp;</p>
                 <input
                     type="number"
                     id="amount"
                     placeholder=""
                     min="0"
-                    className="outline-none h-8 pl-2 mr-2 w-1/3 rounded-md border-solid border border-gray-200 shadow-sm sm:text-sm"
+                    className="outline-none h-8 pl-2 mr-2 w-[72%] rounded-md border-solid border border-gray-200 shadow-sm sm:text-sm"
                     onChange={inputAmount.handleChange}
                 />
+                <WarningMessage open={warningMessage} className={'absolute top-2'} setOpen={setWarningMessage}>
+                    <p className="ml-2 text-xs">Ingrese el monto que desea establecer</p>
+                </WarningMessage>
 
                 <button onClick={() => { handleAddClick() }} className='flex ml-2 h-8 w-10 bg-gray-300 rounded items-center justify-center transition-colors duration-200 hover:bg-blue-200 hover:text-blue-900'>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
@@ -88,7 +98,7 @@ export default function AddPaymentModal({ open, setOpen, id, employeeData, payme
                     </svg>
                 </button>
             </div>
-            <div className='flex flex-row w-full items-center mb-4 text-sm justify-between'>
+            <div className='flex flex-row w-full items-center text-sm justify-between'>
                 <p className='font-medium '>Descripción:&nbsp;&nbsp;</p>
                 <input
                     type="text"
@@ -99,8 +109,9 @@ export default function AddPaymentModal({ open, setOpen, id, employeeData, payme
                     onChange={description.handleChange}
                 />
             </div>
+
             <div className='w-full mb-2'>
-                <AddingPaymentTable values={amount} setValues={setAmount} total={total} setTotal={setTotal} />
+                <AddingPaymentTable values={amount} setValues={setAmount} total={total} setTotal={setTotal} monthOfPayment={employeeData.date}/>
             </div>
         </ModalTemplate >
     )

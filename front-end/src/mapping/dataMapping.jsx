@@ -77,3 +77,15 @@ export const ExtraListMapping = (element, index) => ({
     Horas: element.hours,
     Id: element.id
 });
+
+
+
+export const VacationsMapping = (element, index) => ({
+    Nombre: element.name + ' ' + element.lastname,
+    "Fecha de inicio": element.start_date,
+    "Fecha de fin": element.end_date,
+    Tipo: element.type,
+    Estado: element.state,
+    "Días": element.taken_days,
+    Id: element.id,
+});

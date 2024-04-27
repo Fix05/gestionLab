@@ -26,6 +26,9 @@ const Container = styled.div`
 
 export default function Table({ values, setValues, bgcolor, originalValues, numberOfElements, setOpen, sthElse, setId }) {
 
+
+    console.log("Values", values);
+
     const { tablePage, setTablePage } = useContext(paginationContext);
     const [searchQuery, setSearchQuery] = useState('');
     const valuesArray = Object.keys(values[0])

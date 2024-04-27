@@ -11,7 +11,11 @@ const infoRecordDictionary = {
     state: "Estado",
     amount: "Monto",
     hours: "Horas",
-    description: "Descripción"
+    description: "Descripción",
+    typeAbsence: "Tipo de ausencia",
+    startDate: "Inicio de ausencia",
+    endDate: "Fin de ausencia"
+
 }
 
 
@@ -25,7 +29,7 @@ export default function RecordDetailedInfo({ open, setOpen, endpoint, values }) 
 
     useEffect(() => {
         if (result && Object.keys(result).length) {
-            console.log(newValues);
+            
             setNewValues({ ...values, ...result })
         }
     }, [result])

@@ -11,7 +11,7 @@ import Pagination from '../../../components/pagination'
 export default function RecordExtra() {
 
     const ELEMENTS_PER_PAGE = 10
-    const DEFAULT_DATE = { start_date: "2024-01" }
+    const DEFAULT_DATE = { month: "2024-01" }
     const EXTRA_LIST_URL = "http://127.0.0.1:8000/api/extras/get-extrahours-record"
     const DATE_RANGE_URL = "http://127.0.0.1:8000/api/extras/extrahours-date-range"
     const [dateRange] = useFetch(DATE_RANGE_URL, null, "GET")
@@ -29,7 +29,7 @@ export default function RecordExtra() {
     useEffect(() => {
         if (dateRange.max) {
             setDate({
-                start_date: Object.keys(dateRange).length ? dateRange.max.slice(0, 7) : ""
+                month: Object.keys(dateRange).length ? dateRange.max.slice(0, 7) : ""
             })
         }
         setMessage(dateRange.message)
@@ -37,40 +37,42 @@ export default function RecordExtra() {
 
     const handleDateChange = (ev) => {
         const selectedDate = ev.target.value
-        setDate({start_date: selectedDate})
+        setDate({ month: selectedDate })
     }
 
     return (
 
         <div className="mt-6 rounded-lg border-2 border-gray-400 bg-white">
 
-            {message ? (
-                < div className="bg-gray-300 px-4 py-3 text-white rounded">
+            <RecordDetailedInfo open={open} setOpen={setOpen} endpoint={DESCRIPTION_ENDPOINT} values={modalData} />
+            {message ?
+
+                (< div className="bg-gray-300 px-4 py-3 text-white rounded">
                     <p className="text-center text-sm font-medium text-gray-800">
                         {message}
                     </p>
-                </div>) : (
-                <>
-                    <RecordDetailedInfo open={open} setOpen={setOpen} endpoint={DESCRIPTION_ENDPOINT} values={modalData}/>
-                    <Table values={changedList} setValues={setChangedList} originalValues={originalValues} bgcolor={"bg-teal-200"} numberOfElements={ELEMENTS_PER_PAGE} setOpen={setOpen} sthElse={true} setId={setId}/>
-                    <div className="flex flex-row justify-between rounded-b-lg border-t border-gray-200 px-4 py-2">
-                        <div className='text-gray-700 text-sm'>
-                            <label htmlFor="monthLimited">Escoja el mes: </label>
-                            <input
-                                className='w-5 cursor-pointer'
-                                value={Object.keys(date).length ? date.start_date : ""}
-                                type="month"
-                                id="monthLimited"
-                                name="monthLimited"
-                                onChange={handleDateChange}
-                                min={dateRange.min ? dateRange.min.slice(0, 7) : ""}
-                                max={dateRange.max ? dateRange.max.slice(0, 7) : ""}
-                            />
-                        </div>
-                        <Pagination totalPages={Math.ceil(changedList.length / 10)} />
-                    </div>
-                </>)
+                </div>
+                ) : (
+                    <Table values={changedList} setValues={setChangedList} originalValues={originalValues} bgcolor={"bg-teal-200"} numberOfElements={ELEMENTS_PER_PAGE} setOpen={setOpen} sthElse={true} setId={setId} />
+                )
             }
+            
+            <div className="flex flex-row justify-between rounded-b-lg border-t border-gray-200 px-4 py-2">
+                <div className='text-gray-700 text-sm'>
+                    <label htmlFor="monthLimited">Escoja el mes: </label>
+                    <input
+                        className='w-5 cursor-pointer'
+                        value={Object.keys(date).length ? date.start_date : ""}
+                        type="month"
+                        id="monthLimited"
+                        name="monthLimited"
+                        onChange={handleDateChange}
+                        min={dateRange.min ? dateRange.min.slice(0, 7) : ""}
+                        max={dateRange.max ? dateRange.max.slice(0, 7) : ""}
+                    />
+                </div>
+                <Pagination totalPages={Math.ceil(changedList.length / 10)} />
+            </div>
         </div >
 
     )

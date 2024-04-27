@@ -1,10 +1,9 @@
 
 import { useEffect } from 'react'
-import DoneGif from '../assets/gif/cuaderno.gif'
 import GenericModalTemplate from '../components/genericModalTemplate'
 
 
-export default function DoneAnimation({ open, setOpen, message }) {
+export default function DoneAnimation({ open, setOpen, message, gif }) {
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -17,7 +16,7 @@ export default function DoneAnimation({ open, setOpen, message }) {
     return (
         <GenericModalTemplate open={open} setOpen={setOpen}>
             <div className="flex flex-row font-semibold text-cyan-950 items-center m-2">
-                <img className='w-12' src={DoneGif} alt="Loading" />
+                <img className='w-12' src={gif} alt="Loading" />
                 {message}
             </div>
             

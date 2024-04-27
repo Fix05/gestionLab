@@ -45,13 +45,12 @@ const useFetch = (url, data, method, shouldFetch = true) => {
     setLoading(true)
     if (url && !url.includes("undefined")) {
       if (!("body" in options) || Object.keys(data).length) {
-        console.log(url);
+        console.log(url, options.body);
         const response = await fetch(url, options)
         const jsonResponse = await response.json()
         if (jsonResponse && jsonResponse.status_code) {
           jsonResponse.message = errorCodes[jsonResponse.status_code];
           if (jsonResponse.status_code == 403) {
-            console.log("error", url);
             navigate("/Error")
           }
         }
@@ -60,6 +59,8 @@ const useFetch = (url, data, method, shouldFetch = true) => {
       }
     }
   }
+
+
 
   useEffect(() => {
     shouldFetch ? doFetch() : null;
