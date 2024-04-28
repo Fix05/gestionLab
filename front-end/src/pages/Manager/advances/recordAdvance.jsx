@@ -15,8 +15,8 @@ export default function RecordAdvance() {
     const ADVANCE_LIST_URL = "http://127.0.0.1:8000/api/advances/get-advances-record"
     const DATE_RANGE_URL = "http://127.0.0.1:8000/api/advances/advances-date-range"
     const [dateRange] = useFetch(DATE_RANGE_URL, null, "GET")
-    const [date, setDate] = useState({})
-    const [listResult] = useFetch(ADVANCE_LIST_URL, (date ? date : DEFAULT_DATE), "POST")
+    const [date, setDate] = useState({ month: "2024-01" })
+    const [listResult] = useFetch(ADVANCE_LIST_URL, date, "POST")
     const { changedList, setChangedList, originalValues,
         setOriginalValues, message, setMessage } = useTransformData(listResult, AdvanceRecordMapping, ELEMENTS_PER_PAGE)
     const [open, setOpen] = useState(false)

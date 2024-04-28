@@ -1,11 +1,8 @@
-import { Fragment, useRef, useState, useContext } from 'react'
+import { Fragment } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
-import {modalContext} from '../pages/login'
 
 export default function Modal({open, setOpen, header, text}) {
-
-  /* const {open, setOpen} = useContext(modalContext)  */
 
   return (
     <Transition.Root show={open} as={Fragment}>

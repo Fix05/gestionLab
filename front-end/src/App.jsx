@@ -2,7 +2,10 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from './pages/login'
 import ManagerPage from './pages/Manager/manager'
 import AdminPage from './pages/admin'
-import EmployeePage from './pages/employee'
+import EmployeePage from './pages/employeePage/employee'
+import MainPage from './pages/employeePage/mainPage'
+import AddRequest from './pages/employeePage/addRequest'
+import RecordRequest from './pages/employeePage/recordRequests'
 import Requests from './pages/Manager/requests'
 import Employees from './pages/Manager/employees'
 import EmployeeInfo from './pages/Manager/employees/employeeInfo'
@@ -39,9 +42,17 @@ function App() {
         <Route path="/Manager/:id/recordVacations" element={<RecordVacations />} />
       </Route>
       <Route path="/Admin/:id/:page" element={<AdminPage />} />
-      <Route path="/User/:id" element={<EmployeePage />} />
-      <Route path="/Error" element={<ErrorPage />} />
+
       
+      <Route path="/User/:id" element={<EmployeePage />} >
+        <Route path="/User/:id/mainPage" element={<MainPage />}/>
+        <Route path="/User/:id/addRequest" element={<AddRequest />}/>
+        <Route path="/User/:id/recordRequest" element={<RecordRequest />}/>
+      </Route>
+
+
+      <Route path="/Error" element={<ErrorPage />} />
+
     </Routes>
   )
 }

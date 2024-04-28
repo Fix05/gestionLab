@@ -15,8 +15,8 @@ export default function RecordExtra() {
     const EXTRA_LIST_URL = "http://127.0.0.1:8000/api/extras/get-extrahours-record"
     const DATE_RANGE_URL = "http://127.0.0.1:8000/api/extras/extrahours-date-range"
     const [dateRange] = useFetch(DATE_RANGE_URL, null, "GET")
-    const [date, setDate] = useState({})
-    const [listResult] = useFetch(EXTRA_LIST_URL, (date ? date : DEFAULT_DATE), "POST")
+    const [date, setDate] = useState({ month: "2024-01" })
+    const [listResult] = useFetch(EXTRA_LIST_URL, date, "POST")
     const { changedList, setChangedList, originalValues,
         setOriginalValues, message, setMessage } = useTransformData(listResult, ExtraRecordMapping, ELEMENTS_PER_PAGE)
     const [open, setOpen] = useState(false)
