@@ -3,6 +3,7 @@
 /front-end/node_modules
 
 /node_modules
+/back-end/.env
 
 
 **/_pycache_

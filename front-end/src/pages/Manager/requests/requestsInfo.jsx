@@ -49,16 +49,11 @@ export default function RequestInfo() {
         setActiveButton(buttonIndex);
     };
 
-    useEffect(()=>{
-        doFetch()
-    },[open])
-
-
     return (
 
         <EmployeeData>
             <Container>
-                <SetResponseModal open={open} setOpen={setOpen} action={activeButton} body={rquestResponse.field} id={requestId}/>    
+                <SetResponseModal open={open} setOpen={setOpen} action={activeButton} body={rquestResponse.field} requestId={requestId} reloadInfo={doFetch}/>    
                 <BoxDivider text={`Solicitud Nº${requestId}`}/>
                 
                 <Div>

@@ -1,24 +1,31 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, Query, HTTPException, Depends
+from typing import List
 from pydantic import BaseModel
 import mysql.connector
 from db_connection import get_db
 
 router = APIRouter()
 
+class Response(BaseModel):
+    body: str
+    date: str
+    rh: int
+
 
 # Get manager asigned requests
 @router.get("/get-assigned-requests/{id}")
-def get_manager_assigned_requests(id: int, db: mysql.connector.MySQLConnection = Depends(get_db)):
+def get_manager_assigned_requests(id: int, roles: List[str] = Query(['User'], description='List of roles'), db: mysql.connector.MySQLConnection = Depends(get_db)):
 
     try:
+        in_clause = ', '.join(['%s' for _ in roles])
         cursor = db.cursor(dictionary=True)
-        query = """SELECT name_person as name, lastname_person as lastname, type_request as type, reason_request as reason, state_request as state, date_request as date, id_request as id 
+        query = f"""SELECT name_person as name, lastname_person as lastname, type_request as type, reason_request as reason, state_request as state, date_request as date, id_request as id 
             FROM requests 
             join employee on fk_employee = id_employee
             join person on fk_person = id_person
-            WHERE rh_manager = %s;"""
+            WHERE permission_employee IN ({in_clause});"""
         
-        cursor.execute(query, (id,))
+        cursor.execute(query, roles)
         result = cursor.fetchall()
         cursor.close()
         
@@ -91,22 +98,19 @@ def get_all_employee_requests_info(id: int, db: mysql.connector.MySQLConnection 
             status_code=500, detail=f"An unexpected error occurred: {str(e)}")
 
 
-class Response(BaseModel):
-    body: str
-    date: str
-
 
 # Set requests response
 @router.post("/set-response/{id}")
 def set_request_response(response: Response, id: int, db: mysql.connector.MySQLConnection = Depends(get_db)):
 
     try:
+        print(response.body, response.date, id, response.rh)
         cursor = db.cursor(dictionary=True)
         query = """
-        INSERT INTO response_request (body_response_request, date_response_request, fk_request)
-        VALUES (%s, %s, %s);
+        INSERT INTO response_request (body_response_request, date_response_request, fk_request, fk_rh_employee)
+        VALUES (%s, %s, %s, %s);
         """
-        params = (response.body, response.date, id)
+        params = (response.body, response.date, id, response.rh)
         cursor.execute(query, params)
         db.commit()
         cursor.close()

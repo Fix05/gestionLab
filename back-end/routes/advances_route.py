@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Query, HTTPException, Depends
 from datetime import datetime, timedelta
 from pydantic import BaseModel
+import os
 from typing import List
 import mysql.connector
 from db_connection import get_db
