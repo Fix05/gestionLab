@@ -5,7 +5,9 @@ import styled from 'styled-components'
 import background from '../../assets/images/3415222.jpg'
 import Header from '../../components/header';
 import image from '../../assets/images/goku.jpg'
+import Sended from '../../assets/gif/sendedRequest.gif'
 import { MagicMotion } from "react-magic-motion";
+import DoneAnimation from '../../components/doneAnimationWindow'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
 import { faFolderOpen } from '@fortawesome/free-solid-svg-icons'
@@ -24,6 +26,7 @@ min-height: 560px;
 export default function Employee() {
 
     const MESSAGE = "Solicitudes de empleados"
+    const DONE_MESSAGE = "Solicitud enviada correctamente"
     const { id } = useParams();
     const DATA_URL = `http://127.0.0.1:8000/api/rh/get-info/${id}`
     const [result] = useFetch(DATA_URL, null, 'GET')
@@ -31,6 +34,9 @@ export default function Employee() {
     const { pathname } = location;
     const isDetailPage = pathname.includes("recordRequest") || pathname.includes("addRequest");
     const [adjustGridAreas, setAdjustGridAreas] = useState(isDetailPage);
+
+
+    const [showAnimationWindow, setShowAnimationWindow] = useState(false) 
 
     useEffect(() => {
         setAdjustGridAreas(isDetailPage);
@@ -47,9 +53,9 @@ export default function Employee() {
         <>
             <Header name={result.name} lastname={result.lastname} email={result.email} message={MESSAGE} image={image} />
             <Container className='p-10 flex column justify-center pt-40 relative '>
-
+            <DoneAnimation open={showAnimationWindow} setOpen={setShowAnimationWindow} message={DONE_MESSAGE} gif={Sended}/>
                 <div className="absolute w-[90%] top-[138px]">
-                    <Outlet />
+                    <Outlet context={[showAnimationWindow, setShowAnimationWindow]}/>
                 </div>
 
                 <div className="absolute flex row w-full my-8">

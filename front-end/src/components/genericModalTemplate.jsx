@@ -40,7 +40,7 @@ export default function GenericModalTemplate({ open, setOpen, handleClick, child
                                     <div className='bg-gray-50 w-full flex justify-center mt-4'>
                                         <button
                                             type="button"
-                                            className="my-4 inline-flex w-1/4 justify-center rounded-md bg-cyan-800 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-700 focus:outline-none"
+                                            className="my-4 inline-flex w-1/4 justify-center rounded-md bg-cyan-800 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-700 focus:outline-none transition-all hover:translate-x-[1px] hover:translate-y-[1px]"
                                             onClick={handleClick}
                                         >
                                             Aceptar

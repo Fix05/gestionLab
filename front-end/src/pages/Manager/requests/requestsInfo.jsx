@@ -135,7 +135,7 @@ export default function RequestInfo() {
                             </Info>
 
                             <Info className='items-center'>
-                                <button onClick={handleSubmit} className="flex items-center justify-center w-24 h-8 inline-block rounded bg-teal-700 px-8 py-3 text-sm font-medium text-white transition hover:scale-110 hover:shadow-xl active:bg-teal-800">
+                                <button onClick={handleSubmit} className="flex items-center justify-center w-24 h-8 inline-block rounded bg-teal-700 px-8 py-3 text-sm font-medium text-white transition hover:scale-110 hover:shadow-xl active:bg-teal-800 transition-all hover:translate-x-[1px] hover:translate-y-[1px]">
                                     Enviar
                                 </button>
                             </Info>

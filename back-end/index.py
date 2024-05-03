@@ -4,7 +4,7 @@ from routes.user_routes import router as user_router
 from routes.request_route import router as request_router
 from routes.employee_route import router as employee_router
 from routes.payment_route import router as payment_router
-from routes.payment_route import run_scheduled_task
+from routes.payment_route import run_tasks
 from routes.advances_route import router as advances_router
 from routes.extrahours_route import router as extrahours_router
 from routes.vacations_route import router as vacations_router
@@ -43,15 +43,33 @@ APP.include_router(vacations_router, prefix="/api/vacations", tags=["vacations"]
 APP.include_router(employee_request_router, prefix="/api/emplyee_requests", tags=["emplyee_requests"])
 
 
-""" def background_task():
+
+
+class LastExecutionDate:
+    def __init__(self):
+        self._last_execution_date = None
+    
+    def get_last_execution_date(self):
+        return self._last_execution_date
+    
+    def set_last_execution_date(self, date):
+        self._last_execution_date = date
+
+
+paymentExecution = LastExecutionDate()
+
+
+def background_task():
     while True:
-        print("Hola")
+        """ run_tasks(paymentExecution) """
         time.sleep(10) 
+
 
 
 background_thread = threading.Thread(target=background_task)
 background_thread.daemon = True
-background_thread.start() """
+background_thread.start()
+
 
 #run server
 if __name__ == "__main__":

@@ -51,7 +51,7 @@ export default function Modal({open, setOpen, header, text}) {
                 <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse justify-center sm:px-6">
                   <button
                     type="button"
-                    className="inline-flex w-full justify-center rounded-md bg-stone-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-stone-400 sm:ml-3 sm:w-auto focus:outline-none"
+                    className="inline-flex w-full justify-center rounded-md bg-stone-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-stone-400 sm:ml-3 sm:w-auto focus:outline-none transition-all hover:translate-x-[1px] hover:translate-y-[1px]"
                     onClick={() => setOpen(false)}
                   >
                     Volver a intentar

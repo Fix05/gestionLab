@@ -92,14 +92,14 @@ export default function SetResponseModal({ open, setOpen, action, body, requestI
                                     <div className="flex justify-evenly bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse justify-center sm:px-6">
                                         <button
                                             type="button"
-                                            className="min-w-24 inline-flex w-full justify-center rounded-md bg-cyan-800 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-700 sm:w-auto focus:outline-none"
+                                            className="min-w-24 inline-flex w-full justify-center rounded-md bg-cyan-800 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-700 sm:w-auto focus:outline-none transition-all hover:translate-x-[1px] hover:translate-y-[1px]"
                                             onClick={handleSubmit}
                                         >
                                             Confirmar
                                         </button>
                                         <button
                                             type="button"
-                                            className="min-w-24 inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:w-auto focus:outline-none"
+                                            className="min-w-24 inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:w-auto focus:outline-none transition-all hover:translate-x-[1px] hover:translate-y-[1px]"
                                             onClick={() => (setOpen(false))}
                                         >
                                             Cambiar

@@ -31,21 +31,20 @@ const useFetch = (url, data, method, shouldFetch = true) => {
 
     inFunctionData ? data = inFunctionData : null
     inFnctionUrlParams ? url = url + inFnctionUrlParams : null
-  
+
+    const isFormData = data instanceof FormData
+
     var options = {
       method: method,
-      headers: {
-        "Content-Type": "application/json",
-      }
+      headers: !isFormData ? {"Content-Type": "application/json"} : {}
     };
     if (method === "POST" || method === "PUT") {
-      options.body = JSON.stringify(data);
+      options.body = data instanceof FormData ? data : JSON.stringify(data);
     }
-
     setLoading(true)
+
     if (url && !url.includes("undefined")) {
-      if (!("body" in options) || Object.keys(data).length) {
-        console.log(url, options.body);
+      if (!("body" in options) || Object.keys(data).length || data instanceof FormData) {
         const response = await fetch(url, options)
         const jsonResponse = await response.json()
         if (jsonResponse && jsonResponse.status_code) {
@@ -56,11 +55,10 @@ const useFetch = (url, data, method, shouldFetch = true) => {
         }
         setResult(jsonResponse)
         setLoading(false)
+        return jsonResponse
       }
     }
   }
-
-
 
   useEffect(() => {
     shouldFetch ? doFetch() : null;

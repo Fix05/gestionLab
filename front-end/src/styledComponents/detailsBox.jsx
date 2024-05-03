@@ -38,6 +38,21 @@ border-color: rgb(156 163 175);
 border-radius: 10px;
 `
 
+export const Form = styled.form`
+background-color: white;
+padding: 30px;
+display: flex;
+flex-wrap: wrap;
+width: 94%;
+z-index: 6000;
+margin: 15px 30px 30px 30px;
+border: solid 2px;
+border-color: rgb(156 163 175);
+border-radius: 10px;
+`
+
+
+
 export const Info = styled.div`
 display: flex;
 flex-direction: column;

@@ -131,7 +131,7 @@ def insert_data(db):
         script = ""
         print(result)
         for element in result:
-            string = f"('{formated_date1}', '{formated_date2}', 'pagar', {element['id_employee']}), "
+            string = f"('{formated_date1}', '{formated_date2}', 'Por pagar', {element['id_employee']}), "
             script = script + string
 
         script = script[:-2] + ";"
@@ -161,7 +161,8 @@ def update_state(db):
         query = f"""
             UPDATE remuneration_record
             SET state_remuneration = 'Atrasado'
-            WHERE max_pay_date_remuneration < CURRENT_DATE()
+            WHERE max_pay_date_remuneration <= CURRENT_DATE()
+            AND amount_remuneration != null
             AND id_remuneration_record > 0;
         """
         cursor.execute(query)
@@ -343,17 +344,19 @@ def get_paid_extras_and_advances(id: int, db: mysql.connector.MySQLConnection = 
             status_code=500, detail=f"An unexpected error occurred: {str(e)}")
 
 
-def run_tasks():
-    if (datetime.now().second == 10):
+def run_tasks(execution):
+    now = datetime.now()
+    last_execution = execution.get_last_execution_date()
+    if (now.day == 1 and (last_execution is None or last_execution.month != now.month)):
         print("Hola")
-        """ insert_data(get_db())
-        update_state(get_db()) """
+        insert_data(get_db())
+        update_state(get_db())
+        execution.set_last_execution_date(now)
 
 
 async def run_scheduled_task():
-    while True:
-        run_tasks()
-        time.sleep(1)
+    if (datetime.now().second == 10):
+        print("Hola")
 
 
-""" insert_data(get_db()) """
+
