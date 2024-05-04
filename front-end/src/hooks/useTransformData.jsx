@@ -1,10 +1,16 @@
 import { useState, useEffect, useContext } from "react";
 import { paginationContext } from '../pages/Manager/manager'
+import { employeePaginationContext } from '../pages/employeePage/employee'
 import FieldsDictionary from '../dictionaries/paymentFieldsTranslates.json'
 
 export default function useTransformData(list, dataMapping, elementsPerPage) {
 
-    const { setTablePage } = useContext(paginationContext);
+
+    
+    let contextToUse = useContext(paginationContext) || useContext(employeePaginationContext)
+    
+
+    const { setTablePage } = contextToUse;
     const [changedList, setChangedList] = useState([{}])
     const [originalValues, setOriginalValues] = useState([{}])
     const [message, setMessage] = useState()
@@ -17,7 +23,6 @@ export default function useTransformData(list, dataMapping, elementsPerPage) {
             
             setMessage()
             const newEmployeeList = list.map((element, index) => ({
-                "N°": index + 1,
                 ...dataMapping(element, index, FieldsDictionary),
                 Page: Math.ceil((index + 1) / elementsPerPage)
             }));

@@ -1,6 +1,7 @@
 
 
 export const ExtraMapping = (element, index) => ({
+    "N°": index + 1,
     Nombre: element.name + ' ' + element.lastname,
     Cedula: element.dni,
     Departamento: element.department,
@@ -9,8 +10,17 @@ export const ExtraMapping = (element, index) => ({
     Id: element.id
 });
 
+export const RequestsMapping = (element, index) => ({
+    "Id": element.id,
+    Tipo: element.type,
+    "Razón": element.reason,
+    Fecha: element.date,
+    Estado: element.state,
+});
+
 
 export const PaymentMapping = (element, index) => ({
+    "N°": index + 1,
     Nombre: element.name + ' ' + element.lastname,
     Sueldo: element.base_salary,
     "Pagado el": `${element.date ? element.date : "---"}`,
@@ -23,6 +33,7 @@ export const PaymentMapping = (element, index) => ({
 
 
 export const AdvanceRecordMapping = (element, index) => ({
+    "N°": index + 1,
     Nombre: element.name + ' ' + element.lastname,
     Salario: element.base_salary,
     "Fecha": element.date,
@@ -33,6 +44,7 @@ export const AdvanceRecordMapping = (element, index) => ({
 
 
 export const ExtraRecordMapping = (element, index) => ({
+    "N°": index + 1,
     Nombre: element.name + ' ' + element.lastname,
     Salario: element.base_salary,
     "Fecha": element.date,
@@ -81,6 +93,7 @@ export const ExtraListMapping = (element, index) => ({
 
 
 export const VacationsMapping = (element, index) => ({
+    "N°": index + 1,
     Nombre: element.name + ' ' + element.lastname,
     "Fecha de inicio": element.start_date,
     "Fecha de fin": element.end_date,
@@ -89,3 +102,4 @@ export const VacationsMapping = (element, index) => ({
     "Días": element.taken_days,
     Id: element.id,
 });
+

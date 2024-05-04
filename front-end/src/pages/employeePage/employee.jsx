@@ -1,5 +1,5 @@
 import { useParams, Outlet, Link, useLocation } from "react-router-dom";
-import { useState, useEffect } from 'react'
+import { useState, useEffect, createContext } from 'react'
 import useFetch from '../../hooks/useFetch'
 import styled from 'styled-components'
 import background from '../../assets/images/3415222.jpg'
@@ -23,6 +23,8 @@ background-size: cover;
 min-height: 560px;
 `
 
+export const employeePaginationContext = createContext()
+
 export default function Employee() {
 
     const MESSAGE = "Solicitudes de empleados"
@@ -34,7 +36,7 @@ export default function Employee() {
     const { pathname } = location;
     const isDetailPage = pathname.includes("recordRequest") || pathname.includes("addRequest");
     const [adjustGridAreas, setAdjustGridAreas] = useState(isDetailPage);
-
+    const [tablePage, setTablePage] = useState(1)
 
     const [showAnimationWindow, setShowAnimationWindow] = useState(false) 
 
@@ -50,7 +52,8 @@ export default function Employee() {
     };
 
     return (
-        <>
+        <employeePaginationContext.Provider value={{ tablePage, setTablePage }}>
+        
             <Header name={result.name} lastname={result.lastname} email={result.email} message={MESSAGE} image={image} />
             <Container className='p-10 flex column justify-center pt-40 relative '>
             <DoneAnimation open={showAnimationWindow} setOpen={setShowAnimationWindow} message={DONE_MESSAGE} gif={Sended}/>
@@ -254,6 +257,6 @@ export default function Employee() {
                     </div>
                 </MagicMotion> */}
             </Container>
-        </>
+        </employeePaginationContext.Provider>
     )
 }

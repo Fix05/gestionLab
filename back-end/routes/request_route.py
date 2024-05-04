@@ -44,29 +44,6 @@ def get_manager_assigned_requests(id: int, roles: List[str] = Query(['User'], de
             status_code=500, detail=f"An unexpected error occurred: {str(e)}")
 
 
-# Get employee requests
-@router.get("/get-request-overall/{id}")
-def get_employee_requests(id: int, db: mysql.connector.MySQLConnection = Depends(get_db)):
-
-    try:
-        cursor = db.cursor(dictionary=True)
-        query = """SELECT id_request as id, type_request as type, date_request as date FROM requests WHERE fk_employee = %s"""
-        cursor.execute(query, (id,))
-        result = cursor.fetchall()
-        cursor.close()
-
-        if result:
-            return result
-        else:
-            return {"status_code": 403, "message": "Not found"}
-
-    except mysql.connector.Error as e:
-        raise HTTPException(
-            status_code=500, detail=f"Database error: {str(e)}")
-    except Exception as e:
-        raise HTTPException(
-            status_code=500, detail=f"An unexpected error occurred: {str(e)}")
-
 
 # Get requests detailed info
 @router.get("/get-all-request-info/{id}")
@@ -117,7 +94,6 @@ def get_request_document(id: int, db: mysql.connector.MySQLConnection = Depends(
 
         if path:
             return FileResponse(path=f"{path['file_path']}", media_type='application/octet-stream', filename=f"{path['name_file']}")
-            return path["file_path"]
         else:
             return {"status_code": 403, "message": "Not found"}
 

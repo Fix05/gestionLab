@@ -49,22 +49,15 @@ def add_new_request(id: int, file: UploadFile = File(...), db: mysql.connector.M
 def add_new_request(id: int, type: str = Form(...),
                              reason: str = Form(...),
                              explanation: str = Form(...),
-                             file: UploadFile = File(...), 
+                             file: UploadFile = File(None), 
                              db: mysql.connector.MySQLConnection = Depends(get_db)):
     download_folder = os.getenv("REQUEST_DOCUMENTS_DIRECTORY", '.')
     try:
 
-        print(type, reason, explanation, file)
-
         cursor = db.cursor(dictionary=True)
         current_date = datetime.now()
         formated_date = current_date.strftime("%Y-%m-%d")
-        unique_code = f"{current_date.strftime('%Y%m%d%H%M%S')}_{str(uuid.uuid4())[:8]}"
-        format = (file.filename[len(file.filename)-6:len(file.filename)])
-        file_path = f"{download_folder}/{unique_code+format}"
-        with open(file_path, "wb") as new_file:
-            shutil.copyfileobj(file.file, new_file)
-
+        
         add_request_query = f""" 
             INSERT INTO requests (type_request, reason_request, explanation_request, fk_employee, date_request, state_request)
             VALUES (%s, %s, %s, %s, %s, "Esperando")
@@ -80,7 +73,14 @@ def add_new_request(id: int, type: str = Form(...),
             VALUES (%s, @last_request_id, %s)
         """
 
-        cursor.execute(add_doc_query, (file_path, file.filename))
+        if file is not None:
+            format = (file.filename[len(file.filename)-6:len(file.filename)])
+            unique_code = f"{current_date.strftime('%Y%m%d%H%M%S')}_{str(uuid.uuid4())[:8]}"
+            file_path = f"{download_folder}/{unique_code+format}"
+            with open(file_path, "wb") as new_file:
+                shutil.copyfileobj(file.file, new_file)
+            cursor.execute(add_doc_query, (file_path, file.filename))
+ 
         db.commit()
         cursor.close()
 
@@ -97,7 +97,33 @@ def add_new_request(id: int, type: str = Form(...),
 
 
 
-@router.get("/getFile")
-def get_file():
-    download_folder = os.getenv("REQUEST_DOCUMENTS_DIRECTORY", '.')
-    return FileResponse(path=f"{download_folder}/20240501082715_673405ec01.pdf", media_type='application/octet-stream')
+@router.get("/get-requests-record/{id}")
+def get_requests_record(id: int, db: mysql.connector.MySQLConnection = Depends(get_db)):
+
+    try:
+        cursor = db.cursor(dictionary=True)
+        query = f"""
+            SELECT type_request as type, reason_request as reason, state_request as state, date_request as date, id_request as id
+            FROM requests
+            WHERE fk_employee = %s
+            ORDER BY id_request DESC;
+        """
+
+        cursor.execute(query, (id, ))
+        result = cursor.fetchall()
+        cursor.close()
+
+        if result:
+            return result
+        else:
+            return {"status_code": 407, "message": "No info yet"}
+
+    except mysql.connector.Error as e:
+        raise HTTPException(
+            status_code=500, detail=f"Database error: {str(e)}")
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, detail=f"An unexpected error occurred: {str(e)}")
+
+
+
