@@ -1,26 +1,28 @@
 import { useContext } from 'react'
 import { paginationContext } from '../pages/Manager/manager'
+import { employeePaginationContext } from '../pages/employeePage/employee'
 
-export default function Pagination({totalPages }) {
+export default function Pagination({ totalPages }) {
 
-    const { tablePage, setTablePage } = useContext(paginationContext);
+    let contextToUse = useContext(paginationContext) || useContext(employeePaginationContext)
+
+    const { tablePage, setTablePage } = contextToUse;
+
+
 
     const handleClick = (ev) => {
-        console.log(tablePage);
         ev.preventDefault()
         setTablePage(parseInt(ev.target.id))
     }
 
-    const nextPage = (ev) => { 
+    const nextPage = (ev) => {
         ev.preventDefault()
-        tablePage+1 <= totalPages ? setTablePage(tablePage+1): null
-     }
-
-    const prevPage = (ev) => { 
+        tablePage + 1 <= totalPages ? setTablePage(tablePage + 1) : null
+    }
+    const prevPage = (ev) => {
         ev.preventDefault()
-        tablePage-1 >= 1 ? setTablePage(tablePage-1): null  
-     }
-
+        tablePage - 1 >= 1 ? setTablePage(tablePage - 1) : null
+    }
     return (
 
         <ol className="flex justify-end gap-1 text-xs font-medium">
@@ -30,7 +32,6 @@ export default function Pagination({totalPages }) {
                     className="inline-flex h-8 w-8 items-center justify-center rounded border border-gray-100 bg-white text-gray-900 rtl:rotate-180"
                     onClick={prevPage}
                 >
-                    <span className="sr-only">Prev Page</span>
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         className="h-3 w-3"
@@ -47,14 +48,14 @@ export default function Pagination({totalPages }) {
             </li>
 
 
-            {Array.from({ length: totalPages }, (_, index) =>( 
-                <li key={index+1}>
+            {Array.from({ length: totalPages }, (_, index) => (
+                <li key={index + 1}>
                     <a
                         href="#"
-                        className={`block h-8 w-8 rounded text-center leading-8 ${index+1 == tablePage ? 'border-blue-600 bg-lime-900 text-white': 'border border-gray-100 bg-white text-gray-900'}`}
-                        onClick={handleClick} id={index+1}
+                        className={`block h-8 w-8 rounded text-center leading-8 ${index + 1 == tablePage ? 'border-blue-600 bg-lime-900 text-white' : 'border border-gray-100 bg-white text-gray-900'}`}
+                        onClick={handleClick} id={index + 1}
                     >
-                        {index+1}
+                        {index + 1}
                     </a>
                 </li>
 
@@ -65,7 +66,7 @@ export default function Pagination({totalPages }) {
                     className="inline-flex h-8 w-8 items-center justify-center rounded border border-gray-100 bg-white text-gray-900 rtl:rotate-180"
                     onClick={nextPage}
                 >
-                    <span className="sr-only">Next Page</span>
+                    
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         className="h-3 w-3"

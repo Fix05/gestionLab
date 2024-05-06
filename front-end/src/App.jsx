@@ -19,6 +19,7 @@ import RecordExtra from "./pages/Manager/extras/recordExtra"
 import PaymentInfo from './pages/Manager/payment/paymentInfo'
 import AddVacations from './pages/Manager/vacations/addVacations'
 import RecordVacations from './pages/Manager/vacations/recordVacations'
+import Search from './pages/text'
 
 import './App.css'
 
@@ -51,7 +52,10 @@ function App() {
       </Route>
 
 
+
+
       <Route path="/Error" element={<ErrorPage />} />
+      <Route path="/test" element={<Search />} />
 
     </Routes>
   )

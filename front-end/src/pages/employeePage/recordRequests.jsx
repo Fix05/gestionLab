@@ -4,8 +4,11 @@ import { EmployeeData, Container } from '../../styledComponents/detailsBox'
 import BoxDivider from '../../styledComponents/boxDivider'
 import useFetch from '../../hooks/useFetch'
 import useTransformData from '../../hooks/useTransformData'
-import {RequestsMapping} from '../../mapping/dataMapping'
+import { RequestsMapping } from '../../mapping/dataMapping'
+import Pagination from '../../components/pagination'
 import EmployeeRequestTable from '../pageComponents/employeeRequestTable'
+import EmployeeRequestInfo from './employeeRequestInfo'
+
 
 export default function RecordRequest() {
 
@@ -18,32 +21,25 @@ export default function RecordRequest() {
     const { changedList, setChangedList, originalValues,
         setOriginalValues, message, setMessage } = useTransformData(listResult, RequestsMapping, ELEMENTS_PER_PAGE)
     
+    const [requestId, setRequestId] = useState()
+    const [openInfo, setOpenInfo] = useState(false)
 
     useEffect(() => {
         setShow(true);
     }, []);
 
     return (
-        <div className={`relative w-full transition duration-500 ${show ? 'opacity-100' : 'opacity-0'}`}>
-            <EmployeeData className='relative w-full'>
-                <Container className='w-full'>
-                    <BoxDivider text={`Tus solicitudes`} />
-                    <EmployeeRequestTable values={changedList} setValues={setChangedList} originalValues={originalValues} bgcolor={"bg-teal-200"} numberOfElements={ELEMENTS_PER_PAGE}/>
 
-              {/*   
-                <div className='relative bg-gray-500 w-[120px] h-[120]'
-                >
-                    <div className='relative bg-blue-200 w-[80px] h-[80px]'>
+        <EmployeeData className={`relative w-full transition  duration-500 ${show ? 'opacity-100' : 'opacity-0'}`}>
+            <Container className='w-full'>
+                <EmployeeRequestInfo id={requestId} open={openInfo} setOpen={setOpenInfo}/>
+                <BoxDivider text={`Tus solicitudes`} />
+                <EmployeeRequestTable values={changedList} setValues={setChangedList} originalValues={originalValues} bgcolor={"bg-teal-200"} numberOfElements={ELEMENTS_PER_PAGE} setId={setRequestId} setOpen={setOpenInfo}/>
+                <div className='flex justify-center mb-8'>
+                    <Pagination totalPages={Math.ceil(changedList.length / ELEMENTS_PER_PAGE)} />
+                </div>
+            </Container>
+        </EmployeeData>
 
-                            <div className='absolute right-[-80px] bg-white w-[40px] h-[40px]'>
-        
-                            </div>
-                    </div>
-
-                </div> */}
-
-                </Container>
-            </EmployeeData>
-        </div>
     )
 }

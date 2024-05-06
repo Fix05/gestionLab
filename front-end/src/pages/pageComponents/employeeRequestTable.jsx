@@ -21,9 +21,9 @@ export default function EmployeeRequestTable({ values, setValues, bgcolor, origi
     }, [tablePage, values]);
 
 
-    const handleClick = (id) => {
+    const handleClick = (ev) => {
         setOpen(true)
-        setId(id)
+        setId(ev.currentTarget.id)
     }
 
     useEffect(() => {
@@ -62,7 +62,7 @@ export default function EmployeeRequestTable({ values, setValues, bgcolor, origi
         <div className=''>
             <SearchInput onSearchChange={setSearchQuery} />
             <div >
-                <div className='bg-blue-500 m-[31px] mt-[15px] rounded-lg border-gray-400 border-2 border-solid flex flex-row justify-around text-white font-semibold'>
+                <div className='bg-blue-900 m-[31px] mt-[15px] min-h-[30px] rounded-lg border-gray-400 flex flex-row items-center justify-around text-gray-200 font-semibold border-blue-900 shadow-gray-800 shadow'>
                         {valuesArray.map((value, index) => (  
                             value != 'Page' ? <div key={index} className={`${value == 'ID°' ? 'w-[50px]': 'w-[170px]'}`}>{value}</div> : null
                         ))}
@@ -70,12 +70,8 @@ export default function EmployeeRequestTable({ values, setValues, bgcolor, origi
 
                 <div>
                     {currentPageElements.map((element) => (
-                        <div id={element.Id} key={element.Id} className='px-0 bg-white py-[15px] m-[31px] mt-[15px] rounded-lg border-gray-400 border-2 border-solid flex flex-row justify-around transition-transform hover:translate-x-[2px] hover:-translate-y-[2px]'>
+                        <div onClick={handleClick} id={element.Id} key={element.Id} className='px-0 bg-white py-[15px] m-[31px] mt-[15px] rounded-lg border-gray-400 border-2 border-solid flex flex-row justify-around transition-transform hover:translate-x-[2px] hover:-translate-y-[2px] cursor-pointer shadow'>
                             {Object.entries(element).map(([key, value], index) => (
-                                
-
-
-
                                 key == 'Page' || (
                                     colorDictionary[value] 
                                     ? 
