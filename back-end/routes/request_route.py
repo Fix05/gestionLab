@@ -5,6 +5,7 @@ from pydantic import BaseModel
 import mysql.connector
 from db_connection import get_db
 
+
 router = APIRouter()
 
 
@@ -25,7 +26,8 @@ def get_manager_assigned_requests(id: int, roles: List[str] = Query(['User'], de
             FROM requests
             join employee on fk_employee = id_employee
             join person on fk_person = id_person
-            WHERE permission_employee IN ({in_clause});"""
+            WHERE permission_employee IN ({in_clause})
+            ORDER BY id_request DESC;"""
 
         cursor.execute(query, roles)
         result = cursor.fetchall()
@@ -52,7 +54,9 @@ def get_all_employee_requests_info(id: int, db: mysql.connector.MySQLConnection 
     try:
         cursor = db.cursor(dictionary=True)
         infoQuery = """
-            SELECT type_request as type, date_request as date, reason_request as reason, explanation_request as explanation, state_request as state, name_document_request as doc, body_response_request as response, date_response_request as date_response
+            SELECT type_request as type, date_request as date, reason_request as reason, explanation_request as explanation, 
+            state_request as state, name_document_request as doc, body_response_request as response, 
+            date_response_request as date_response
             FROM requests
             LEFT JOIN document_request ON document_request.fk_request = id_request
             LEFT JOIN response_request ON response_request.fk_request = id_request
@@ -89,7 +93,6 @@ def get_request_document(id: int, db: mysql.connector.MySQLConnection = Depends(
         cursor.execute(query, (id,))
         path = cursor.fetchone()
         cursor.close()
-
 
 
         if path:

@@ -25,8 +25,9 @@ export default function RequestInfo() {
 
     const [activeButton, setActiveButton] = useState(null);
     const { requestId } = useParams()
-    const URL = `http://127.0.0.1:8000/api/employee/get-all-request-info/${requestId}`
-    const [result, doFetch] = useFetch(URL, null, "GET")
+    const REQUEST_INFO_ENDPOINT = `http://127.0.0.1:8000/api/employee/get-all-request-info/${requestId}`
+    const REQUEST_DOC_ENDPOINT = `http://127.0.0.1:8000/api/employee/get-request-document/${requestId}`
+    const [result, doFetch] = useFetch(REQUEST_INFO_ENDPOINT, null, "GET")
     const [errorMessage, setErrorMessage] = useState('')
     const [open, setOpen] = useState(false)
     const rquestResponse = useField()
@@ -53,9 +54,9 @@ export default function RequestInfo() {
 
         <EmployeeData>
             <Container>
-                <SetResponseModal open={open} setOpen={setOpen} action={activeButton} body={rquestResponse.field} requestId={requestId} reloadInfo={doFetch}/>    
-                <BoxDivider text={`Solicitud Nº${requestId}`}/>
-                
+                <SetResponseModal open={open} setOpen={setOpen} action={activeButton} body={rquestResponse.field} requestId={requestId} reloadInfo={doFetch} />
+                <BoxDivider text={`Solicitud Nº${requestId}`} />
+
                 <Div>
                     <Info flexbasis={'calc(50% - 10px)'}>
                         <h1 className='text-gray-600 font-bold text-xs'>Razón:</h1>
@@ -97,9 +98,11 @@ export default function RequestInfo() {
                             <div className='bg-white mt-2 border-solid border-2 border-slate-300 rounded'>
                                 <span className='text-gray-600 text-sm ml-2 flex direction-row justify-between items-center'>
                                     {result.doc}
-                                    <Svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="-1 -1 26 26" strokeWidth={1.5} stroke="currentColor" className="flex justify-center items-center hover:text-blue-600 hover:bg-blue-50 rounded-full w-6 h-6 cursor-pointer ">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                                    </Svg>
+                                    <a href={REQUEST_DOC_ENDPOINT}>
+                                        <Svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="-1 -1 26 26" strokeWidth={1.5} stroke="currentColor" className="flex justify-center items-center hover:text-blue-600 hover:bg-blue-50 rounded-full w-6 h-6 cursor-pointer ">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                                        </Svg>
+                                    </a>
                                 </span>
                             </div>
                         </Info>

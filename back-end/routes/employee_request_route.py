@@ -20,32 +20,6 @@ class NewRequest(BaseModel):
     explanation: str = Form(...)
 
 
-""" @router.post("/add-new-request/{id}")
-def add_new_request(id: int, file: UploadFile = File(...), db: mysql.connector.MySQLConnection = Depends(get_db)):
-    download_folder = os.getenv("REQUEST_DOCUMENTS_DIRECTORY", '.')
-    try:
-
-        
-        cursor = db.cursor(dictionary=True)
-        current_date = datetime.now()
-        formated_date = current_date.strftime("%Y-%m-%d")
-        unique_code = f"{current_date.strftime('%Y%m%d%H%M%S')}_{str(uuid.uuid4())[:8]}"
-        format = (file.filename[len(file.filename)-4:len(file.filename)])
-        file_path = f"{download_folder}/{unique_code+format}"
-        with open(file_path, "wb") as new_file:
-            shutil.copyfileobj(file.file, new_file)
-
-        return {"status_code": 200, "message": "Inserted successfully"}
-
-    except mysql.connector.Error as e:
-        raise HTTPException(
-            status_code=500, detail=f"Database error: {str(e)}")
-    except Exception as e:
-        raise HTTPException(
-            status_code=500, detail=f"An unexpected error occurred: {str(e)}")
- """
-
-
 @router.post("/add-new-request/{id}")
 def add_new_request(id: int, type: str = Form(...),
                     reason: str = Form(...),
@@ -132,10 +106,13 @@ def get_all_requests_info(id: int, db: mysql.connector.MySQLConnection = Depends
     try:
         cursor = db.cursor(dictionary=True)
         request_info_query = f"""
-            SELECT type_request as type, reason_request as reason, state_request as state, date_request as date, explanation_request as body, 
-            id_request as id, body_response_request as response, date_response_request as date_response, fk_rh_employee as rh
+            SELECT type_request as type, reason_request as reason, state_request as state, 
+            date_request as date, explanation_request as body, 
+            id_request as id, body_response_request as response, date_response_request as date_response, 
+            fk_rh_employee as rh, name_document_request as doc
             FROM requests
-            LEFT JOIN response_request on fk_request = id_request
+            LEFT JOIN response_request on response_request.fk_request = id_request
+            LEFT JOIN document_request on document_request.fk_request = id_request
             WHERE id_request = %s;
         """
 
@@ -180,3 +157,29 @@ def get_file():
     return FileResponse(path=f"{download_folder}/20240501082715_673405ec01.pdf", media_type='application/octet-stream')
 
 
+@router.get("/employee-get-request-document/{id}")
+def employee_get_request_document(id: int, db: mysql.connector.MySQLConnection = Depends(get_db)):
+    try:
+        cursor = db.cursor(dictionary=True)
+        query = f"""
+            SELECT path_document_request as file_path, name_document_request as name_file
+            FROM document_request
+            WHERE fk_request = %s;
+        """
+
+        cursor.execute(query, (id,))
+        path = cursor.fetchone()
+        cursor.close()
+
+
+        if path:
+            return FileResponse(path=f"{path['file_path']}", media_type='application/octet-stream', filename=f"{path['name_file']}")
+        else:
+            return {"status_code": 403, "message": "Not found"}
+
+    except mysql.connector.Error as e:
+        raise HTTPException(
+            status_code=500, detail=f"Database error: {str(e)}")
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, detail=f"An unexpected error occurred: {str(e)}")
