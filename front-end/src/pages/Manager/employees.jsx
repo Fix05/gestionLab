@@ -39,8 +39,6 @@ export default function Manager() {
 
     return (
         <div className="mt-6 rounded-lg border-2 border-gray-400 bg-white ">
-
-            
             <Table values={changedList} setValues={setChangedList} originalValues={originalValues} bgcolor={"bg-lime-200"} numberOfElements={ELEMENTS_PER_PAGE} />
             <div className="rounded-b-lg border-t border-gray-200 px-4 py-2">
                 <Pagination totalPages={Math.ceil(changedList.length / 10)} />

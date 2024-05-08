@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+import useFetch from '../../../hooks/useFetch'
 import {
     BarChart,
     Bar,
@@ -7,120 +8,81 @@ import {
     CartesianGrid,
     Tooltip,
     Legend,
+    ResponsiveContainer,
+    /* PieChart, */
+    Pie,
+    Cell
 } from "recharts";
+/* import { LineChart, Line } from 'recharts'; */
+import Months from '../../../dictionaries/monthTranslates.json'
+import StackBarsChart from '../../../components/dashboardComponents/stackedBarsChart'
+import LineChart from '../../../components/dashboardComponents/lineChart'
+import PieChart from '../../../components/dashboardComponents/pieChart'
+import HorizontalBarsChart from '../../../components/dashboardComponents/horizontalBarsChart'
 
 const data = [
-    {
-      "name": "Guantanamero Doe",
-      "Salud": 3,
-      "Calamidad doméstica": 0,
-      "Otro": 0
-    },
-    {
-      "name": "Bob Johnson",
-      "Salud": 0,
-      "Calamidad doméstica": 0,
-      "Otro": 0
-    },
-    {
-      "name": "Charlie Brown",
-      "Salud": 3,
-      "Calamidad doméstica": 0,
-      "Otro": 1
-    },
-    {
-      "name": "Ana Gómez",
-      "Salud": 5,
-      "Calamidad doméstica": 0,
-      "Otro": 0
-    },
-    {
-      "name": "Alicia Martínez",
-      "Salud": 6,
-      "Calamidad doméstica": 0,
-      "Otro": 0
-    },
-    {
-      "name": "Eva Martínez",
-      "Salud": 0,
-      "Calamidad doméstica": 0,
-      "Otro": 1
-    },
-    {
-      "name": "Sofía Lee",
-      "Salud": 0,
-      "Calamidad doméstica": 0,
-      "Otro": 0
-    },
-    {
-      "name": "Olivia Taylor",
-      "Salud": 10,
-      "Calamidad doméstica": 0,
-      "Otro": 0
-    },
-    {
-      "name": "Ava Hernández",
-      "Salud": 1,
-      "Calamidad doméstica": 0,
-      "Otro": 0
-    },
-    {
-      "name": "Carlos López",
-      "Salud": 4,
-      "Calamidad doméstica": 0,
-      "Otro": 0
-    },
-    {
-      "name": "Marco De Ali",
-      "Salud": 6,
-      "Calamidad doméstica": 2,
-      "Otro": 0
-    },
-    {
-      "name": "Juanito Pérez",
-      "Salud": 8,
-      "Calamidad doméstica": 0,
-      "Otro": 0
-    },
-    {
-      "name": "David Anderson",
-      "Salud": 0,
-      "Calamidad doméstica": 0,
-      "Otro": 0
-    },
-    {
-      "name": "Pepe Fernández",
-      "Salud": 2,
-      "Calamidad doméstica": 0,
-      "Otro": 0
-    }
-  ];
+    { "name": 'Group A', as: 400 },
+    { "name": 'Group B', as: 300 },
+    { "name": 'Group C', as: 300 },
+    { "name": 'Group D', as: 200 },
+];
+
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF8042', '#FF8042'];
+
+const RADIAN = Math.PI / 180;
+const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
+    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+    return (
+        <text className="pointer-events-none" x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
+            {`${(percent * 100).toFixed(0)}%`}
+        </text>
+    );
+};
+
 
 
 
 export default function Dashboard() {
 
-    return (
+    const ABSENCES_ENDPOINT = `http://127.0.0.1:8000/api/stadistics/get-absences-vs-employee-vs-type`
+    const EXTRA_ENDPOINT = `http://127.0.0.1:8000/api/stadistics/get-extras-vs-time/MONTH`
+    const REQUESTS_TYPES_ENDPOINT = `http://127.0.0.1:8000/api/stadistics/get-count-requests-vs-type`
+    const [absencesResult] = useFetch(ABSENCES_ENDPOINT, null, "GET")
+    const [extraResult] = useFetch(EXTRA_ENDPOINT, null, "GET")
+    const [typesResult] = useFetch(REQUESTS_TYPES_ENDPOINT, null, "GET")
 
-        <BarChart
-            width={500}
-            height={300}
-            data={data}
-            margin={{
-                top: 20,
-                right: 30,
-                left: 20,
-                bottom: 5,
-            }}
-        >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Bar dataKey="Salud" stackId="a" fill="#8884d8" />
-            <Bar dataKey="Calamidad doméstica" stackId="a" fill="#82ca9d" />
-            <Bar dataKey="Otro" stackId="a" fill="#852a9d" />
-        </BarChart>
+
+    const absencesHasData = Object.keys(absencesResult).length > 0
+    const extraHasData = Object.keys(extraResult).length > 0
+    const typesHasData = Object.keys(typesResult).length > 0
+
+    console.log(extraResult);
+
+    const getTranslateMonths = (list) => {
+
+        return list.map((element) => {
+            element = { ...element, mes: Months[element.mes] }
+            return element
+        })
+    }
+
+
+
+
+    return (
+        
+
+        <div className="mt-6 rounded-lg border-2 border-gray-400 bg-white grid grid-cols-2">
+            <StackBarsChart/>
+            <PieChart />
+            <HorizontalBarsChart />
+            <LineChart/>
+            
+        </div>
+
+
     )
 }
