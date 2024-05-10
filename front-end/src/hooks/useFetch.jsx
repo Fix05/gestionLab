@@ -45,6 +45,7 @@ const useFetch = (url, data, method, shouldFetch = true) => {
 
     if (url && !url.includes("undefined")) {
       if (!("body" in options) || Object.keys(data).length || data instanceof FormData) {
+        console.log(url);
         const response = await fetch(url, options)
         const jsonResponse = await response.json()
         if (jsonResponse && jsonResponse.status_code) {

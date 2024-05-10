@@ -25,6 +25,7 @@ ChartJS.register(
 );
 
 const OPTIONS = {
+    responsive: true,
     plugins: {
         title: {
             display: true,
@@ -39,7 +40,6 @@ const OPTIONS = {
             }
         }
     },
-    responsive: true,
     scales: {
         x: {
             stacked: true,
@@ -94,20 +94,12 @@ export default function LineChart() {
         }
     }, [extraResult])
 
-
-
-
-
     return (
-
-        <div className='h-[250px] w-[400px]'>
-            {console.log(Object.keys(data).length > 0)}
+        <div className='w-full'>
             {Object.keys(data).length > 0 &&
                 <Line data={data} options={OPTIONS} />
             }
         </div>
-
     )
-
 }
 

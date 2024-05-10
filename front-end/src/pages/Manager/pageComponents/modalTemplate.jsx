@@ -35,7 +35,7 @@ export default function ModalTemplate({open, setOpen, header, secondHeader, hand
                             <Dialog.Panel className="flex flex-col px-4 items-center relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all w-1/2">
 
                                 <div className='flex self-start w-full border-solid border-b-2 border-b-gray-400  pl-2'>
-                                    <h1 className='text-gray-900 text-base font-semibold my-5'>{header + (" "+secondHeader || "")}</h1>
+                                    <h1 className='text-gray-900 text-base font-semibold my-5'>{header}{secondHeader ? " "+secondHeader : null}</h1>
                                 </div>
 
                                 <div className='flex flex-col w-full mt-2 items-center justify-center border-solid border-b-2 border-b-gray-400 p-2'>

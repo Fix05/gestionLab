@@ -47,42 +47,21 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
 
 export default function Dashboard() {
 
-    const ABSENCES_ENDPOINT = `http://127.0.0.1:8000/api/stadistics/get-absences-vs-employee-vs-type`
-    const EXTRA_ENDPOINT = `http://127.0.0.1:8000/api/stadistics/get-extras-vs-time/MONTH`
-    const REQUESTS_TYPES_ENDPOINT = `http://127.0.0.1:8000/api/stadistics/get-count-requests-vs-type`
-    const [absencesResult] = useFetch(ABSENCES_ENDPOINT, null, "GET")
-    const [extraResult] = useFetch(EXTRA_ENDPOINT, null, "GET")
-    const [typesResult] = useFetch(REQUESTS_TYPES_ENDPOINT, null, "GET")
-
-
-    const absencesHasData = Object.keys(absencesResult).length > 0
-    const extraHasData = Object.keys(extraResult).length > 0
-    const typesHasData = Object.keys(typesResult).length > 0
-
-    console.log(extraResult);
-
-    const getTranslateMonths = (list) => {
-
-        return list.map((element) => {
-            element = { ...element, mes: Months[element.mes] }
-            return element
-        })
-    }
-
-
-
-
     return (
-        
-
-        <div className="mt-6 rounded-lg border-2 border-gray-400 bg-white grid grid-cols-2">
-            <StackBarsChart/>
-            <PieChart />
-            <HorizontalBarsChart />
-            <LineChart/>
-            
+        <div className="mt-2 grid grid-cols-5">
+            <div className="flex justify-center mt-4 rounded-lg bg-opacity-85 border-2 col-span-3 border-gray-400 mx-2 bg-white ">
+                <StackBarsChart />
+            </div>
+            <div className="flex justify-center mt-4 rounded-lg bg-opacity-85 border-2 col-span-2 border-gray-400 mx-2 bg-white">
+                <PieChart />
+            </div>
+            <div className="flex items-center justify-center mt-4 rounded-lg bg-opacity-85 border-2 col-span-2 border-gray-400 mx-2 bg-white">
+                <LineChart />
+            </div>
+            <div className="flex justify-center mt-4 rounded-lg border-2 bg-opacity-85 col-span-3 border-gray-400 mx-2 bg-white">
+                <HorizontalBarsChart />
+            </div>
         </div>
-
 
     )
 }

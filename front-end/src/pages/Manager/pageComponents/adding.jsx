@@ -11,7 +11,7 @@ export default function Adding({apiEndpoint, ModalComponent, bgcolor, dataMappin
 
 
     const ELEMENTS_PER_PAGE = 10
-    const [listResult] = useFetch(apiEndpoint, null, "GET")
+    const [listResult, getResults] = useFetch(apiEndpoint, null, "GET")
     const {changedList, setChangedList, originalValues, setOriginalValues} = useTransformData(listResult, dataMapping, ELEMENTS_PER_PAGE)
     const [open, setOpen] = useState(false)
     const {id, setId, modalData} = useBasicData(originalValues)
@@ -26,7 +26,7 @@ export default function Adding({apiEndpoint, ModalComponent, bgcolor, dataMappin
     return (
         <div className="mt-6 rounded-lg border-2 border-gray-400 bg-white ">
             <DoneAnimation open={openAnimation} setOpen={setOpenAnimation} message={addingDoneMessage} gif={addingGif}/>
-            <ModalComponent open={open} setOpen={setOpen} id={id} employeeData={modalData} setAnimation={setOpenAnimation}/>
+            <ModalComponent open={open} setOpen={setOpen} id={id} employeeData={modalData} setAnimation={setOpenAnimation} reloadList={getResults}/>
             <Table values={changedList} setValues={setChangedList} originalValues={originalValues} bgcolor={bgcolor} numberOfElements={ELEMENTS_PER_PAGE} setOpen={setOpen} sthElse={true} setId={setId}/>
             <div className="rounded-b-lg border-t border-gray-200 px-4 py-2">
                 <Pagination totalPages={Math.ceil(changedList.length / 10)} />

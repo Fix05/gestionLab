@@ -11,7 +11,7 @@ import WarningMessage from '../../../components/warningMessage'
 
 
 
-export default function AddVacationModal({ open, setOpen, id, employeeData, setAnimation }) {
+export default function AddVacationModal({ open, setOpen, id, employeeData, setAnimation, reloadList }) {
 
     const HEADER = "Registro de vacaciones o ausencias"
     const BUTTON_TEXT = "Registrar ausencia"
@@ -68,6 +68,7 @@ export default function AddVacationModal({ open, setOpen, id, employeeData, setA
 
             addVacation(dataToLoad).then(() => {
                 getDaysLeft()
+                reloadList()
             })
         } else {
             setWarningMessage(true)

@@ -43,7 +43,6 @@ export default function Manager() {
             <div className="rounded-b-lg border-t border-gray-200 px-4 py-2">
                 <Pagination totalPages={Math.ceil(changedList.length / 10)} />
             </div>
-
         </div>
     )
 }
