@@ -33,7 +33,7 @@ export default function AddEmployee() {
     /* const [idFiles, idInfolist, idActivated, handleIdFileChange] = useFileInput() */
 
 
-    const imgFiles = useFileInput()
+    const imgFiles = useFileInput(true)
     const idFiles = useFileInput()
 
 
@@ -139,11 +139,11 @@ export default function AddEmployee() {
 
                     <Info >
                         <h1 className='text-gray-600 font-bold text-xs'>Foto:</h1>
-                        <FileInput handleChange={imgFiles.handleFileChange} listActivated={imgFiles.listActivated} list={imgFiles.infoFilelist} id={"image"}/>
+                        <FileInput handleChange={imgFiles.handleFileChange} listActivated={imgFiles.listActivated} list={imgFiles.infoFilelist} image={imgFiles.previewImage} id={"image"}/>
                     </Info>
                     <Info >
                         <h1 className='text-gray-600 font-bold text-xs'>Documento de identidad:</h1>
-                        <FileInput handleChange={idFiles.handleFileChange} listActivated={idFiles.listActivated} list={idFiles.infoFilelist} id={"id"}/>
+                        <FileInput handleChange={idFiles.handleFileChange} listActivated={idFiles.listActivated} list={idFiles.infoFilelist} deleteFile={idFiles.removeFromFiles} id={"id"}/>
                     </Info>
 
 

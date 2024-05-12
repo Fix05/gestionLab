@@ -3,23 +3,47 @@
 import { useState, useEffect } from 'react'
 
 
-const useFileInput = () => {
-
+const useFileInput = (image) => {
 
     const [files, setFiles] = useState([])
     const [infoFilelist, setInfoFilelist] = useState([])
     const [listActivated, setListActivated] = useState(false)
+    const [previewImage, setPreviewImage] = useState(null);
 
-    const removeFromFiles = () => {
 
+    const removeFromFiles = (id) => {
+        setFiles(doFilter(files, id))
+        setInfoFilelist(doFilter(infoFilelist, id))
+    }
+
+    const doFilter = (list, id) => {
+        return list.filter((element) => element.id != id)
+    }
+
+    const getId = () => {
+        const id = files.reduce((accum, current) => {
+            if (current.id > accum) {
+                return current.id
+            }
+            return accum
+        }, 0) + 1
+
+        return id
     }
 
     const handleFileChange = (ev) => {
         const file = ev.target.files[0];
-        setFiles([...files, file])
-        const fileName = file.name
-        const fileFormat = getFormat(fileName)
-        setInfoFilelist([...infoFilelist, { name: fileName, format: fileFormat }])
+        const id = getId()
+        setFiles([...files, { file: file, id: id }])
+
+        /* if (image) { */
+            setPreviewImage(URL.createObjectURL(file))
+        /* } else { */
+            const fileName = file.name
+            const fileFormat = getFormat(fileName)
+            setInfoFilelist([...infoFilelist, { name: fileName, format: fileFormat, id: id }])
+        
+        ev.target.value = null;
     }
 
     const getFormat = (fileName) => {
@@ -30,6 +54,7 @@ const useFileInput = () => {
     }
 
     useEffect(() => {
+        console.log(infoFilelist.length);
         infoFilelist.length > 0 ? setListActivated(true) : setListActivated(false)
     }, [files])
 
@@ -38,6 +63,8 @@ const useFileInput = () => {
         infoFilelist,
         listActivated,
         handleFileChange,
+        removeFromFiles,
+        previewImage
     }
 
 }
