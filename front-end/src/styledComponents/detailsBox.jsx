@@ -31,7 +31,7 @@ padding: 30px;
 display: flex;
 flex-wrap: wrap;
 width: 94%;
-z-index: 6000;
+z-index: 10;
 margin: 15px 30px 30px 30px;
 border: solid 2px;
 border-color: rgb(156 163 175);
@@ -44,7 +44,20 @@ padding: 30px;
 display: flex;
 flex-wrap: wrap;
 width: 94%;
-z-index: 6000;
+z-index: 10;
+margin: 15px 30px 30px 30px;
+border: solid 2px;
+border-color: rgb(156 163 175);
+border-radius: 10px;
+`
+
+export const GridForm = styled.form`
+background-color: white;
+padding: 30px;
+display: grid;
+grid-template-columns: auto auto auto;
+width: 94%;
+z-index: 10;
 margin: 15px 30px 30px 30px;
 border: solid 2px;
 border-color: rgb(156 163 175);

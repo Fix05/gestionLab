@@ -44,7 +44,7 @@ export default function Header({name, lastname, email, style, message, image}) {
                     <div className="flex flex-1 items-center gap-8 sm:justify-end">
 
 
-                        <Button type="button" className="bg-opacity-20 bg-white group flex shrink-0 items-center p-1 pr-1.5 transition-all hover:translate-x-[1px] hover:translate-y-[1px]">
+                        <Button type="button" className="bg-opacity-20 bg-white group flex shrink-0 items-center p-1 pr-1.5 transition-all">
                             <span className="sr-only">Menu</span>
                             <img
                                 alt="Man"

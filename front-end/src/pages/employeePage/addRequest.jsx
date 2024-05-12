@@ -15,7 +15,7 @@ export default function AddRequest() {
     const reason = useField()
     const explanation = useField()
     const type = useField()
-    const [files, setFiels] = useState()
+    const [files, setFiles] = useState()
     const current_date = new Date().toISOString().slice(0, 10)
     const [showWarning, setShowWarning] = useState(false)
     const [show, setShow] = useState(false);
@@ -28,7 +28,7 @@ export default function AddRequest() {
     const [, setShowAnimationWindow] = useOutletContext()
 
     const handleFileChange = (ev) => {
-        setFiels(ev.target.files[0])
+        setFiles(ev.target.files[0])
     }
 
     const handleSubmit = async (ev) => {
@@ -55,15 +55,12 @@ export default function AddRequest() {
 
 
     return (
-
         <div className={`w-full transition duration-500 ${show ? 'opacity-100' : 'opacity-0'}`}>
-
             <EmployeeData className='absolute w-full'>
                 <Container className='w-full'>
                     <BoxDivider text={`Crear solicitud`} />
 
                     <Form className='w-full' onSubmit={handleSubmit}>
-                        {/* <div className='relative w-full'> */}
                             <Info flexbasis={'calc(50% - 10px)'}>
                                 <h1 className='text-gray-600 font-bold text-xs'>Razón:</h1>
                                 <div className='min-h-6 bg-white mt-2 '>
@@ -82,7 +79,6 @@ export default function AddRequest() {
                                         <option value="Reclamación">Reclamación</option>
                                         <option value="Otro">Otro</option>
                                     </select>
-
                                 </div>
                             </Info>
                             <Info flexbasis={'calc(25% - 10px)'}>
@@ -101,10 +97,6 @@ export default function AddRequest() {
                                 <h1 className='text-gray-600 font-bold text-xs'>Sube un archivo:</h1>
                                 <input onChange={handleFileChange} className="block w-full mb-5 text-xs text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" aria-describedby="file_input_help" id="file_input" type="file" />
                             </Info>
-
-                            
-                        {/* </div> */}
-
                         <div className='w-full flex justify-center flex-col items-center relative'>
                         <WarningMessage className={'absolute top-[-25px] text-sm'} open={showWarning} setOpen={setShowWarning}> Debe de completar todos los campos </WarningMessage>
                             <button
@@ -116,10 +108,8 @@ export default function AddRequest() {
                             </button>
                         </div>
                     </Form>
-
                 </Container>
             </EmployeeData>
-
         </div>
     )
 }

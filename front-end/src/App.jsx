@@ -20,6 +20,9 @@ import PaymentInfo from './pages/Manager/payment/paymentInfo'
 import AddVacations from './pages/Manager/vacations/addVacations'
 import RecordVacations from './pages/Manager/vacations/recordVacations'
 import Dashboard from './pages/Manager/dashboard/dashboard'
+import Hiring from "./pages/Manager/hiring/hiring";
+import AddEmployee from './pages/Manager/hiring/addEmployee'
+import RecomendCandidate from './pages/Manager/hiring/recomendCandidate'
 import Search from './pages/text'
 
 import './App.css'
@@ -32,6 +35,9 @@ function App() {
       <Route path="/Manager/:id/" element={<ManagerPage />}>
         <Route path="/Manager/:id/employees" element={<Employees />} />
         <Route path="/Manager/:id/dashboard" element={<Dashboard />} />
+        <Route path="/Manager/:id/hiring" element={<Hiring />} />
+        <Route path="/Manager/:id/hiring/addEmployee" element={<AddEmployee />} />
+        <Route path="/Manager/:id/hiring/recomendCandidate" element={<RecomendCandidate />} />
         <Route path="/Manager/:id/employees/:employeeId" element={<EmployeeInfo />} />
         <Route path="/Manager/:id/requests" element={<Requests />} />
         <Route path="/Manager/:id/requests/:requestId" element={<RequestInfo />} />
@@ -43,6 +49,7 @@ function App() {
         <Route path="/Manager/:id/recordExtra" element={<RecordExtra />} />
         <Route path="/Manager/:id/addVacations" element={<AddVacations />} />
         <Route path="/Manager/:id/recordVacations" element={<RecordVacations />} />
+        
       </Route>
       <Route path="/Admin/:id/:page" element={<AdminPage />} />
 
