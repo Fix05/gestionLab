@@ -12,7 +12,7 @@ export default function SeveralFilesInput({ handleChange, listActivated, list, d
         <>
             <Container>
                 {console.log("listActivated", listActivated)}
-                <LabelFile htmlFor={id} className={`overflow-hidden transition-all ${listActivated ? ' w-16 h-[100%]' : 'w-full h-full'}`}>
+                <LabelFile htmlFor={id} className={`bg-gray-200  overflow-hidden transition-all ${listActivated ? ' w-16 h-[100%]' : 'h-full w-full'}`}>
                     <InputFileSvg/>
                     <p className={`text-sm transition-all ${listActivated ? 'opacity-0 pointer-events-none h-0' : ''}`}>Click para seleccionar los archivos!</p></LabelFile
                 >
@@ -28,7 +28,7 @@ export default function SeveralFilesInput({ handleChange, listActivated, list, d
                     }
                 </div>
             </Container>
-            <Input onChange={handleChange} id={id} type="file" />
+            <Input onChange={handleChange} id={id} type="file" accept=".doc, .docx, .pdf, .jpeg, .jpg, .png"/>
         </>
     )
 }

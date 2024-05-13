@@ -7,31 +7,16 @@ import FileInput from '../../../styledComponents/fileInput'
 import useField from '../../../hooks/useField'
 import ImgFileInput from '../../../components/imgFileInput'
 import SeveralFilesInput from '../../../components/severalFilesInput'
+import WarningMessage from '../../../components/warningMessage'
 
 export default function AddEmployee() {
 
 
     const imgFiles = useFileInput(true)
-    const idFiles = useFileInput()
+    const idFiles = useFileInput(false, 4)
 
 
 
-    const fild1 = useField()
-    const fild2 = useField()
-
-
-    const [files1, setFiles1] = useState([])
-
-    const handleFileChange = (ev) => {
-        const file = ev.target.files[0];
-        setFiles1([...files1, file])
-    }
-    const [files2, setFiles2] = useState([])
-
-    const handleFileChange2 = (ev) => {
-        const file = ev.target.files[0];
-        setFiles2([...files2, file])
-    }
 
 
     return (
@@ -100,29 +85,21 @@ export default function AddEmployee() {
                         </div>
                     </Info>
 
-                   {/*  <Info >
-                        <h1 className='text-gray-600 font-bold text-xs'>PRUEBA:</h1>
-                        <div className='min-h-6 bg-white mt-2 '>
-                            <input onChange={imgFiles.handleFileChange} type="file" id="first_name" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="" required />
-                        </div>
-                    </Info>
-                    <Info >
-                        <h1 className='text-gray-600 font-bold text-xs'>PRUEBA2:</h1>
-                        <div className='min-h-6 bg-white mt-2 '>
-                            <input onChange={idFiles.handleFileChange} type="file" id="first_name" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="" required />
-                        </div>
-                    </Info> */}
-
 
 
                     <Info >
                         <h1 className='text-gray-600 font-bold text-xs'>Foto:</h1>
-                        <ImgFileInput handleChange={imgFiles.handleFileChange} listActivated={imgFiles.listActivated} list={imgFiles.infoFilelist} image={imgFiles.previewImage} id={"image"}/>
+                        <ImgFileInput handleChange={imgFiles.handleFileChange} listActivated={imgFiles.listActivated} list={imgFiles.infoFilelist} image={imgFiles.previewImage} id={"image"} />
+                        <p>{imgFiles.error}</p>
                     </Info>
                     <Info >
                         <h1 className='text-gray-600 font-bold text-xs'>Documento de identidad:</h1>
-                        <SeveralFilesInput handleChange={idFiles.handleFileChange} listActivated={idFiles.listActivated} list={idFiles.infoFilelist} deleteFile={idFiles.removeFromFiles} id={"id"}/>
+                        <div className='flex flex-col justify-center'>
+                            <SeveralFilesInput handleChange={idFiles.handleFileChange} listActivated={idFiles.listActivated} list={idFiles.infoFilelist} deleteFile={idFiles.removeFromFiles} id={"id"} />
+                            <WarningMessage className={'text-xs mt-[10px] w-[250px] h-0'} setOpen={idFiles.setShowError} open={idFiles.showError}> {idFiles.error} </WarningMessage>
+                        </div>
                     </Info>
+
 
 
 
