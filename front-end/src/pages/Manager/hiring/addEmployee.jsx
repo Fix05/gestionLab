@@ -5,32 +5,10 @@ import { useState } from 'react'
 import BoxDivider from '../../../styledComponents/boxDivider'
 import FileInput from '../../../styledComponents/fileInput'
 import useField from '../../../hooks/useField'
-
-const Input = styled.input`
-max-width: 190px;
-display: none;
-`
-
-
-const LabelFile = styled.label`
-position: relative;
-display: flex;
-flex-direction: column;
-justify-content: center;
-width: 250px;
-height: 90px;
-border: 2px dashed #ccc;
-align-items: center;
-text-align: center;
-padding: 5px;
-color: #404040;
-cursor: pointer;
-`
+import ImgFileInput from '../../../components/imgFileInput'
+import SeveralFilesInput from '../../../components/severalFilesInput'
 
 export default function AddEmployee() {
-
-
-    /* const [idFiles, idInfolist, idActivated, handleIdFileChange] = useFileInput() */
 
 
     const imgFiles = useFileInput(true)
@@ -139,11 +117,11 @@ export default function AddEmployee() {
 
                     <Info >
                         <h1 className='text-gray-600 font-bold text-xs'>Foto:</h1>
-                        <FileInput handleChange={imgFiles.handleFileChange} listActivated={imgFiles.listActivated} list={imgFiles.infoFilelist} image={imgFiles.previewImage} id={"image"}/>
+                        <ImgFileInput handleChange={imgFiles.handleFileChange} listActivated={imgFiles.listActivated} list={imgFiles.infoFilelist} image={imgFiles.previewImage} id={"image"}/>
                     </Info>
                     <Info >
                         <h1 className='text-gray-600 font-bold text-xs'>Documento de identidad:</h1>
-                        <FileInput handleChange={idFiles.handleFileChange} listActivated={idFiles.listActivated} list={idFiles.infoFilelist} deleteFile={idFiles.removeFromFiles} id={"id"}/>
+                        <SeveralFilesInput handleChange={idFiles.handleFileChange} listActivated={idFiles.listActivated} list={idFiles.infoFilelist} deleteFile={idFiles.removeFromFiles} id={"id"}/>
                     </Info>
 
 

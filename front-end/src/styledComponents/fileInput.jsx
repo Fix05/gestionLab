@@ -1,6 +1,4 @@
 import styled from 'styled-components'
-import { useState, useEffect } from 'react'
-import FileIcons from '../dictionaries/fileIcons.json'
 import doc from '../assets/images/doc.png'
 import pdf from '../assets/images/pdf.png'
 import image from '../assets/images/imagen.png'
@@ -106,9 +104,11 @@ export default function FileInput({ handleChange, listActivated, list, deleteFil
                         ))
                     }
                 </div> :
-                    <div className='absolute top-0  left-[50px] text-nowrap truncate max-w-[195px]'>
-                        <div className='flex flex-row content-right items-center'>
-                            <p className='truncate'>{list[0].name}</p>
+                    <div className='absolute top-0 right-0 text-nowrap truncate max-w-[195px]'>
+                        <div className='flex flex-row content-right justify-between items-center right-0'>
+                            <div className='ml-[14px] truncate'>
+                                <p className='truncate z-50 border-solid border-gray-500 border-[1px]'>aa´nodam doasodanpo adj{/* {list[0].name} */}</p>
+                            </div>
                             <img className='w-[43%]' src={image} alt="" />
                         </div>
                     </div>
