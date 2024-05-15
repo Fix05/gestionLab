@@ -1,37 +1,68 @@
-from fastapi import APIRouter, Query, HTTPException, Depends
+from fastapi import APIRouter, Query, HTTPException, Depends, Form, UploadFile, File
 from pydantic import BaseModel
+import shutil
+from datetime import datetime
 from typing import List
 import mysql.connector
 from db_connection import get_db
+import os
+import uuid
+from dotenv import load_dotenv
+load_dotenv()
 
 router = APIRouter()
 
 
+class NewEmployee(BaseModel):
+    name: str
+    lastname: str
+    dni: str
+    email: str
+    number: str
+    address: str
+    birth: str
+    emergency_number: str
+    nationality: str
+    gender: str
+    duration_contract: str
+    hours_per_day: int
+    start_day_contract: str
+    special_requirements: str
+    description_contract: str
+    benefits_contract: str
+    bonuses_contract: str
+    days_vacation: int
+    salary: float
+    department: str
+
+
 FIELD_TO_TABLE_MAPPING = {
-        "name_person": "person",
-        "lastname_person": "person",
-        "dni_person": "person",
-        "email_person": "person",
-        "number_person": "person",
-        "address_person": "person",
-        "birth_date_person": "person",
-        "emergency_number": "person",
-        "nationality_person": "person",
-        "gender_person": "person",
-        "duration_contract": "contract",
-        "start_day_contract": "contract",
-        "description_contract": "contract",
-        "benefits_contract": "contract",
-        "hours_per_day": "contract",
-        "bonuses_contract": "contract",
-        "special_requirements": "contract",
-        "department_employee": "employee",
-        "state_employee": "employee",
-        "base_salary": "salary_info",
-        "days_vacation": "contract",
-    }
+    "name_person": "person",
+    "lastname_person": "person",
+    "dni_person": "person",
+    "email_person": "person",
+    "number_person": "person",
+    "address_person": "person",
+    "birth_date_person": "person",
+    "emergency_number": "person",
+    "nationality_person": "person",
+    "gender_person": "person",
+    "duration_contract": "contract",
+    "start_day_contract": "contract",
+    "description_contract": "contract",
+    "benefits_contract": "contract",
+    "hours_per_day": "contract",
+    "bonuses_contract": "contract",
+    "special_requirements": "contract",
+    "department_employee": "employee",
+    "state_employee": "employee",
+    "base_salary": "salary_info",
+    "days_vacation": "contract",
+}
 
 # Get basic user info, email, name,
+
+
 @router.get("/get-info/{id}")
 def get_employee_info(id: int, db: mysql.connector.MySQLConnection = Depends(get_db)):
     try:
@@ -75,12 +106,12 @@ def get_employees_overall(roles: List[str] = Query(['User'], description='List o
         cursor.execute(query, roles)
         result = cursor.fetchall()
         cursor.close()
-        
+
         if result:
             return result
         else:
             return {"status_code": 403, "message": "Not found"}
-        
+
     except mysql.connector.Error as e:
         raise HTTPException(
             status_code=500, detail=f"Database error: {str(e)}")
@@ -92,7 +123,7 @@ def get_employees_overall(roles: List[str] = Query(['User'], description='List o
 # Get employees detailed info
 @router.get("/get-all-employee-info/{id}")
 def get_all_employee_info(id: int, db: mysql.connector.MySQLConnection = Depends(get_db)):
-    
+
     try:
         cursor = db.cursor(dictionary=True)
         query = """
@@ -121,7 +152,6 @@ def get_all_employee_info(id: int, db: mysql.connector.MySQLConnection = Depends
             return result
         else:
             return {"status_code": 403, "message": "Not found"}
-                
 
         return result
     except mysql.connector.Error as e:
@@ -142,7 +172,6 @@ def update_employee_info(id: int, updated_data: dict, db: mysql.connector.MySQLC
         cursor = db.cursor(dictionary=True)
 
         field, value = updated_data.popitem()
-        
 
         if field in FIELD_TO_TABLE_MAPPING:
             table_name = FIELD_TO_TABLE_MAPPING[field]
@@ -188,5 +217,105 @@ def update_employee_info(id: int, updated_data: dict, db: mysql.connector.MySQLC
         raise HTTPException(
             status_code=500, detail=f"Database error: {str(e)}")
     except Exception as e:
+        raise HTTPException(
+            status_code=500, detail=f"An unexpected error occurred: {str(e)}")
+
+
+@router.post("/add-new-employee")
+def add_new_employee(data: NewEmployee, db: mysql.connector.MySQLConnection = Depends(get_db)):
+    try:
+
+        cursor = db.cursor(dictionary=True)
+        add_person_query = f""" 
+            INSERT INTO person (name_person, lastname_person, dni_person, 
+            email_person, number_person, address_person, birth_date_person, 
+            emergency_number, nationality_person, gender_person)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """
+        add_contract_query = f""" 
+            INSERT INTO contract (duration_contract, hours_per_day, 
+            benefits_contract, start_day_contract, special_requirements, 
+            bonuses_contract, description_contract, days_vacation)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+        """
+        add_salary_info_query = f""" 
+            INSERT INTO salary_info (base_salary)
+            VALUES (%s)
+        """
+        add_employee_query = f""" 
+            INSERT INTO employee (pass_employee, permission_employee, department_employee, fk_person, fk_contract, fk_salary_info,  state_employee,  base_salary_employee)
+            VALUES ('abcd123456', 'User', %s, @last_person_id, @last_contract_id, @last_salary_id, 'Activo', %s)
+        """
+        cursor.execute(add_person_query, (data.name, data.lastname, data.dni, 
+                                      data.email, data.number, data.address, 
+                                      data.birth, data.emergency_number, 
+                                      data.nationality, data.gender))
+        
+        cursor.execute("SET @last_person_id = LAST_INSERT_ID();")
+        cursor.execute(add_contract_query, (data.duration_contract, data.hours_per_day, 
+                                         data.benefits_contract, data.start_day_contract, 
+                                         data.special_requirements, data.bonuses_contract, 
+                                         data.description_contract, data.days_vacation))
+        cursor.execute("SET @last_contract_id = LAST_INSERT_ID();")
+        cursor.execute(add_salary_info_query, (data.salary,))
+        cursor.execute("SET @last_salary_id = LAST_INSERT_ID();")
+        cursor.execute(add_employee_query, (data.department, data.salary))
+        employee_id= cursor.lastrowid
+
+        db.commit()
+        cursor.close()
+
+        return {"employe_inserted":employee_id}
+
+    except mysql.connector.Error as e:
+        print("Error:", e)
+        raise HTTPException(
+            status_code=500, detail=f"Database error: {str(e)}")
+    except Exception as e:
+        print("Error:", e)
+        raise HTTPException(
+            status_code=500, detail=f"An unexpected error occurred: {str(e)}")
+
+
+
+
+@router.post("/upload-employee-doc/{lista_id}/{emplyee_id}")
+def upload_new_document(lista_id: str, emplyee_id: int,  files: List[UploadFile] = File(...), db: mysql.connector.MySQLConnection = Depends(get_db)):
+    download_folder = os.getenv("EMPLOYEE_DOCUMENTS_DIRECTORY", '.')
+    try:
+        cursor = db.cursor(dictionary=True)
+        current_date = datetime.now()
+        verification_query = f""" 
+            SELECT id_employee 
+            FROM employee where id_employee = %s;
+        """
+        add_doc_query = f"""
+            INSERT INTO employee_documents (name_document, fk_employee, type_employee_documents, path_employee_documents)
+            VALUES (%s, %s, %s, %s)
+        """
+
+        cursor.execute(verification_query, (emplyee_id,))
+        verification = cursor.fetchone()
+        if(verification is not None):
+            for file in files:
+                format = '.'+(file.filename.rsplit('.', 1)[1])
+                unique_code = f"{current_date.strftime('%Y%m%d%H%M%S')}_{str(uuid.uuid4())[:8]}"
+                file_path = f"{download_folder}/{unique_code+format}"
+                with open(file_path, "wb") as new_file:
+                    shutil.copyfileobj(file.file, new_file)
+                cursor.execute(add_doc_query, (file.filename, emplyee_id, lista_id, file_path))
+        else:
+            return {"status_code": 403, "message": "Not found"}
+        db.commit()
+        cursor.close()
+
+        return {"status_code": 200, "message": "Inserted successfully"}
+
+    except mysql.connector.Error as e:
+        print("Error:", e)
+        raise HTTPException(
+            status_code=500, detail=f"Database error: {str(e)}")
+    except Exception as e:
+        print("Error:", e)
         raise HTTPException(
             status_code=500, detail=f"An unexpected error occurred: {str(e)}")

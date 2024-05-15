@@ -71,7 +71,7 @@ def background_task():
 background_thread = threading.Thread(target=background_task)
 background_thread.daemon = True
 background_thread.start()
-
+""" Payment and employee state, update days of vacation every year """
 
 #run server
 if __name__ == "__main__":
