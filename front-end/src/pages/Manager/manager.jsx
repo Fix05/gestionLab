@@ -1,8 +1,9 @@
 import Header from '../../components/header'
+import {AnimationProvider} from '../../contexts/doneAnimationContext'
 import styled from 'styled-components'
 import { useParams, Outlet } from "react-router-dom";
 import useFetch from '../../hooks/useFetch'
-import { createContext, useEffect, useState } from 'react';
+import { createContext, useEffect, useState, useContext } from 'react';
 import Aside from '../../components/aside';
 import Breadcrumb from '../../components/breadcumb'
 import image from '../../assets/images/mcloving.jpeg'
@@ -46,18 +47,20 @@ export default function Manager() {
     return (
         <Container className='bg-rose-50'>
             <paginationContext.Provider value={{ tablePage, setTablePage }}>
-                <pageContext.Provider value={{ page, setPage }}>
-                    <breadcrumbContext.Provider value={(breadcrumbNames, setBreadcrumbNames)}>
-                    <Header name={result.name} image={image} lastname={result.lastname} email={result.email} style={HEADER_BG} message={MESSAGE} />
-                    <Aside />
-                    <Div className='relative top-24 py-4 px-6'>
-                        <div className='flex justify-between h-10'>
-                            <Breadcrumb />
-                        </div>
-                        <Outlet /> 
-                    </Div>
-                    </breadcrumbContext.Provider>
-                </pageContext.Provider>
+                <AnimationProvider>
+                    <pageContext.Provider value={{ page, setPage }}>
+                        <breadcrumbContext.Provider value={(breadcrumbNames, setBreadcrumbNames)}>
+                            <Header name={result.name} image={image} lastname={result.lastname} email={result.email} style={HEADER_BG} message={MESSAGE} />
+                            <Aside />
+                            <Div className='relative top-24 py-4 px-6'>
+                                <div className='flex justify-between h-10'>
+                                    <Breadcrumb />
+                                </div>
+                                <Outlet />
+                            </Div>
+                        </breadcrumbContext.Provider>
+                    </pageContext.Provider>
+                </AnimationProvider>
             </paginationContext.Provider>
         </Container>
     )

@@ -18,8 +18,7 @@ export default function DoneAnimation({ open, setOpen, message, gif }) {
             <div className="flex flex-row font-semibold text-cyan-950 items-center m-2">
                 <img className='w-12' src={gif} alt="Loading" />
                 {message}
-            </div>
-            
+            </div> 
         </GenericModalTemplate>
     );
 }

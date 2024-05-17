@@ -17,8 +17,8 @@ const useFetch = (url, data, method, shouldFetch = true) => {
 
   const navigate = useNavigate()
   const [result, setResult] = useState({})
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
   const errorCodes = {
     402: "Debe de completar todos los campos",
     401: "Correo o contraseña incorrectos, por favor inténtelo de nuevo",
@@ -27,37 +27,55 @@ const useFetch = (url, data, method, shouldFetch = true) => {
     410: "Este empleado ya tiene ausencias registradas para el rango de días escogido"
   }
 
-  const doFetch = async (inFunctionData, inFnctionUrlParams) => {
+  const doFetch = async (inFunctionData, inFnctionUrl) => {
+    console.log("ENTRÖ");
+    try {
 
-    inFunctionData ? data = inFunctionData : null
-    inFnctionUrlParams ? url = url + inFnctionUrlParams : null
+      inFunctionData ? data = inFunctionData : null
+      inFnctionUrl ? url = inFnctionUrl : null
 
-    const isFormData = data instanceof FormData
+      const isFormData = data instanceof FormData
 
-    var options = {
-      method: method,
-      headers: !isFormData ? {"Content-Type": "application/json"} : {}
-    };
-    if (method === "POST" || method === "PUT") {
-      options.body = data instanceof FormData ? data : JSON.stringify(data);
-    }
-    setLoading(true)
-
-    if (url && !url.includes("undefined")) {
-      if (!("body" in options) || Object.keys(data).length || data instanceof FormData) {
-        console.log(url);
-        const response = await fetch(url, options)
-        const jsonResponse = await response.json()
-        if (jsonResponse && jsonResponse.status_code) {
-          jsonResponse.message = errorCodes[jsonResponse.status_code];
-          if (jsonResponse.status_code == 403) {
-            navigate("/Error")
-          }
-        }
-        setResult(jsonResponse)
-        setLoading(false)
-        return jsonResponse
+      var options = {
+        method: method,
+        headers: !isFormData ? { "Content-Type": "application/json" } : {}
+      };
+      if (method === "POST" || method === "PUT") {
+        options.body = data instanceof FormData ? data : JSON.stringify(data);
       }
+
+      setLoading(true)
+      setError(null)
+
+      if (url && !url.includes("undefined")) {
+        if (!("body" in options) || Object.keys(data).length || data instanceof FormData) {
+          const response = await fetch(url, options)
+          const jsonResponse = await response.json()
+          console.log(response, url, options.body);
+
+          if (!response.ok) {
+            throw new Error(jsonResponse.message || "An unknown error occurred");
+          }
+
+          if (jsonResponse && jsonResponse.status_code && errorCodes[jsonResponse.status_code]) {
+            jsonResponse.message = errorCodes[jsonResponse.status_code];
+            if (jsonResponse.status_code == 403) {
+              navigate("/Error")
+            }
+          }
+          setResult(jsonResponse)
+          return jsonResponse
+        }
+      }
+    } catch (error) {
+      setError(error.message);
+      console.error('Fetch error:', error);
+
+    } finally {
+     /*  setLoading(false); */
+      setTimeout(() => {
+        setLoading(false);
+      }, 2000)
     }
   }
 

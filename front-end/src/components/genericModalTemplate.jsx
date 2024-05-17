@@ -32,7 +32,7 @@ export default function GenericModalTemplate({ open, setOpen, handleClick, child
                             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
                             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                         >
-                            <Dialog.Panel className="flex flex-col items-center relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all ">
+                            <Dialog.Panel className="flex flex-col p-[8px] items-center relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all ">
 
                                 {children}
 
