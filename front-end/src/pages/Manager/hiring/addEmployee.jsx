@@ -67,10 +67,10 @@ export default function AddEmployee() {
         getResult(formData.current).then((result) => {
             const id = result.employe_inserted
             if (Array.from(photo.entries()).length) {
-                uploadDocuments(photo, ADD_DOCUMENTS_ENDPOINT + `Foto/${id}`)
+                uploadDocuments(photo, ADD_DOCUMENTS_ENDPOINT + `Photo/${id}`)
             }
             if (Array.from(idDocuments.entries()).length) {
-                uploadDocuments(idDocuments, ADD_DOCUMENTS_ENDPOINT + `Iden/${id}`)
+                uploadDocuments(idDocuments, ADD_DOCUMENTS_ENDPOINT + `Identification/${id}`)
             }
             if (Array.from(contractDocuments.entries()).length) {
                 uploadDocuments(contractDocuments, ADD_DOCUMENTS_ENDPOINT + `Contract/${id}`)

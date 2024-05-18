@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from routes.user_routes import router as user_router
 from routes.request_route import router as request_router
@@ -16,6 +17,13 @@ import threading
 import time
 
 APP = FastAPI()
+
+
+# Mount static files directory
+APP.mount("/employeeDocuments", StaticFiles(directory="C:/Users/arnog/OneDrive/Escritorio/GestionLab/documents/employeeDocuments"), name="employeeDocuments")
+APP.mount("/requestDocuments", StaticFiles(directory="C:/Users/arnog/OneDrive/Escritorio/GestionLab/documents/requestDocuments"), name="requestDocuments")
+
+
 
 ORIGINS = [
     "http://localhost.tiangolo.com",

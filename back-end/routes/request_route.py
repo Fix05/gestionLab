@@ -85,7 +85,7 @@ def get_request_document(id: int, db: mysql.connector.MySQLConnection = Depends(
     try:
         cursor = db.cursor(dictionary=True)
         query = f"""
-            SELECT path_document_request as file_path, name_document_request as name_file
+            SELECT path_document_request as file_path, name_document_request as file_name
             FROM document_request
             WHERE fk_request = %s;
         """
@@ -96,7 +96,7 @@ def get_request_document(id: int, db: mysql.connector.MySQLConnection = Depends(
 
 
         if path:
-            return FileResponse(path=f"{path['file_path']}", media_type='application/octet-stream', filename=f"{path['name_file']}")
+            return FileResponse(path=f"{path['file_path']}", media_type='application/octet-stream', filename=f"{path['file_name']}")
         else:
             return {"status_code": 403, "message": "Not found"}
 

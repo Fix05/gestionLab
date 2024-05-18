@@ -1,7 +1,7 @@
 import Adding from '../pageComponents/adding'
 import AddVacationModal from './addVacationModal'
 import {ExtraMapping} from '../../../mapping/dataMapping'
-import DoneGif from '../../../assets/gif/cuaderno.gif'
+import DoneGif from '../../../assets/gif/calendar.gif'
 
 
 export default function AddVacations() {

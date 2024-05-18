@@ -150,18 +150,13 @@ def get_all_requests_info(id: int, db: mysql.connector.MySQLConnection = Depends
             status_code=500, detail=f"An unexpected error occurred: {str(e)}")
 
 
-@router.get("/getFile")
-def get_file():
-    download_folder = os.getenv("REQUEST_DOCUMENTS_DIRECTORY", '.')
-    return FileResponse(path=f"{download_folder}/20240501082715_673405ec01.pdf", media_type='application/octet-stream')
-
 
 @router.get("/employee-get-request-document/{id}")
 def employee_get_request_document(id: int, db: mysql.connector.MySQLConnection = Depends(get_db)):
     try:
         cursor = db.cursor(dictionary=True)
         query = f"""
-            SELECT path_document_request as file_path, name_document_request as name_file
+            SELECT path_document_request as file_path, name_document_request as file_name
             FROM document_request
             WHERE fk_request = %s;
         """
@@ -172,9 +167,9 @@ def employee_get_request_document(id: int, db: mysql.connector.MySQLConnection =
 
 
         if path:
-            return FileResponse(path=f"{path['file_path']}", media_type='application/octet-stream', filename=f"{path['name_file']}")
+            return FileResponse(path=f"{path['file_path']}", media_type='application/octet-stream', filename=f"{path['file_name']}")
         else:
-            return {"status_code": 403, "message": "Not found"}
+            return {"status_code": 406, "message": "Not found"}
 
     except mysql.connector.Error as e:
         raise HTTPException(

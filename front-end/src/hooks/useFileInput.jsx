@@ -58,7 +58,6 @@ const useFileInput = (image, limit = 1) => {
         const dotIndex = fileName.lastIndexOf(".") + 1
         const format = fileName.slice(dotIndex, fileName.length + 1)
         return format
-
     }
 
     useEffect(() => {

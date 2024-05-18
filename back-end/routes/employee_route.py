@@ -4,6 +4,7 @@ import shutil
 from datetime import datetime
 from typing import List
 import mysql.connector
+from fastapi.responses import FileResponse
 from db_connection import get_db
 import os
 import uuid
@@ -70,8 +71,8 @@ def get_employee_info(id: int, db: mysql.connector.MySQLConnection = Depends(get
         cursor = db.cursor(dictionary=True)
         query = """
             SELECT person.name_person as name, person.lastname_person as lastname, person.email_person as email
-            FROM person 
-            JOIN employee ON person.id_person = employee.fk_person 
+            FROM person
+            JOIN employee ON person.id_person = employee.fk_person
             WHERE employee.id_employee = %s
         """
         cursor.execute(query, (id,))
@@ -98,9 +99,9 @@ def get_employees_overall(roles: List[str] = Query(['User'], description='List o
         in_clause = ', '.join(['%s' for _ in roles])
         query = f"""
             SELECT person.lastname_person as lastname, person.name_person as name,
-            person.dni_person as dni, department_employee as department, id_employee as id, 
-            state_employee as state 
-            FROM person 
+            person.dni_person as dni, department_employee as department, id_employee as id,
+            state_employee as state
+            FROM person
             JOIN employee ON person.id_person = employee.fk_person
             WHERE permission_employee IN ({in_clause})
         """
@@ -128,15 +129,15 @@ def get_all_employee_info(id: int, db: mysql.connector.MySQLConnection = Depends
     try:
         cursor = db.cursor(dictionary=True)
         query = """
-        SELECT name_person, lastname_person, dni_person, 
+        SELECT name_person, lastname_person, dni_person,
             email_person, number_person, address_person,
-            birth_date_person, emergency_number, nationality_person, 
-            gender_person, duration_contract, start_day_contract, 
+            birth_date_person, emergency_number, nationality_person,
+            gender_person, duration_contract, start_day_contract,
             description_contract, benefits_contract,
-            hours_per_day, bonuses_contract, special_requirements, 
-            department_employee, state_employee, base_salary_employee, 
+            hours_per_day, bonuses_contract, special_requirements,
+            department_employee, state_employee, base_salary_employee,
             days_vacation
-            FROM person 
+            FROM person
             JOIN employee on id_person = fk_person
             JOIN contract on fk_contract = id_contract
             WHERE id_employee = %s;
@@ -226,23 +227,23 @@ def add_new_employee(data: NewEmployee, db: mysql.connector.MySQLConnection = De
     try:
 
         cursor = db.cursor(dictionary=True)
-        add_person_query = f""" 
-            INSERT INTO person (name_person, lastname_person, dni_person, 
-            email_person, number_person, address_person, birth_date_person, 
+        add_person_query = f"""
+            INSERT INTO person (name_person, lastname_person, dni_person,
+            email_person, number_person, address_person, birth_date_person,
             emergency_number, nationality_person, gender_person)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         """
-        add_contract_query = f""" 
-            INSERT INTO contract (duration_contract, hours_per_day, 
-            benefits_contract, start_day_contract, special_requirements, 
+        add_contract_query = f"""
+            INSERT INTO contract (duration_contract, hours_per_day,
+            benefits_contract, start_day_contract, special_requirements,
             bonuses_contract, description_contract, days_vacation)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
         """
-        add_salary_info_query = f""" 
+        add_salary_info_query = f"""
             INSERT INTO salary_info (base_salary)
             VALUES (%s)
         """
-        add_employee_query = f""" 
+        add_employee_query = f"""
             INSERT INTO employee (pass_employee, permission_employee, department_employee, fk_person, fk_contract, fk_salary_info,  state_employee,  base_salary_employee)
             VALUES ('abcd123456', 'User', %s, @last_person_id, @last_contract_id, @last_salary_id, 'Activo', %s)
         """
@@ -284,12 +285,12 @@ def upload_new_document(list_id: str, employee_id: int, files: List[UploadFile] 
         cursor = db.cursor(dictionary=True)
         current_date = datetime.now()
 
-        verification_query = f""" 
-            SELECT id_employee 
+        verification_query = f"""
+            SELECT id_employee
             FROM employee where id_employee = %s;
         """
         add_doc_query = f"""
-            INSERT INTO employee_documents (name_document, fk_employee, type_employee_documents, path_employee_documents)
+            INSERT INTO employee_documents (name_employee_document, fk_employee, type_employee_documents, path_employee_documents)
             VALUES (%s, %s, %s, %s)
         """
 
@@ -302,7 +303,8 @@ def upload_new_document(list_id: str, employee_id: int, files: List[UploadFile] 
                 file_path = f"{download_folder}/{unique_code+format}"
                 with open(file_path, "wb") as new_file:
                     shutil.copyfileobj(file.file, new_file)
-                cursor.execute(add_doc_query, (file.filename, employee_id, list_id, file_path))
+                cursor.execute(add_doc_query, (file.filename,
+                               employee_id, list_id, file_path))
         else:
             return {"status_code": 403, "message": "Not found"}
         db.commit()
@@ -333,7 +335,6 @@ async def add_new_request(files: UploadFile = File(None), db: mysql.connector.My
                 {"filename": file.filename, "content_type": file.content_type, "size": len(content)})
         return {"files": file_details}
 
-        
     except mysql.connector.Error as e:
         print("Error:", e)
         raise HTTPException(
@@ -344,11 +345,71 @@ async def add_new_request(files: UploadFile = File(None), db: mysql.connector.My
             status_code=500, detail=f"An unexpected error occurred: {str(e)}")
 
 
+@router.get("/download-photo/{id}")
+async def download_employee_photo(id: int, db: mysql.connector.MySQLConnection = Depends(get_db)):
+    try:
+        cursor = db.cursor(dictionary=True)
+        query = f"""
+            SELECT path_employee_documents as file_path, name_employee_document as file_name
+            FROM employee_documents
+            WHERE fk_employee = %s
+            AND type_employee_documents = 'Foto';
+        """
 
-@router.post("/upload-files/")
-async def create_upload_files(files: List[UploadFile] = File(...)):
-    file_details = []
-    for file in files:
-        content = await file.read()
-        file_details.append({"filename": file.filename, "content_type": file.content_type, "size": len(content)})
-    return {"files": file_details}
+        cursor.execute(query, (id,))
+        path = cursor.fetchone()
+        cursor.close()
+
+        if path:
+            return FileResponse(path=f"{path['file_path']}", media_type='image/jpeg', filename=f"{path['file_name']}")
+        else:
+            return {"status_code": 406, "message": "Not found"}
+
+    except mysql.connector.Error as e:
+        raise HTTPException(
+            status_code=500, detail=f"Database error: {str(e)}")
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, detail=f"An unexpected error occurred: {str(e)}")
+    
+
+@router.get("/download-identification-documents/{doc_type}/{id}")
+async def download_employee_identification_documents(doc_type: str, id: int, db: mysql.connector.MySQLConnection = Depends(get_db)):
+    try:
+        cursor = db.cursor(dictionary=True)
+        query = f"""
+            SELECT path_employee_documents as file_path, name_employee_document as file_name
+            FROM employee_documents
+            WHERE fk_employee = %s
+            AND type_employee_documents = %s;
+        """
+
+        cursor.execute(query, (id, doc_type))
+        files = cursor.fetchall()
+        cursor.close()
+
+        if files:
+            files_info = [
+                {
+                    "url": f"http://127.0.0.1:8000/employeeDocuments/{file['file_path'].split('/')[-1]}",
+                    "name": file['file_name']
+                }
+                for file in files
+            ]
+
+            for file in files_info:
+                print(file['url'])
+
+            return files_info
+        else:
+            return {"status_code": 406, "message": "Not found"}
+
+    except mysql.connector.Error as e:
+        raise HTTPException(
+            status_code=500, detail=f"Database error: {str(e)}")
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, detail=f"An unexpected error occurred: {str(e)}")
+
+
+

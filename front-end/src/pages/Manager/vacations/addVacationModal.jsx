@@ -19,7 +19,7 @@ export default function AddVacationModal({ open, setOpen, id, employeeData, setA
     const ADD_VACATION_ENDPOINT = `http://127.0.0.1:8000/api/vacations/insert-new-absence/${id}`
 
     const [daysLeft, getDaysLeft] = useFetch(DAYS_LEFT_ENDPOINT, null, "GET")
-    const [addingResult, addVacation] = useFetch(ADD_VACATION_ENDPOINT, {}, "POST", false)
+    const [addingResult, addVacation, addingError] = useFetch(ADD_VACATION_ENDPOINT, {}, "POST", false)
     const [newDaysLeft, setNewDaysLeft] = useState()
     const [pickedDays, setPickedDays] = useState()
     const type = useField()
@@ -78,11 +78,10 @@ export default function AddVacationModal({ open, setOpen, id, employeeData, setA
 
     useEffect(() => {
         if (Object.keys(addingResult).length > 0) {
-            if (addingResult.message) {
-                setAlertMessage(addingResult.message)
+            if (addingError) {
+                setAlertMessage(addingError)
                 setOpenAlert(true)
             } else {
-                setAlertMessage("Vacaciones registrada")
                 setOpen(false)
                 setAnimation(true)
             }
@@ -107,6 +106,7 @@ export default function AddVacationModal({ open, setOpen, id, employeeData, setA
             if ((daysLeft.days_left - days) < 0) {
                 setAlertMessage(`El empleado no tiene tantos días de vacaciones,
                 le quedan ${daysLeft.days_left} días, el rango de fecha que elegiste tiene ${days} días`)
+                console.log(("If open alert"));
                 setOpenAlert(true)
                 setRange([{
                     startDate: new Date(),

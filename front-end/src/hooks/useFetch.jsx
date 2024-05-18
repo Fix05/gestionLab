@@ -23,12 +23,12 @@ const useFetch = (url, data, method, shouldFetch = true) => {
     402: "Debe de completar todos los campos",
     401: "Correo o contraseña incorrectos, por favor inténtelo de nuevo",
     403: "Empleado no encontrado",
+    406: "Item no encontrado",
     407: "No hay registros aún",
     410: "Este empleado ya tiene ausencias registradas para el rango de días escogido"
   }
 
   const doFetch = async (inFunctionData, inFnctionUrl) => {
-    console.log("ENTRÖ");
     try {
 
       inFunctionData ? data = inFunctionData : null
@@ -59,6 +59,7 @@ const useFetch = (url, data, method, shouldFetch = true) => {
 
           if (jsonResponse && jsonResponse.status_code && errorCodes[jsonResponse.status_code]) {
             jsonResponse.message = errorCodes[jsonResponse.status_code];
+            setError(jsonResponse.message)
             if (jsonResponse.status_code == 403) {
               navigate("/Error")
             }
