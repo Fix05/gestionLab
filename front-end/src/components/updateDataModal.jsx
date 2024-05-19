@@ -5,20 +5,24 @@ import useField from '../hooks/useField'
 
 import dictionary from '../dictionaries/employeeInfo.json'
 
-export default function UpdateDataModal({ field, open, setOpen, currentValue, id, doFetch}) {
+export default function UpdateDataModal({ field, open, setOpen, inputParams, id, reload }) {
 
     const inputValue = useField();
-    const [data, setData] = useState({})
+    /* const [data, setData] = useState({}) */
     const [errorMessage, setErrorMessage] = useState("")
     const URL = `http://127.0.0.1:8000/api/rh/update-employee-info/${id}`
-    const [result] = useFetch(URL, data, "PUT")
+    const [result, update] = useFetch(URL, null, "PUT", false)
 
 
     const handleClick = (ev) => {
-        if (inputValue.field != "") {;
-            setData({ [field]: inputValue.field })
-            setOpen(false) 
-        } else {;
+        if (inputValue.field != "") {
+            const data = { [field]: inputValue.field }
+            update(data).then(() => {
+                reload()
+            })
+            setOpen(false)
+        } else {
+            ;
             setErrorMessage(`Introduzca un ${dictionary[field].name.toLowerCase()} válido`)
         }
     }
@@ -73,7 +77,7 @@ export default function UpdateDataModal({ field, open, setOpen, currentValue, id
                                             </div>
                                         </div>
                                         <div>
-                                            <input autoComplete='off' onChange={inputValue.handleChange} type="text" id="first_name" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" placeholder={currentValue} required />
+                                            <input autoComplete='off' onChange={inputValue.handleChange} type={inputParams.type} maxLength={inputParams.size} id="first_name" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" placeholder={inputParams.placeholder} required />
                                             <span className='flex justify-center text-xs text-red-700'>{errorMessage}</span>
                                         </div>
                                     </div>

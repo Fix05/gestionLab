@@ -353,7 +353,7 @@ async def download_employee_photo(id: int, db: mysql.connector.MySQLConnection =
             SELECT path_employee_documents as file_path, name_employee_document as file_name
             FROM employee_documents
             WHERE fk_employee = %s
-            AND type_employee_documents = 'Foto';
+            AND type_employee_documents = 'Photo';
         """
 
         cursor.execute(query, (id,))

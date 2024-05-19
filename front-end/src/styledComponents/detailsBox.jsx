@@ -38,6 +38,21 @@ border-color: rgb(156 163 175);
 border-radius: 10px;
 `
 
+
+export const GridDiv = styled.div`
+background-color: white;
+padding: 30px;
+display: grid;
+grid-template-columns: repeat(4, 1fr);
+flex-wrap: wrap;
+width: 94%;
+z-index: 10;
+margin: 15px 30px 30px 30px;
+border: solid 2px;
+border-color: rgb(156 163 175);
+border-radius: 10px;
+`
+
 export const Form = styled.form`
 background-color: white;
 padding: 30px;

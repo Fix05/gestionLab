@@ -261,7 +261,7 @@ export default function AddEmployee() {
                         <Info >
                             <h1 className='text-gray-600 font-bold text-xs'>Salario:</h1>
                             <div className='min-h-6 bg-white mt-2 '>
-                                <input type="text" {...register("salary", { required: true })} maxLength={10} className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="" required />
+                                <input type="number" {...register("salary", { required: true })} maxLength={10} className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="" required />
                                 <div className='relative'>
                                     {errors.salary && <span className='absolute top-0 text-red-500 text-xs'>Campo requerido</span>}
                                 </div>
@@ -297,9 +297,6 @@ export default function AddEmployee() {
                     </div>
 
                 </form>
-
-
-
             </Container>
         </EmployeeData>
     )
