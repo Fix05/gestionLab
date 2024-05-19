@@ -18,6 +18,9 @@ def get_manager_assigned_requests(time: str, db: mysql.connector.MySQLConnection
         query = f"""
             SELECT {time_expression} AS mes, SUM(hours_extras) AS 'Horas extra'
             FROM extras_record
+            JOIN remuneration_record on fk_remuneration_record = id_remuneration_record
+            JOIN employee on fk_employee = id_employee
+            WHERE state_employee != "Deshabilitado"
             GROUP BY {time_expression};
         """
 
@@ -58,6 +61,7 @@ def get_absences_employee_type_relation(db: mysql.connector.MySQLConnection = De
             ) a
             JOIN employee e ON a.fk_employee = e.id_employee
             JOIN person p ON e.fk_person = p.id_person
+            WHERE e.state_employee != "Deshabilitado"
             GROUP BY a.fk_employee;
         """
 
@@ -87,7 +91,9 @@ def get_count_requests_vs_type(db: mysql.connector.MySQLConnection = Depends(get
         query = f"""
             SELECT type_request, count(*) as type_count 
             FROM requests
-            group by (type_request)
+            JOIN employee WHERE fk_employee = id_employee
+            AND state_employee != "Deshabilitado"
+            GROUP BY (type_request)
         """
 
         cursor.execute(query)
@@ -123,6 +129,7 @@ def get_requests_employee_type_relation(db: mysql.connector.MySQLConnection = De
             FROM requests r
             JOIN employee e ON r.fk_employee = e.id_employee
             JOIN person p ON e.fk_person = p.id_person
+            WHERE e.state_employee != "Deshabilitado"
             GROUP BY r.fk_employee;
         """
 

@@ -21,7 +21,9 @@ def validate_user(user: User, db: mysql.connector.MySQLConnection = Depends(get_
             SELECT employee.permission_employee, id_employee 
             FROM employee
             JOIN person ON employee.fk_person = person.id_person
-            WHERE employee.pass_employee = %s AND person.email_person = %s
+            WHERE employee.pass_employee = %s 
+            AND person.email_person = %s
+            AND state_employee != "Deshabilitado";
         """
         params = (user.password, user.email)
         cursor.execute(query, params)

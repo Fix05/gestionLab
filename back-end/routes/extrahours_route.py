@@ -38,7 +38,8 @@ def get_vacations_record(dates: Dates, roles: List[str] = Query(['User'], descri
             INNER JOIN person on id_person = fk_person
             WHERE YEAR(date_extras) = %s
             AND MONTH(date_extras) =  %s
-            AND permission_employee IN ({in_clause});            
+            AND permission_employee IN ({in_clause})
+            AND state_employee != "Deshabilitado";            
         """
 
 
@@ -107,7 +108,8 @@ def get_add_extras_overall(roles: List[str] = Query(['User'], description='List 
             FROM person 
             JOIN employee ON person.id_person = employee.fk_person
             JOIN salary_info ON id_salary_info = employee.fk_salary_info
-            WHERE permission_employee IN ({in_clause});
+            WHERE permission_employee IN ({in_clause})
+            AND state_employee != "Deshabilitado";
         """
 
         cursor.execute(query, roles)

@@ -30,7 +30,8 @@ def get_vacation_days_left(id: int, db: mysql.connector.MySQLConnection = Depend
             (SELECT days_vacation
             FROM contract
             JOIN employee on id_contract = employee.fk_contract
-            WHERE id_employee = %s) -
+            WHERE state_employee != "Deshabilitado"
+            AND id_employee = %s) -
             COALESCE((SELECT SUM(taken_days_absences) as taken_days 
                     FROM absences
                     WHERE YEAR(start_date_absence) = %s
@@ -169,7 +170,8 @@ def get_vacations_record(dates: Dates, roles: List[str] = Query(['User'], descri
             INNER JOIN person on id_person = fk_person
             WHERE YEAR(start_date_absence) = %s
             AND MONTH(start_date_absence) =  %s
-            AND permission_employee IN ({in_clause});            
+            AND permission_employee IN ({in_clause})
+            AND state_employee != "Deshabilitado";            
         """
 
         params = (year, month, *roles)
@@ -222,7 +224,8 @@ def update_employee_state(db):
         update_to_permission_state_query = f"""
             UPDATE employee
             SET state_employee = 'Permiso'
-            where id_employee IN (
+            WHERE state_employee != "Deshabilitado"
+            AND id_employee IN (
                 select fk_employee from absences
                 WHERE start_date_absence <= DATE(NOW())
                 AND end_date_absence >= DATE(NOW())
@@ -233,7 +236,8 @@ def update_employee_state(db):
         update_to_vacation_state_query = f""" 
             UPDATE employee
             SET state_employee = 'En vacaciones'
-            where id_employee IN (
+            WHERE state_employee != "Deshabilitado"
+            AND id_employee IN (
                 select fk_employee from absences
                 WHERE start_date_absence <= DATE(NOW())
                 AND end_date_absence >= DATE(NOW())
@@ -244,7 +248,8 @@ def update_employee_state(db):
         update_to_active_state_query = f""" 
             UPDATE employee
             SET state_employee = 'Activo'
-            where id_employee NOT IN (
+            WHERE state_employee != "Deshabilitado"
+            AND id_employee NOT IN (
                 select fk_employee from absences
                 WHERE start_date_absence <= DATE(NOW())
                 AND end_date_absence >= DATE(NOW())

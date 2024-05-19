@@ -74,6 +74,7 @@ def get_employee_info(id: int, db: mysql.connector.MySQLConnection = Depends(get
             FROM person
             JOIN employee ON person.id_person = employee.fk_person
             WHERE employee.id_employee = %s
+            AND employee.state_employee != "Deshabilitado";
         """
         cursor.execute(query, (id,))
         result = cursor.fetchone()
@@ -104,6 +105,7 @@ def get_employees_overall(roles: List[str] = Query(['User'], description='List o
             FROM person
             JOIN employee ON person.id_person = employee.fk_person
             WHERE permission_employee IN ({in_clause})
+            AND state_employee != "Deshabilitado";
         """
         cursor.execute(query, roles)
         result = cursor.fetchall()
@@ -140,7 +142,8 @@ def get_all_employee_info(id: int, db: mysql.connector.MySQLConnection = Depends
             FROM person
             JOIN employee on id_person = fk_person
             JOIN contract on fk_contract = id_contract
-            WHERE id_employee = %s;
+            WHERE id_employee = %s
+            AND state_employee != "Deshabilitado";
         """
         cursor.execute(query, (id,))
         result = cursor.fetchone()
@@ -413,3 +416,25 @@ async def download_employee_identification_documents(doc_type: str, id: int, db:
 
 
 
+@router.put("/disable-employee/{id}")
+def disble_employee(id: int, db: mysql.connector.MySQLConnection = Depends(get_db)):
+    try:
+        cursor = db.cursor(dictionary=True)
+        query = f"""
+            UPDATE employee 
+            SET state_employee = "Deshabilitado"
+            WHERE id_employee = %s;
+        """
+
+        cursor.execute(query, (id,))
+        db.commit()
+        cursor.close()
+
+        return {"status_code": 200, "message": "Employee disabled"}
+
+    except mysql.connector.Error as e:
+        raise HTTPException(
+            status_code=500, detail=f"Database error: {str(e)}")
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, detail=f"An unexpected error occurred: {str(e)}")

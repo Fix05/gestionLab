@@ -27,6 +27,7 @@ def get_manager_assigned_requests(id: int, roles: List[str] = Query(['User'], de
             join employee on fk_employee = id_employee
             join person on fk_person = id_person
             WHERE permission_employee IN ({in_clause})
+            AND state_employee != "Deshabilitado";
             ORDER BY id_request DESC;"""
 
         cursor.execute(query, roles)

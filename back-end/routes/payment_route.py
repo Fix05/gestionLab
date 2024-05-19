@@ -36,19 +36,6 @@ def get_payment_overall(dates: Dates, roles: List[str] = Query(['User'], descrip
 
         cursor = db.cursor(dictionary=True)
         in_clause = ', '.join(['%s' for _ in roles])
-        # query = f
-        """
-            SELECT name_person as name, lastname_person as lastname, id_employee, id_salary_info as id_salary,
-            base_salary_employee as base_salary, id_remuneration_record as id_payment, date_remuneration as date, state_remuneration as state,
-            min_pay_date_remuneration as min_date, max_pay_date_remuneration as max_date, amount_remuneration as amount
-            FROM remuneration_record
-            INNER JOIN salary_info on remuneration_record.fk_salary_info = id_salary_info
-            INNER JOIN employee on id_salary_info = employee.fk_salary_info
-            INNER JOIN person on id_person = fk_person
-            WHERE min_pay_date_remuneration >= %s
-            AND max_pay_date_remuneration <= %s
-            AND permission_employee IN ({in_clause});
-        """
 
         query = f"""
             SELECT name_person as name, lastname_person as lastname, id_employee,
@@ -59,7 +46,8 @@ def get_payment_overall(dates: Dates, roles: List[str] = Query(['User'], descrip
             INNER JOIN person on id_person = fk_person
             WHERE min_pay_date_remuneration >= %s
             AND max_pay_date_remuneration <= %s
-            AND permission_employee IN ({in_clause});
+            AND permission_employee IN ({in_clause})
+            AND state_employee != "Deshabilitado";
         """
 
         params = (formated_start, formated_end, *roles)

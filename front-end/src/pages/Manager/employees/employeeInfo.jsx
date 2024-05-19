@@ -28,9 +28,11 @@ export default function EmployeeInfo() {
     const EMPLOYEE_PHOTO_ENDPOINT = `http://127.0.0.1:8000/api/rh/download-photo/${employeeId}`
     const EMPLOYEE_ID_DOCS_ENDPOINT = `http://127.0.0.1:8000/api/rh/download-identification-documents/Identification/${employeeId}`
     const EMPLOYEE_CONTRACT_DOCS_ENDPOINT = `http://127.0.0.1:8000/api/rh/download-identification-documents/Contract/${employeeId}`
+    const DISABLE_EMPLOYEE_ENDPOINT = `http://127.0.0.1:8000/api/rh/disable-employee/${employeeId}`
     const [result, doFetch] = useFetch(EMPLOYEE_DATA_ENDPOINT, null, "GET")
     const [idDocs] = useFetch(EMPLOYEE_ID_DOCS_ENDPOINT, null, "GET")
     const [contractDocs] = useFetch(EMPLOYEE_CONTRACT_DOCS_ENDPOINT, null, "GET")
+    const [, disableEmployee, disableError] = useFetch(DISABLE_EMPLOYEE_ENDPOINT, null, "PUT", false)
     const [open, setOpen] = useState(false)
     const [openDelete, setOpenDelete] = useState(false)
     const [field, setField] = useState('')
@@ -48,7 +50,11 @@ export default function EmployeeInfo() {
     }
 
     const deleteEmployee = () => { 
-        console.log("Eliminado");
+        
+        disableEmployee().then(()=>{
+            
+        })
+
         setOpenDelete(false)
      }
 
