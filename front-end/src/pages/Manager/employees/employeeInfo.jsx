@@ -1,14 +1,17 @@
 import styled from 'styled-components'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import useFetch from '../../../hooks/useFetch'
 import { useState, useEffect } from 'react'
 import UpdateDataModal from '../../../components/updateDataModal'
 import dictionary from '../../../dictionaries/employeeInfo.json'
 import IconsDictionary from '../../../dictionaries/fileIcons.json'
 import { EmployeeData, Container, Div, Info, GridDiv } from '../../../styledComponents/detailsBox'
+import Loading from '../../../components/loadingModal'
 import DefaultImage from '../../../assets/images/defaultUser-removebg-preview.png'
 import ParamsDict from '../../../dictionaries/updateInputParams.json'
 import ConfirmAction from '../../../components/confirmAction'
+import { useAnimation } from '../../../contexts/doneAnimationContext'
+import DeleteGif from '../../../assets/gif/payment.gif'
 
 
 const Box = styled.div`
@@ -23,7 +26,8 @@ transition: opacity 0.5s ease;
 
 export default function EmployeeInfo() {
 
-    const { employeeId } = useParams()
+    const { id, employeeId } = useParams()
+    const navigate = useNavigate()
     const EMPLOYEE_DATA_ENDPOINT = `http://127.0.0.1:8000/api/rh/get-all-employee-info/${employeeId}`
     const EMPLOYEE_PHOTO_ENDPOINT = `http://127.0.0.1:8000/api/rh/download-photo/${employeeId}`
     const EMPLOYEE_ID_DOCS_ENDPOINT = `http://127.0.0.1:8000/api/rh/download-identification-documents/Identification/${employeeId}`
@@ -32,11 +36,12 @@ export default function EmployeeInfo() {
     const [result, doFetch] = useFetch(EMPLOYEE_DATA_ENDPOINT, null, "GET")
     const [idDocs] = useFetch(EMPLOYEE_ID_DOCS_ENDPOINT, null, "GET")
     const [contractDocs] = useFetch(EMPLOYEE_CONTRACT_DOCS_ENDPOINT, null, "GET")
-    const [, disableEmployee, disableError] = useFetch(DISABLE_EMPLOYEE_ENDPOINT, null, "PUT", false)
+    const [, disableEmployee, disableError, deletingLoading] = useFetch(DISABLE_EMPLOYEE_ENDPOINT, null, "PUT", false)
     const [open, setOpen] = useState(false)
     const [openDelete, setOpenDelete] = useState(false)
     const [field, setField] = useState('')
     const [inputParams, setInputParams] = useState('')
+    const { setShowAnimation, setGif, setMessage } = useAnimation();
 
 
     const handleClick = (ev) => {
@@ -49,14 +54,22 @@ export default function EmployeeInfo() {
         setOpen(!open)
     }
 
-    const deleteEmployee = () => { 
-        
-        disableEmployee().then(()=>{
-            
+    const deleteEmployee = () => {
+
+        disableEmployee().then((result) => {
+            console.log(result.status_code);
+            console.log(deletingLoading);
+
+            if (result.status_code == '200') {
+                navigate(`/Manager/${id}/employees`);
+                setGif(DeleteGif)
+                setMessage('Empleado eliminado')
+                setShowAnimation(true)
+            }
         })
 
         setOpenDelete(false)
-     }
+    }
 
     useEffect(() => {
         doFetch()
@@ -77,13 +90,14 @@ export default function EmployeeInfo() {
     return (
         <EmployeeData>
             <Container className='max-h-[355px]'>
-                <ConfirmAction open={openDelete} setOpen={setOpenDelete} positiveAction={()=>deleteEmployee()} negativeAction={()=>setOpenDelete(false)} positiveText={'Aceptar'} negativeText={'Cancelar'} title={"Desea eliminar este empleado del sistema"}>
+                <ConfirmAction open={openDelete} setOpen={setOpenDelete} positiveAction={() => deleteEmployee()} negativeAction={() => setOpenDelete(false)} positiveText={'Aceptar'} negativeText={'Cancelar'} title={"Desea eliminar este empleado del sistema"}>
                     <div className='flex flex-col'>
-                    <p className='font-bold'>Cuidado!!!</p>
-                    <p className='flex-wrap w-[350px]'>Está seguro que desea eliminar este empleado del sistema, si continúa todos los datos de este empleado se perderán se perderán.</p>
+                        <p className='font-bold'>Cuidado!!!</p>
+                        <p className='flex-wrap w-[350px]'>Está seguro que desea eliminar este empleado del sistema, si continúa todos los datos de este empleado se perderán se perderán.</p>
                     </div>
-                    
+
                 </ConfirmAction>
+                <Loading loading={deletingLoading} text={"Eliminando"} />
                 <UpdateDataModal field={field} open={open} setOpen={setOpen} inputParams={inputParams} id={employeeId} reload={doFetch} />
                 <span className="mt-4 relative flex justify-center">
                     <div
@@ -181,7 +195,7 @@ export default function EmployeeInfo() {
                             </ul>
                         </Box>
                     </Info>
-                    <button onClick={()=>setOpenDelete(true)} className='absolute bottom-0 right-2 text-red-600 text-xs font-bold'>
+                    <button onClick={() => setOpenDelete(true)} className='absolute bottom-0 right-2 text-red-600 text-xs font-bold'>
                         Eliminar empleado
                     </button>
 

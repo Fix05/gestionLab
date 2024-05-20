@@ -16,7 +16,7 @@ export default function Manager() {
     const [changedList, setChangedList] = useState([{}])
     const [originalValues, setOriginalValues] = useState([{}])
     const { tablePage, setTablePage } = useContext(paginationContext);
-    const { showAnimation, setShowAnimation } = useAnimation();
+    const { showAnimation, setShowAnimation, renderComponent, message } = useAnimation();
 
 
     const HandleChange = (ev) => {
@@ -44,7 +44,7 @@ export default function Manager() {
 
     return (
         <div className="mt-6 rounded-lg border-2 border-gray-400 bg-white ">
-            <DoneAnimation open={showAnimation} setOpen={setShowAnimation} message={"Nuevo empleado insertado"} gif={AddedEmployee}/>
+            <DoneAnimation open={showAnimation} setOpen={setShowAnimation} message={message} gif={renderComponent}/>
             <Table values={changedList} setValues={setChangedList} originalValues={originalValues} bgcolor={"bg-lime-200"} numberOfElements={ELEMENTS_PER_PAGE} />
             <div className="rounded-b-lg border-t border-gray-200 px-4 py-2">
                 <Pagination totalPages={Math.ceil(changedList.length / 10)} />

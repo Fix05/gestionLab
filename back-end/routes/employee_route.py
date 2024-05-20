@@ -8,6 +8,7 @@ from fastapi.responses import FileResponse
 from db_connection import get_db
 import os
 import uuid
+import time
 import traceback
 from dotenv import load_dotenv
 load_dotenv()
@@ -269,7 +270,10 @@ def add_new_employee(data: NewEmployee, db: mysql.connector.MySQLConnection = De
         db.commit()
         cursor.close()
 
-        return {"employe_inserted": employee_id}
+        if(employee_id):
+            return {"status_code": 200, "employe_inserted": employee_id}
+        else:
+            return {"status_code": 403, "message": "Not found"}
 
     except mysql.connector.Error as e:
         print("Error:", e)
@@ -430,6 +434,7 @@ def disble_employee(id: int, db: mysql.connector.MySQLConnection = Depends(get_d
         db.commit()
         cursor.close()
 
+        time.sleep(5)
         return {"status_code": 200, "message": "Employee disabled"}
 
     except mysql.connector.Error as e:

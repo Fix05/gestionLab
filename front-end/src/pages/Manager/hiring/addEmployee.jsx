@@ -1,6 +1,6 @@
 import { EmployeeData, Container, Div, Form, Info, GridForm } from '../../../styledComponents/detailsBox'
 import useFileInput from '../../../hooks/useFileInput'
-import {useNavigate, useParams} from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import useFetch from '../../../hooks/useFetch'
 import ConfirmAction from '../../../components/confirmAction'
 import { useState, useRef, useReducer } from 'react'
@@ -10,16 +10,17 @@ import ImgFileInput from '../../../components/imgFileInput'
 import SeveralFilesInput from '../../../components/severalFilesInput'
 import WarningMessage from '../../../components/warningMessage'
 import LoadingModal from '../../../components/loadingModal'
-import {useAnimation} from '../../../contexts/doneAnimationContext'
+import { useAnimation } from '../../../contexts/doneAnimationContext'
+import AddedEmployee from '../../../assets/gif/addedEmployee.gif'
 
 
 export default function AddEmployee() {
 
     const ADD_EMPLOYEE_ENDPOINT = `http://127.0.0.1:8000/api/rh/add-new-employee`
     let ADD_DOCUMENTS_ENDPOINT = `http://127.0.0.1:8000/api/rh/upload-employee-doc/`
-    const {id} = useParams()
+    const { id } = useParams()
     const navigate = useNavigate()
-    const { setShowAnimation } = useAnimation();
+    const { setShowAnimation, setGif, setMessage } = useAnimation();
     const { register, handleSubmit, formState: { errors } } = useForm();
     const [result, getResult, resultError, resultLoading] = useFetch(ADD_EMPLOYEE_ENDPOINT, {}, "POST", false)
     const [, uploadDocuments, docError, docLoading] = useFetch(ADD_DOCUMENTS_ENDPOINT, {}, "POST", false)
@@ -65,24 +66,36 @@ export default function AddEmployee() {
 
 
         getResult(formData.current).then((result) => {
-            const id = result.employe_inserted
-            if (Array.from(photo.entries()).length) {
-                uploadDocuments(photo, ADD_DOCUMENTS_ENDPOINT + `Photo/${id}`)
-            }
-            if (Array.from(idDocuments.entries()).length) {
-                uploadDocuments(idDocuments, ADD_DOCUMENTS_ENDPOINT + `Identification/${id}`)
-            }
-            if (Array.from(contractDocuments.entries()).length) {
-                uploadDocuments(contractDocuments, ADD_DOCUMENTS_ENDPOINT + `Contract/${id}`)
+
+            if (result.status_code == 200) {
+                const resultId = result.employe_inserted
+                let docsResults = []
+                if (Array.from(photo.entries()).length) {
+                    uploadDocuments(photo, ADD_DOCUMENTS_ENDPOINT + `Photo/${resultId}`).then((result) => {
+                        docsResults = [...docsResults, result.status_code]
+                    })
+                }
+                if (Array.from(idDocuments.entries()).length) {
+                    uploadDocuments(idDocuments, ADD_DOCUMENTS_ENDPOINT + `Identification/${resultId}`).then((result) => {
+                        docsResults = [...docsResults, result.status_code]
+                    })
+                }
+                if (Array.from(contractDocuments.entries()).length) {
+                    uploadDocuments(contractDocuments, ADD_DOCUMENTS_ENDPOINT + `Contract/${resultId}`).then((result) => {
+                        docsResults = [...docsResults, result.status_code]
+                    })
+                }
+
+                const ErrorInDocsUpload = docsResults.some((element) => element != 200)
+
+                if (!ErrorInDocsUpload) {
+                    navigate(`/Manager/${id}/employees`);
+                    setGif(AddedEmployee)
+                    setMessage('Empleado añadido')
+                    setShowAnimation(true)
+                }
             }
         })
-
-        if(!resultError && !docError){
-            console.log(id);
-            navigate(`/Manager/${id}/employees`);
-            setShowAnimation(true)
-
-        }
 
         setOpen(false)
     }

@@ -8,7 +8,7 @@ an asynchronous event.
 */
 
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from 'react-router-dom'
 
 const useFetch = (url, data, method, shouldFetch = true) => {
@@ -28,7 +28,12 @@ const useFetch = (url, data, method, shouldFetch = true) => {
     410: "Este empleado ya tiene ausencias registradas para el rango de días escogido"
   }
 
+  
+
+  method == "PUT" ? console.log("Se renderizó el componente, el valor de loading es:", loading): null
+
   const doFetch = async (inFunctionData, inFnctionUrl) => {
+
     try {
 
       inFunctionData ? data = inFunctionData : null
@@ -40,18 +45,20 @@ const useFetch = (url, data, method, shouldFetch = true) => {
         method: method,
         headers: !isFormData ? { "Content-Type": "application/json" } : {}
       };
-      if (method === "POST" || method === "PUT") {
+      if ((method === "POST" || method === "PUT") && data) {
         options.body = data instanceof FormData ? data : JSON.stringify(data);
       }
 
+      console.log("Se va a setear loading en true, actualmente está en:", loading);
       setLoading(true)
-      setError(null)
+      
+      /* setError(null) */
+
 
       if (url && !url.includes("undefined")) {
         if (!("body" in options) || Object.keys(data).length || data instanceof FormData) {
           const response = await fetch(url, options)
           const jsonResponse = await response.json()
-          console.log(response, url, options.body);
 
           if (!response.ok) {
             throw new Error(jsonResponse.message || "An unknown error occurred");
@@ -64,7 +71,9 @@ const useFetch = (url, data, method, shouldFetch = true) => {
               navigate("/Error")
             }
           }
+          console.log("Se va a setear el result el valor de loading es", loading);
           setResult(jsonResponse)
+
           return jsonResponse
         }
       }
@@ -73,12 +82,18 @@ const useFetch = (url, data, method, shouldFetch = true) => {
       console.error('Fetch error:', error);
 
     } finally {
-     /*  setLoading(false); */
-      setTimeout(() => {
-        setLoading(false);
-      }, 2000)
+      console.log("Se ejecuto el finally");
+      setLoading(false)
+      /* setTimeout(() => {
+        setLoading((prev) => {
+          console.log("Pasaron 2 segundos el valor anterior es:", prev, "Se va a cambiar a false")
+          return false
+        })
+      }, 2000) */
     }
   }
+
+  useEffect(() => { console.log("loading ha cambiado a:", loading); }, [loading])
 
   useEffect(() => {
     shouldFetch ? doFetch() : null;

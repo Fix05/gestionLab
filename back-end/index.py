@@ -65,9 +65,7 @@ class LastExecutionDate:
     def set_last_execution_date(self, date):
         self._last_execution_date = date
 
-
 paymentExecution = LastExecutionDate()
-
 
 def background_task():
     while True:

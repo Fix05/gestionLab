@@ -2,14 +2,13 @@ import GenericModalTemplate from '../components/genericModalTemplate'
 import Loading from '../styledComponents/loading'
 import {useState, useEffect} from 'react'
 
-export default function LoadingModal({text, laoding}) {
+export default function LoadingModal({text, loading}) {
 
     const [open, setOpen] = useState(false)
 
     useEffect(()=>{
-        console.log("loading", text, laoding);
-        laoding ? setOpen(true): setOpen(false)
-    },[laoding])
+        loading ? setOpen(true): setOpen(false)
+    },[loading])
 
     return(
         <GenericModalTemplate open={open} setOpen={setOpen}>
