@@ -11,6 +11,7 @@ from routes.extrahours_route import router as extrahours_router
 from routes.vacations_route import router as vacations_router
 from routes.employee_request_route import router as employee_request_router
 from routes.stadistics_route import router as stadistics_route
+from routes.ml_route import router as ml_router
 import asyncio
 import uvicorn
 import threading
@@ -51,6 +52,7 @@ APP.include_router(extrahours_router, prefix="/api/extras", tags=["extras"])
 APP.include_router(vacations_router, prefix="/api/vacations", tags=["vacations"])
 APP.include_router(employee_request_router, prefix="/api/emplyee_requests", tags=["emplyee_requests"])
 APP.include_router(stadistics_route, prefix="/api/stadistics", tags=["stadistics"])
+APP.include_router(ml_router, prefix="/api/ml", tags=["recomendation"])
 
 
 

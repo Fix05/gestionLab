@@ -1,4 +1,4 @@
-
+/* Not necessary and inefficient */
 
 import { useState, useEffect } from 'react'
 
@@ -55,8 +55,8 @@ const useFileInput = (image, limit = 1) => {
     }
 
     const getFormat = (fileName) => {
-        const dotIndex = fileName.lastIndexOf(".") + 1
-        const format = fileName.slice(dotIndex, fileName.length + 1)
+        const dotIndex = fileName.lastIndexOf(".")
+        const format = fileName.slice(dotIndex + 1)
         return format
     }
 
