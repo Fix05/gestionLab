@@ -55,11 +55,7 @@ export default function EmployeeInfo() {
     }
 
     const deleteEmployee = () => {
-
         disableEmployee().then((result) => {
-            console.log(result.status_code);
-            console.log(deletingLoading);
-
             if (result.status_code == '200') {
                 navigate(`/Manager/${id}/employees`);
                 setGif(DeleteGif)
@@ -67,7 +63,6 @@ export default function EmployeeInfo() {
                 setShowAnimation(true)
             }
         })
-
         setOpenDelete(false)
     }
 
@@ -80,7 +75,6 @@ export default function EmployeeInfo() {
     }
 
     const getFormat = (name) => {
-
         const dotIndex = name.lastIndexOf(".") + 1
         const format = name.slice(dotIndex, name.length + 1)
         return format

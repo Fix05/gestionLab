@@ -45,16 +45,14 @@ const useFetch = (url, data, method, shouldFetch = true) => {
         method: method,
         headers: !isFormData ? { "Content-Type": "application/json" } : {}
       };
+
+      console.log(data instanceof FormData);
       if ((method === "POST" || method === "PUT") && data) {
         options.body = data instanceof FormData ? data : JSON.stringify(data);
       }
 
-      console.log("Se va a setear loading en true, actualmente está en:", loading);
       setLoading(true)
       
-      /* setError(null) */
-
-
       if (url && !url.includes("undefined")) {
         if (!("body" in options) || Object.keys(data).length || data instanceof FormData) {
           const response = await fetch(url, options)
@@ -71,7 +69,6 @@ const useFetch = (url, data, method, shouldFetch = true) => {
               navigate("/Error")
             }
           }
-          console.log("Se va a setear el result el valor de loading es", loading);
           setResult(jsonResponse)
 
           return jsonResponse
@@ -82,18 +79,9 @@ const useFetch = (url, data, method, shouldFetch = true) => {
       console.error('Fetch error:', error);
 
     } finally {
-      console.log("Se ejecuto el finally");
       setLoading(false)
-      /* setTimeout(() => {
-        setLoading((prev) => {
-          console.log("Pasaron 2 segundos el valor anterior es:", prev, "Se va a cambiar a false")
-          return false
-        })
-      }, 2000) */
     }
   }
-
-  useEffect(() => { console.log("loading ha cambiado a:", loading); }, [loading])
 
   useEffect(() => {
     shouldFetch ? doFetch() : null;

@@ -150,10 +150,6 @@ def get_all_employee_info(id: int, db: mysql.connector.MySQLConnection = Depends
         result = cursor.fetchone()
         cursor.close()
 
-        """ This is not necesary there shouldn't be employees with no info  """
-        """ if not result:
-            result = {key: "" for key, value in FIELD_TO_TABLE_MAPPING.items()} """
-
         if result:
             return result
         else:

@@ -15,12 +15,7 @@ export default function Adding({apiEndpoint, ModalComponent, bgcolor, dataMappin
     const {changedList, setChangedList, originalValues, setOriginalValues} = useTransformData(listResult, dataMapping, ELEMENTS_PER_PAGE)
     const [open, setOpen] = useState(false)
     const {id, setId, modalData} = useBasicData(originalValues)
-
     const [openAnimation, setOpenAnimation] = useState(false)
-
-    const HandleChange = (ev) => {
-        console.log(ev.target.value);
-    }
 
 
     return (

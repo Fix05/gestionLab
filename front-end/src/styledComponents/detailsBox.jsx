@@ -90,3 +90,17 @@ flex-grow: 1;
 margin: 5px;
 `
 
+export const GridDivCand = styled.div`
+  background-color: white;
+  padding: 30px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: minmax(min-content, max-content); // Ajusta esto según necesidades
+  width: 94%;
+  z-index: 10;
+  margin: 15px 30px 30px 30px;
+  border: solid 2px;
+  border-color: rgb(156 163 175);
+  border-radius: 10px;
+  overflow: auto; // Agregar para manejar contenido que se desborde
+`;

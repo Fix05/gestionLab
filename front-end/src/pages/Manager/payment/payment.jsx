@@ -47,7 +47,7 @@ export default function Payment() {
                 <div className='text-gray-700 text-sm'>
                     <label htmlFor="monthLimited">Escoja el mes: </label>
                     <input
-                        className='w-5 cursor-pointer'
+                        className='w-[180px] cursor-pointer'
                         value={Object.keys(date).length ? date.start_date : ""}
                         type="month"
                         id="monthLimited"

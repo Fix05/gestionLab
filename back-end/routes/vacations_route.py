@@ -7,10 +7,8 @@ from db_connection import get_db
 
 router = APIRouter()
 
-
 class Dates(BaseModel):
     month: str
-
 
 class NewAbsence(BaseModel):
     startDate: str
@@ -59,17 +57,13 @@ def get_vacation_days_left(id: int, db: mysql.connector.MySQLConnection = Depend
 @router.post("/insert-new-absence/{id}")
 def get_vacation_days_left(id: int, data: NewAbsence, db: mysql.connector.MySQLConnection = Depends(get_db)):
     try:
+        cursor = db.cursor(dictionary=True)
         current_date = datetime.now()
         formated_date = current_date.strftime("%Y-%m-%d")
-        cursor = db.cursor(dictionary=True)
-
         startDate_datetime = datetime.fromisoformat(data.startDate)
         endDate_datetime = datetime.fromisoformat(data.endDate)
-
         formatedStartDate = startDate_datetime.strftime("%Y-%m-%d")
         formatedEndDate = endDate_datetime.strftime("%Y-%m-%d")
-
-        print(formatedStartDate, formatedEndDate)
 
         validationQuery = f""" 
             SELECT * FROM absences 
@@ -84,10 +78,8 @@ def get_vacation_days_left(id: int, data: NewAbsence, db: mysql.connector.MySQLC
                        formatedStartDate, formatedEndDate, formatedEndDate, id))
         result = cursor.fetchall()
 
-        print(len(result) > 0)
         if (len(result) > 0):
             return {"status_code": 410, "message": "Date range already in use"}
-
         query = f"""
            INSERT INTO absences (start_date_absence, end_date_absence, 
            reason_absence, document_absence, state_absence, type_absence, 
@@ -103,7 +95,7 @@ def get_vacation_days_left(id: int, data: NewAbsence, db: mysql.connector.MySQLC
                        data.description, state, data.type, data.days, id))
         db.commit()
         cursor.close()
-
+        
         update_employee_state(get_db())
 
         return {"status_code": 200, "message": "Inserted successfully"}

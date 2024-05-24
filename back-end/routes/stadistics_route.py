@@ -1,7 +1,4 @@
 from fastapi import APIRouter, Query, HTTPException, Depends
-from fastapi.responses import FileResponse
-from typing import List
-from pydantic import BaseModel
 import mysql.connector
 from db_connection import get_db
 

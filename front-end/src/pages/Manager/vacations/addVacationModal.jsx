@@ -9,15 +9,12 @@ import DateeRangePicker from '../../../components/dateRangePicker'
 import GenericModalTemplate from '../../../components/genericModalTemplate'
 import WarningMessage from '../../../components/warningMessage'
 
-
-
 export default function AddVacationModal({ open, setOpen, id, employeeData, setAnimation, reloadList }) {
 
     const HEADER = "Registro de vacaciones o ausencias"
     const BUTTON_TEXT = "Registrar ausencia"
     const DAYS_LEFT_ENDPOINT = `http://127.0.0.1:8000/api/vacations/get-vacation-days-left/${id}`
     const ADD_VACATION_ENDPOINT = `http://127.0.0.1:8000/api/vacations/insert-new-absence/${id}`
-
     const [daysLeft, getDaysLeft] = useFetch(DAYS_LEFT_ENDPOINT, null, "GET")
     const [addingResult, addVacation, addingError] = useFetch(ADD_VACATION_ENDPOINT, {}, "POST", false)
     const [newDaysLeft, setNewDaysLeft] = useState()
@@ -27,13 +24,14 @@ export default function AddVacationModal({ open, setOpen, id, employeeData, setA
     const [openDatePicker, setOpenDatePicker] = useState(false)
     const [openAlert, setOpenAlert] = useState(false)
     const [alertMessage, setAlertMessage] = useState('')
+    const [formatedRange, setFormatedRange] = useState({})
+    const [warningMessage, setWarningMessage] = useState(false)
     const [range, setRange] = useState([{
         startDate: new Date(),
         endDate: null,
         key: 'selection'
     }]);
-    const [formatedRange, setFormatedRange] = useState({})
-    const [warningMessage, setWarningMessage] = useState(false)
+    
 
     const getDays = () => {
         let count = 0;

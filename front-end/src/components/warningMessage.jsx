@@ -18,7 +18,8 @@ export default function WarningMessage({ open, setOpen, className, children }) {
         
         <p className={`${className} flex text-center cursor-default flex-row items-center justify-center w-full text-red-800 transition-opacity duration-200 ease-out delay-75 pointer-events-none ${open ? 'opacity-100' : 'opacity-0'}`}>
             <FontAwesomeIcon icon={faCircleExclamation} style={{ color: "#940000", }} />
-            <span>&nbsp;</span>{children}
+            <span>&nbsp;</span>
+            <span className="ml-2 break-words">{children}</span>
         </p>
     )
 }

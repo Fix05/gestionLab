@@ -24,8 +24,6 @@ export default function RecordExtra() {
     const DESCRIPTION_ENDPOINT = `http://127.0.0.1:8000/api/extras/get-extra-description/${id}`
 
 
-
-
     useEffect(() => {
         if (dateRange.max) {
             setDate({
@@ -61,7 +59,7 @@ export default function RecordExtra() {
                 <div className='text-gray-700 text-sm'>
                     <label htmlFor="monthLimited">Escoja el mes: </label>
                     <input
-                        className='w-5 cursor-pointer'
+                        className='w-[180px] cursor-pointer'
                         value={Object.keys(date).length ? date.start_date : ""}
                         type="month"
                         id="monthLimited"

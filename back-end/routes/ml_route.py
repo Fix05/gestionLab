@@ -8,14 +8,20 @@ router = APIRouter()
 
 
 
-@router.post("/upload-multiple-pdfs/")
-async def upload_multiple_pdfs(
-    category: str = Form(...),
-    description: str = Form(...),
-    files: List[List[UploadFile]] = File(...)
-):
-    for file_list in files:
-        for file in file_list:
-            contents = await file.read()
+@router.post("/upload-multiple-pdfs")
+async def upload_multiple_pdfs(position: str = Form(...), requirements: str = Form(...), files: List[UploadFile] = File(...), fileGroups: List[int] = Form(...)):
 
-    return {"message": "Archivos y datos recibidos correctamente", "category": category, "description": description}
+    new_arr = []
+
+    number_of_groups = max(fileGroups) if fileGroups else 0
+
+    for i in range(number_of_groups+1):
+        new_arr.append([])
+
+    for index, group in enumerate(fileGroups):
+        file = files[index]
+        group_index = int(group)
+        new_arr[group_index].append(file)    
+
+    print(new_arr)
+    return {"message": f"Archivos y datos recibidos correctamente psición: {position}, requerimientos: {requirements}"}
