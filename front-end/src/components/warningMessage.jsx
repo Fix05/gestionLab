@@ -8,7 +8,7 @@ export default function WarningMessage({ open, setOpen, className, children }) {
     useEffect(() => {
         const timer = setTimeout(() => {
             setOpen(false)
-        }, 1500);
+        }, 2000);
 
         return () => clearTimeout(timer);
     }, [open])

@@ -46,7 +46,6 @@ const useFetch = (url, data, method, shouldFetch = true) => {
         headers: !isFormData ? { "Content-Type": "application/json" } : {}
       };
 
-      console.log(data instanceof FormData);
       if ((method === "POST" || method === "PUT") && data) {
         options.body = data instanceof FormData ? data : JSON.stringify(data);
       }

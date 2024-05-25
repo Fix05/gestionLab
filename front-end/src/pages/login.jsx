@@ -6,6 +6,7 @@ import { useState, useEffect, createContext } from 'react'
 import useFetch from '../hooks/useFetch'
 import useField from '../hooks/useField'
 import Modal from '../components/modal'
+import {jwtDecode} from 'jwt-decode';
 
 
 const Body = styled.div`
@@ -30,7 +31,7 @@ export default function Login() {
 
 
   const [data, setData] = useState({})
-  const URL = "http://127.0.0.1:8000/api/user/"
+  const URL = "http://127.0.0.1:8000/api/user/token"
   const [result] = useFetch(URL, data, "POST")
   const [open, setOpen] = useState(false)
   const [modalText, setModalText] = useState('')
@@ -47,7 +48,11 @@ export default function Login() {
         setModalText(result.message)
         setOpen(true)
       } else {
-        navigate(`/${result.permission_employee != "User" ? "Manager" : "User"}/${result.id_employee}/${result.permission_employee == "User" && 'mainPage'}`)
+        console.log(result);
+        localStorage.setItem('accessToken', result.access_token);
+        const decoded = jwtDecode(result.access_token);
+        console.log(decoded);
+        navigate(`/${decoded.role != "User" ? "Manager" : "User"}/${decoded.id}/${decoded.role == "User" ? 'mainPage': ""}`)
       }
     }
   }, [result])
