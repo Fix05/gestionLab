@@ -1,16 +1,18 @@
 import { useNavigate } from 'react-router-dom'
-import background from '../assets/images/login_background2.jpg'
+import background from '../assets/images/login_background3.jpg'
 import logo from '../assets/images/logoBlanco_beta.png'
 import styled from 'styled-components'
-import { useState, useEffect, createContext } from 'react'
+import { useState, useEffect } from 'react'
+import { useAuth } from '../contexts/authenticationContext'
 import useFetch from '../hooks/useFetch'
 import useField from '../hooks/useField'
 import Modal from '../components/modal'
-import {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
+import {checkExpireToken} from '../components/repetitiveFunctions/authToken'
 
 
 const Body = styled.div`
-/* background-image: url(${background}); */
+background-image: url(${background});
 background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -23,11 +25,18 @@ top: 0;
 left: 0;
 `
 
+const routes = {
+  "User": "User/mainPage",
+  "Manager": "Manager/dashboard"
+}
+
 export default function Login() {
 
   const email = useField("email");
   const pass = useField("password");
+  const { login } = useAuth()
   const navigate = useNavigate()
+  const token = localStorage.getItem('token');
 
 
   const [data, setData] = useState({})
@@ -35,6 +44,8 @@ export default function Login() {
   const [result] = useFetch(URL, data, "POST")
   const [open, setOpen] = useState(false)
   const [modalText, setModalText] = useState('')
+  const [showLogin, setShowLogin] = useState(false)
+
 
 
   const handleSubmit = (ev) => {
@@ -43,22 +54,39 @@ export default function Login() {
   }
 
   useEffect(() => {
+
+    if(token && checkExpireToken()){
+      const decoded = jwtDecode(token);
+      navigate(`/${decoded.role}/${decoded.id}/${decoded.role === 'User' ? '' : 'dashboard'}`);
+    }else{
+      setShowLogin(true)
+    }
+
+
     if (Object.keys(result).length) {
       if (result.status_code) {
         setModalText(result.message)
         setOpen(true)
       } else {
-        console.log(result);
-        localStorage.setItem('accessToken', result.access_token);
         const decoded = jwtDecode(result.access_token);
-        console.log(decoded);
-        navigate(`/${decoded.role != "User" ? "Manager" : "User"}/${decoded.id}/${decoded.role == "User" ? 'mainPage': ""}`)
+        login({
+          id: decoded.id,
+          mail: decoded.sub,
+          role: decoded.role
+        }, result.access_token, result.refresh_token)
+
+        if (decoded.role == "User") {
+          navigate(`/User/${decoded.id}/mainPage`)
+        }else {
+          navigate(`/Manager/${decoded.id}/dashboard`)
+        }
+        
       }
     }
   }, [result])
 
 
-  return (
+  return showLogin && (
     <Body>
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
         <a href="#" className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white">

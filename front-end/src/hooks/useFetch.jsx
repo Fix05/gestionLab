@@ -11,10 +11,9 @@ an asynchronous event.
 import { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from 'react-router-dom'
 
-const useFetch = (url, data, method, shouldFetch = true) => {
+const useFetch = (url, data, method, shouldFetch = true, token = null) => {
 
   var POST_PUT
-
   const navigate = useNavigate()
   const [result, setResult] = useState({})
   const [loading, setLoading] = useState(false)
@@ -28,8 +27,6 @@ const useFetch = (url, data, method, shouldFetch = true) => {
     410: "Este empleado ya tiene ausencias registradas para el rango de días escogido"
   }
 
-  
-
   method == "PUT" ? console.log("Se renderizó el componente, el valor de loading es:", loading): null
 
   const doFetch = async (inFunctionData, inFnctionUrl) => {
@@ -41,9 +38,18 @@ const useFetch = (url, data, method, shouldFetch = true) => {
 
       const isFormData = data instanceof FormData
 
+
+      let headers = {}
+      if(!isFormData){
+        headers["Content-Type"] = "application/json"
+      }
+      if(token){
+        headers["Authorization"] = `Bearer ${token}`
+      }
+
       var options = {
         method: method,
-        headers: !isFormData ? { "Content-Type": "application/json" } : {}
+        headers: headers
       };
 
       if ((method === "POST" || method === "PUT") && data) {
@@ -54,6 +60,7 @@ const useFetch = (url, data, method, shouldFetch = true) => {
       
       if (url && !url.includes("undefined")) {
         if (!("body" in options) || Object.keys(data).length || data instanceof FormData) {
+          console.log(options);
           const response = await fetch(url, options)
           const jsonResponse = await response.json()
 

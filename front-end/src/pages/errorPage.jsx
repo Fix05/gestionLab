@@ -7,7 +7,7 @@ export default function ErrorPage() {
     
 
     const handleClick = () => {
-        navigate(-2);
+        navigate('/');
      }
 
     return (

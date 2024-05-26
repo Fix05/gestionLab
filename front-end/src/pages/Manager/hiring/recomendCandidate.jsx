@@ -189,9 +189,13 @@ export default function RecomendCandidate() {
                         <Info className='w-1/3'>
                             <h1 className='text-gray-600 font-bold text-xs'>Número de candidatos:</h1>
                             <div className='flex flex-row'>
-                                <button className='w-[40px] bg-red-300 rounded' onClick={decreaseCandidates}>-</button>
+
                                 <input type='number' min={2} max={15} value={Object.keys(files).length} className="bg-gray-50 border mx-2 border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
-                                <button className='w-[40px] bg-green-300 rounded' onClick={handleAddCandidate}>+</button>
+                                <div className='flex flex-col'>
+                                    <button className='h-1/2 w-[40px] bg-green-500 rounded' onClick={handleAddCandidate}>+</button>
+                                    <button className='h-1/2 w-[40px] bg-red-500 rounded' onClick={decreaseCandidates}>-</button>
+                                </div>
+
                             </div>
                         </Info>
                     </div>
