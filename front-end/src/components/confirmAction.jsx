@@ -37,12 +37,12 @@ export default function ConfirmAction({ open, setOpen, negativeAction, positiveA
 
                                     <div className="flex flex-col items-center">
                                         <div className='flex flex-row items-center justify-center mb-3'>
-                                            <div className="flex mr-[3px] h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-orange-100 sm:h-10 sm:w-10">
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-orange-600">
+                                            <div className="flex mr-[3px] h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:h-10 sm:w-10">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-red-600">
                                                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
                                                 </svg>
                                             </div>
-                                            <h1 className='text-orange-700 font-semibold'>{title}</h1>
+                                            <h1 className='text-red-600 font-semibold'>{title}</h1>
                                         </div>
                                         <div className="flex text-center ml-1 sm:mt-0 sm:text-left">
                                             <h3 className="flex items-center text-center text-base font-semibold leading-6 text-gray-900">
@@ -64,7 +64,7 @@ export default function ConfirmAction({ open, setOpen, negativeAction, positiveA
                                     {negativeAction && (
                                         <button
                                             type="button"
-                                            className="my-4 inline-flex w-1/3 bg-red-600 justify-center rounded-md px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus:outline-none transition-all hover:translate-x-[1px] hover:translate-y-[1px]"
+                                            className="my-4 inline-flex w-1/3   justify-center rounded-md px-3 py-2 text-sm font-semibold text-black focus:outline-none transition-all hover:translate-x-[1px] hover:translate-y-[1px]"
                                             onClick={negativeAction}
                                         >
                                             {negativeText}

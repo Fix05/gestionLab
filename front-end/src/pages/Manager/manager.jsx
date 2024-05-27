@@ -1,5 +1,5 @@
 import Header from '../../components/header'
-import {AnimationProvider} from '../../contexts/doneAnimationContext'
+import { AnimationProvider } from '../../contexts/doneAnimationContext'
 import styled from 'styled-components'
 import { useParams, Outlet } from "react-router-dom";
 import useFetch from '../../hooks/useFetch'
@@ -9,6 +9,7 @@ import Breadcrumb from '../../components/breadcumb'
 import image from '../../assets/images/mcloving.jpeg'
 import background from '../../assets/images/3415222.jpg'
 import PrettyView from '../../components/prettyview'
+import SlowlyShowing from '../../components/slowlyShowing'
 
 
 export const paginationContext = createContext()
@@ -45,19 +46,22 @@ export default function Manager() {
     const [breadcrumbNames, setBreadcrumbNames] = useState()
 
     return (
-        <Container className='bg-rose-50'>
+        <Container className='bg-black'>
             <paginationContext.Provider value={{ tablePage, setTablePage }}>
                 <AnimationProvider>
                     <pageContext.Provider value={{ page, setPage }}>
                         <breadcrumbContext.Provider value={(breadcrumbNames, setBreadcrumbNames)}>
-                            <Header name={result.name} image={image} lastname={result.lastname} email={result.email} style={HEADER_BG} message={MESSAGE} />
-                            <Aside />
-                            <Div className='relative top-24 py-4 px-6'>
-                                <div className='flex justify-between h-10'>
-                                    <Breadcrumb />
-                                </div>
-                                <Outlet />
-                            </Div>
+                            <SlowlyShowing time={500}>
+                                <Header name={result.name} image={image} lastname={result.lastname} email={result.email} style={HEADER_BG} message={MESSAGE} />
+                                <Aside />
+                                <Div className='relative top-24 py-4 px-6'>
+                                    <div className='flex justify-between h-10'>
+                                        <Breadcrumb />
+                                    </div>
+                                    <Outlet />
+                                </Div>
+
+                            </SlowlyShowing>
                         </breadcrumbContext.Provider>
                     </pageContext.Provider>
                 </AnimationProvider>

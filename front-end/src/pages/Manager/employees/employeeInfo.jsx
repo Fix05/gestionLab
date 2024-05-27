@@ -11,7 +11,8 @@ import DefaultImage from '../../../assets/images/defaultUser-removebg-preview.pn
 import ParamsDict from '../../../dictionaries/updateInputParams.json'
 import ConfirmAction from '../../../components/confirmAction'
 import { useAnimation } from '../../../contexts/doneAnimationContext'
-import DeleteGif from '../../../assets/gif/payment.gif'
+import DeleteGif from '../../../assets/gif/deleted.gif'
+import SlowlyShowing from '../../../components/slowlyShowing'
 
 
 const Box = styled.div`
@@ -82,119 +83,120 @@ export default function EmployeeInfo() {
 
 
     return (
-        <EmployeeData>
-            <Container className='max-h-[355px]'>
-                <ConfirmAction open={openDelete} setOpen={setOpenDelete} positiveAction={() => deleteEmployee()} negativeAction={() => setOpenDelete(false)} positiveText={'Aceptar'} negativeText={'Cancelar'} title={"Desea eliminar este empleado del sistema"}>
-                    <div className='flex flex-col'>
-                        <p className='font-bold'>Cuidado!!!</p>
-                        <p className='flex-wrap w-[350px]'>Está seguro que desea eliminar este empleado del sistema, si continúa todos los datos de este empleado se perderán se perderán.</p>
-                    </div>
+        <SlowlyShowing time={100}>
+            <EmployeeData>
+                <Container className='max-h-[355px]'>
+                    <ConfirmAction open={openDelete} setOpen={setOpenDelete} positiveAction={() => deleteEmployee()} negativeAction={() => setOpenDelete(false)} positiveText={'Aceptar'} negativeText={'Cancelar'} title={"Desea eliminar este empleado del sistema"}>
+                        <div className='flex flex-col'>
+                            <p className='flex-wrap w-[290px]'>Está seguro que desea eliminar este empleado del sistema, si continúa todos los datos de este empleado se perderán.</p>
+                        </div>
 
-                </ConfirmAction>
-                <Loading loading={deletingLoading} text={"Eliminando"} />
-                <UpdateDataModal field={field} open={open} setOpen={setOpen} inputParams={inputParams} id={employeeId} reload={doFetch} />
-                <span className="mt-4 relative flex justify-center">
-                    <div
-                        className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-transparent bg-gradient-to-r from-transparent via-black to-transparent opacity-75"
-                    ></div>
-                    <span className="relative z-10 bg-slate-200 px-6 text-black font-bold text-lg">Datos personales</span>
-                </span>
+                    </ConfirmAction>
+                    <Loading loading={deletingLoading} text={"Eliminando"} />
+                    <UpdateDataModal field={field} open={open} setOpen={setOpen} inputParams={inputParams} id={employeeId} reload={doFetch} />
+                    <span className="mt-4 relative flex justify-center">
+                        <div
+                            className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-transparent bg-gradient-to-r from-transparent via-black to-transparent opacity-75"
+                        ></div>
+                        <span className="relative z-10 bg-slate-200 px-6 text-black font-bold text-lg">Datos personales</span>
+                    </span>
 
-                <GridDiv className=''>
-                    <Info className='row-span-2'>
-                        <h1 className='text-gray-600 font-bold text-xs'>Foto:</h1>
-                        <Box className='bg-white mt-2 flex justify-center '>
-                            <img className=' object-cover w-[100px] h-[100px] border-solid border-4 border-slate-300 rounded-full' src={EMPLOYEE_PHOTO_ENDPOINT} onError={handleImgError} alt="" />
-                        </Box>
-                    </Info>
-                    {Object.entries(result).filter((element) => dictionary[element[0]].typeInfo == "personal").map((info, index) => (
-                        <Info key={index} className='/*  */'>
-                            <h1 className='text-gray-600 font-bold text-xs'>{dictionary[info[0]].name}:</h1>
-                            <Box className='bg-white mt-2 border-solid border-2 border-slate-300 rounded'>
-                                <span className='text-gray-600 text-sm ml-2 flex direction-row justify-between items-center'>{info[1]}
-                                    <button id={info[0]} className={info[1]} onClick={handleClick} href="">
-                                        <Icono xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" id='icono' className="w-4 h-4 transition duration-75 hover:text-sky-800 ">
-                                            <path strokeLinecap="round" stroklinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
-                                        </Icono>
-                                    </button>
-                                </span>
+                    <GridDiv className=''>
+                        <Info className='row-span-2'>
+                            <h1 className='text-gray-600 font-bold text-xs'>Foto:</h1>
+                            <Box className='bg-white mt-2 flex justify-center '>
+                                <img className=' object-cover w-[100px] h-[100px] border-solid border-4 border-slate-300 rounded-full' src={EMPLOYEE_PHOTO_ENDPOINT} onError={handleImgError} alt="" />
                             </Box>
                         </Info>
-                    ))}
-                    <Info className='col-span-4'>
-                        <h1 className='text-gray-600 font-bold text-xs'>Documentos:</h1>
-                        <Box className='bg-white mt-2 border-solid border-2 border-slate-300 rounded'>
-                            <ul>
-                                {idDocs.length > 0 &&
-                                    idDocs.map((file) => (
-                                        <a href={file.url} download={file.name}>
-                                            <li className='text-sm my-[2px] flex items-center justify-between'>
-                                                <div className='flex flex-row'>
-                                                    <img className='w-[3%] mr-[5px]' src={IconsDictionary[getFormat(file.name)]} alt="" />
-                                                    <p className='max-w-[600px] truncate'>{file.name}</p>
-                                                </div>
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="-1 -1 26 26" strokeWidth={1.5} stroke="currentColor" className="flex justify-center items-center transition-all hover:text-blue-600 hover:bg-blue-50 rounded-full min-w-[24px] h-6 cursor-pointer ">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                                                </svg>
-                                            </li>
-                                        </a>
-                                    ))
-                                }
-                            </ul>
-                        </Box>
-                    </Info>
-                </GridDiv>
-
-                <span className="mt-8 relative flex justify-center">
-                    <div
-                        className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-transparent bg-gradient-to-r from-transparent via-black to-transparent opacity-75"
-                    ></div>
-                    <span className="relative z-10 bg-gray-200 px-6 text-black font-bold text-lg">Datos laborales</span>
-                </span>
-
-                <GridDiv className='relative'>
-                    {Object.entries(result).filter((element) => dictionary[element[0]].typeInfo == "professional").map((info, index) => (
-                        <Info key={index}>
-                            <h1 className='text-gray-600 font-bold text-xs'>{dictionary[info[0]].name}:</h1>
+                        {Object.entries(result).filter((element) => dictionary[element[0]].typeInfo == "personal").map((info, index) => (
+                            <Info key={index} className='/*  */'>
+                                <h1 className='text-gray-600 font-bold text-xs'>{dictionary[info[0]].name}:</h1>
+                                <Box className='bg-white mt-2 border-solid border-2 border-slate-300 rounded'>
+                                    <span className='text-gray-600 text-sm ml-2 flex direction-row justify-between items-center'>{info[1]}
+                                        <button id={info[0]} className={info[1]} onClick={handleClick} href="">
+                                            <Icono xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" id='icono' className="w-4 h-4 transition duration-75 hover:text-sky-800 ">
+                                                <path strokeLinecap="round" stroklinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                                            </Icono>
+                                        </button>
+                                    </span>
+                                </Box>
+                            </Info>
+                        ))}
+                        <Info className='col-span-4'>
+                            <h1 className='text-gray-600 font-bold text-xs'>Documentos:</h1>
                             <Box className='bg-white mt-2 border-solid border-2 border-slate-300 rounded'>
-                                <span className='text-gray-600 text-sm ml-2 flex direction-row justify-between items-center'>{info[1]}
-                                    <button id={info[0]} className={info[1]} onClick={handleClick} href="">
-                                        <Icono xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" id='icono' className="w-4 h-4 transition duration-75 hover:text-sky-800 ">
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
-                                        </Icono>
-                                    </button>
-                                </span>
+                                <ul>
+                                    {idDocs.length > 0 &&
+                                        idDocs.map((file) => (
+                                            <a href={file.url} download={file.name}>
+                                                <li className='text-sm my-[2px] flex items-center justify-between'>
+                                                    <div className='flex flex-row'>
+                                                        <img className='w-[3%] mr-[5px]' src={IconsDictionary[getFormat(file.name)]} alt="" />
+                                                        <p className='max-w-[600px] truncate'>{file.name}</p>
+                                                    </div>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="-1 -1 26 26" strokeWidth={1.5} stroke="currentColor" className="flex justify-center items-center transition-all hover:text-blue-600 hover:bg-blue-50 rounded-full min-w-[24px] h-6 cursor-pointer ">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                                                    </svg>
+                                                </li>
+                                            </a>
+                                        ))
+                                    }
+                                </ul>
                             </Box>
                         </Info>
-                    ))}
-                    <Info className='col-span-4'>
-                        <h1 className='text-gray-600 font-bold text-xs'>Documentos:</h1>
-                        <Box className='bg-white mt-2 border-solid border-2 border-slate-300 rounded'>
-                            <ul>
-                                {contractDocs.length > 0 &&
-                                    contractDocs.map((file) => (
-                                        <a href={file.url} download={file.name}>
-                                            <li className='text-sm my-[2px] flex items-center justify-between'>
-                                                <div className='flex flex-row'>
-                                                    <img className='w-[3%] mr-[5px]' src={IconsDictionary[getFormat(file.name)]} alt="" />
-                                                    <p className='max-w-[600px] truncate'>{file.name}</p>
-                                                </div>
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="-1 -1 26 26" strokeWidth={1.5} stroke="currentColor" className="flex justify-center items-center transition-all hover:text-blue-600 hover:bg-blue-50 rounded-full min-w-[24px] h-6 cursor-pointer ">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                                                </svg>
-                                            </li>
-                                        </a>
-                                    ))
-                                }
-                            </ul>
-                        </Box>
-                    </Info>
-                    <button onClick={() => setOpenDelete(true)} className='absolute bottom-0 right-2 text-red-600 text-xs font-bold'>
-                        Eliminar empleado
-                    </button>
+                    </GridDiv>
 
-                </GridDiv>
-            </Container>
-        </EmployeeData>
+                    <span className="mt-8 relative flex justify-center">
+                        <div
+                            className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-transparent bg-gradient-to-r from-transparent via-black to-transparent opacity-75"
+                        ></div>
+                        <span className="relative z-10 bg-gray-200 px-6 text-black font-bold text-lg">Datos laborales</span>
+                    </span>
+
+                    <GridDiv className='relative'>
+                        {Object.entries(result).filter((element) => dictionary[element[0]].typeInfo == "professional").map((info, index) => (
+                            <Info key={index}>
+                                <h1 className='text-gray-600 font-bold text-xs'>{dictionary[info[0]].name}:</h1>
+                                <Box className='bg-white mt-2 border-solid border-2 border-slate-300 rounded'>
+                                    <span className='text-gray-600 text-sm ml-2 flex direction-row justify-between items-center'>{info[1]}
+                                        <button id={info[0]} className={info[1]} onClick={handleClick} href="">
+                                            <Icono xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" id='icono' className="w-4 h-4 transition duration-75 hover:text-sky-800 ">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                                            </Icono>
+                                        </button>
+                                    </span>
+                                </Box>
+                            </Info>
+                        ))}
+                        <Info className='col-span-4'>
+                            <h1 className='text-gray-600 font-bold text-xs'>Documentos:</h1>
+                            <Box className='bg-white mt-2 border-solid border-2 border-slate-300 rounded'>
+                                <ul>
+                                    {contractDocs.length > 0 &&
+                                        contractDocs.map((file) => (
+                                            <a href={file.url} download={file.name}>
+                                                <li className='text-sm my-[2px] flex items-center justify-between'>
+                                                    <div className='flex flex-row'>
+                                                        <img className='w-[3%] mr-[5px]' src={IconsDictionary[getFormat(file.name)]} alt="" />
+                                                        <p className='max-w-[600px] truncate'>{file.name}</p>
+                                                    </div>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="-1 -1 26 26" strokeWidth={1.5} stroke="currentColor" className="flex justify-center items-center transition-all hover:text-blue-600 hover:bg-blue-50 rounded-full min-w-[24px] h-6 cursor-pointer ">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                                                    </svg>
+                                                </li>
+                                            </a>
+                                        ))
+                                    }
+                                </ul>
+                            </Box>
+                        </Info>
+                        <button onClick={() => setOpenDelete(true)} className='absolute bottom-0 right-2 text-red-600 text-xs font-bold'>
+                            Eliminar empleado
+                        </button>
+
+                    </GridDiv>
+                </Container>
+            </EmployeeData>
+        </SlowlyShowing>
     )
 }

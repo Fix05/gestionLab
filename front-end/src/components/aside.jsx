@@ -1,5 +1,6 @@
 import { useNavigate, useParams, Link, useLocation } from 'react-router-dom'
 import { useContext, useState } from 'react'
+import {useAuth} from '../contexts/authenticationContext'
 import styled from 'styled-components'
 import AddAdvances from '../pages/Manager/advances/addAdvances'
 
@@ -30,6 +31,7 @@ export default function Aside() {
 
     const navigate = useNavigate()
     const location = useLocation();
+    const {logout} = useAuth();
     const page = location.pathname.split('/')[3]
 
     const [openElement, setOpenElement] = useState("")
@@ -160,7 +162,7 @@ export default function Aside() {
                         </ExpansibleElements>
                     </Expansible>
                     <li>
-                        <Link to={"/"} id='exit' className={`flex transition-colors duration-300 items-center px-2 py-1.5 text-gray-200 rounded-lg dark:text-white group ${page == "exit" ? 'dark:bg-gray-700 bg-gray-300 text-gray-900' : 'hover:bg-gray-300 hover:text-gray-900 dark:hover:bg-gray-700'} `}>
+                        <Link to={"/"} id='exit' onClick={()=>{logout()}} className={`flex transition-colors duration-300 items-center px-2 py-1.5 text-gray-200 rounded-lg dark:text-white group ${page == "exit" ? 'dark:bg-gray-700 bg-gray-300 text-gray-900' : 'hover:bg-gray-300 hover:text-gray-900 dark:hover:bg-gray-700'} `}>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
                             </svg>

@@ -8,6 +8,7 @@ import Warning from '../../../components/warningMessage'
 import { PDFDocument } from 'pdf-lib';
 import { EmployeeData, Container, Div, Info, Form, GridDiv, GridDivCand } from '../../../styledComponents/detailsBox'
 import BoxDivider from '../../../styledComponents/boxDivider'
+import SlowlyShowing from '../../../components/slowlyShowing'
 
 const HiddenFileInput = styled.input`
   width: 0.1px;
@@ -174,79 +175,77 @@ export default function RecomendCandidate() {
 
 
     return (
-        <EmployeeData className='relative'>
-            <Container >
-                <BoxDivider text={'Parametros del puesto'} />
-                <Warning open={openWarning} setOpen={setOpenWarning} className={'absolute top-0 bg-red-50 z-20 p-[5px] w-[400px] overflow-hidden rounded shadow font-semibold'}>
-                    <p className='break-words'>{warningMessage}</p>
-                </Warning>
-                <Div className='flex flex-col'>
-                    <div className='flex flex-row'>
-                        <Info className='w-1/3'>
-                            <h1 className='text-gray-600 font-bold text-xs'>Puesto:</h1>
-                            <input type="text" onChange={handleInputChange} className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name='position' />
-                        </Info>
-                        <Info className='w-1/3'>
-                            <h1 className='text-gray-600 font-bold text-xs'>Número de candidatos:</h1>
-                            <div className='flex flex-row'>
+        <SlowlyShowing time={100}>
+            <EmployeeData className='relative'>
+                <Container >
+                    <BoxDivider text={'Parametros del puesto'} />
+                    <Warning open={openWarning} setOpen={setOpenWarning} className={'absolute top-0 bg-red-50 z-20 p-[5px] w-[400px] overflow-hidden rounded shadow font-semibold'}>
+                        <p className='break-words'>{warningMessage}</p>
+                    </Warning>
+                    <Div className='flex flex-col'>
+                        <div className='flex flex-row'>
+                            <Info className='w-1/3'>
+                                <h1 className='text-gray-600 font-bold text-xs'>Puesto:</h1>
+                                <input type="text" onChange={handleInputChange} className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name='position' />
+                            </Info>
+                            <Info className='w-1/3'>
+                                <h1 className='text-gray-600 font-bold text-xs'>Número de candidatos:</h1>
+                                <div className='flex flex-row'>
 
-                                <input type='number' min={2} max={15} value={Object.keys(files).length} className="bg-gray-50 border mx-2 border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
-                                <div className='flex flex-col'>
-                                    <button className='h-1/2 w-[40px] bg-green-500 rounded' onClick={handleAddCandidate}>+</button>
-                                    <button className='h-1/2 w-[40px] bg-red-500 rounded' onClick={decreaseCandidates}>-</button>
+                                    <input type='number' min={2} max={15} value={Object.keys(files).length} className="bg-gray-50 border mx-2 border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+                                    <div className='flex flex-col'>
+                                        <button className='h-1/2 w-[40px] bg-green-500 rounded' onClick={handleAddCandidate}>+</button>
+                                        <button className='h-1/2 w-[40px] bg-red-500 rounded' onClick={decreaseCandidates}>-</button>
+                                    </div>
+
                                 </div>
-
-                            </div>
+                            </Info>
+                        </div>
+                        <Info>
+                            <h1 className='text-gray-600 font-bold text-xs'>Descripción del puesto:</h1>
+                            <textarea onChange={handleInputChange} className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name='requirements' />
                         </Info>
-                    </div>
-                    <Info>
-                        <h1 className='text-gray-600 font-bold text-xs'>Descripción del puesto:</h1>
-                        <textarea onChange={handleInputChange} className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name='requirements' />
-                    </Info>
-                </Div>
-                <BoxDivider text={'Candidatos'} />
-                <GridDivCand>
-                    {Object.entries(files).map(([key, list]) => {
-                        const name = key
-                        return (
-                            <Info className='relative min-h-[100px] border-dashed shadow border-gray-300 border-[1px] '>
-                                <button className='absolute right-2 top-0' onClick={() => removeCandidate(name)}><FontAwesomeIcon icon={faX} size="xs" style={{ color: "#a8a8a8", }} /></button>
-                                <p className='font-semibold'>Candidato {key}</p>
-                                <div className='flex flex-col items-center p-2'>
-                                    <label htmlFor={name} className='p-[5px] bg-blue-50 cursor-pointer rounded  transition-all text-sm font-semibold hover:shadow-md'>
-                                        Subir archivo
-                                    </label>
-                                    <HiddenFileInput type="file" id={name} name={name} onChange={handleFileChange} max={4} multiple accept="application/pdf" />
-                                    {files[name].length > 0 &&
-                                        <div className='mt-[10px] rounded-xl bg-gray-50 border-gray-200 border-solid border-[1px] shadow'>
-                                            {Object.entries(files[name]).map(([index, file]) => (
-                                                <div key={index} className='text-sm bg-transparent font-medium flex flex-row justify-between items-center m-2'>
-                                                    <div className='flex flex-row items-center truncate p-1'>
-                                                        <img className='max-w-[30px] mr-[1px]' src={`${getIcon(file.name)}`} alt="" />
-                                                        <p className='truncate max-w-[260px]'>{file.name}</p>
+                    </Div>
+                    <BoxDivider text={'Candidatos'} />
+                    <GridDivCand>
+                        {Object.entries(files).map(([key, list]) => {
+                            const name = key
+                            return (
+                                <Info className='relative min-h-[100px] border-dashed shadow border-gray-300 border-[1px] '>
+                                    <button className='absolute right-2 top-0' onClick={() => removeCandidate(name)}><FontAwesomeIcon icon={faX} size="xs" style={{ color: "#a8a8a8", }} /></button>
+                                    <p className='font-semibold'>Candidato {key}</p>
+                                    <div className='flex flex-col items-center p-2'>
+                                        <label htmlFor={name} className='p-[5px] bg-blue-50 cursor-pointer rounded  transition-all text-sm font-semibold hover:shadow-md'>
+                                            Subir archivo
+                                        </label>
+                                        <HiddenFileInput type="file" id={name} name={name} onChange={handleFileChange} max={4} multiple accept="application/pdf" />
+                                        {files[name].length > 0 &&
+                                            <div className='mt-[10px] rounded-xl bg-gray-50 border-gray-200 border-solid border-[1px] shadow'>
+                                                {Object.entries(files[name]).map(([index, file]) => (
+                                                    <div key={index} className='text-sm bg-transparent font-medium flex flex-row justify-between items-center m-2'>
+                                                        <div className='flex flex-row items-center truncate p-1'>
+                                                            <img className='max-w-[30px] mr-[1px]' src={`${getIcon(file.name)}`} alt="" />
+                                                            <p className='truncate max-w-[260px]'>{file.name}</p>
+                                                        </div>
+                                                        <button onClick={() => removeFile(index, name)}><FontAwesomeIcon icon={faX} size="xs" style={{ color: "#a8a8a8", }} /></button>
                                                     </div>
-                                                    <button onClick={() => removeFile(index, name)}><FontAwesomeIcon icon={faX} size="xs" style={{ color: "#a8a8a8", }} /></button>
-                                                </div>
-                                            ))}
-                                        </div>}
-                                </div>
-                            </Info>)
-                    })}
-
-                    {Object.keys(files).length < MAX_CANDIDATES_PER_REQUEST &&
-                        <Info className='relative min-h-[100px] border-dashed shadow border-gray-300 border-[1px] justify-center'>
-                            <button className='w-full h-full' onClick={handleAddCandidate}><FontAwesomeIcon icon={faPlus} size="xl" /></button>
-                        </Info>
-                    }
-
-                </GridDivCand>
-
-                <div className='flex justify-center w-full pb-6'>
-                    <button onClick={handleSubmit} className='w-1/4 font-semibold bg-blue-600 text-gray-100 p-2 rounded transition-all hover:shadow-md'>Procesar</button>
-                </div>
-
-            </Container>
-        </EmployeeData>
+                                                ))}
+                                            </div>}
+                                    </div>
+                                </Info>)
+                        })}
+                        {Object.keys(files).length < MAX_CANDIDATES_PER_REQUEST &&
+                            <Info className='relative min-h-[100px] border-dashed shadow border-gray-300 border-[1px] justify-center'>
+                                <button className='w-full h-full' onClick={handleAddCandidate}><FontAwesomeIcon icon={faPlus} size="xl" /></button>
+                            </Info>
+                        }
+                    </GridDivCand>
+                    <div className='flex justify-center w-full pb-6'>
+                        <button onClick={handleSubmit} className='w-1/4 font-semibold bg-blue-600 text-gray-100 p-2 rounded transition-all hover:shadow-md'>Procesar</button>
+                    </div>
+                </Container>
+            </EmployeeData>
+        </SlowlyShowing>
     );
 }
 

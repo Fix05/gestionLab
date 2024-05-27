@@ -7,6 +7,7 @@ import useTransformData from '../../../hooks/useTransformData'
 import PaymentInfoTable from '../../../components/paymentInfoTable'
 import PaidTable from '../../../components/paidTable'
 import { EmployeeData, Container, Div } from '../../../styledComponents/detailsBox'
+import SlowlyShowing from '../../../components/slowlyShowing'
 
 export default function PaymentInfo() {
 
@@ -32,28 +33,30 @@ export default function PaymentInfo() {
     }, [changedList])
 
     return (
-        <EmployeeData >
-            <Container>
-                {cleanData.payment && <>
-                    <BoxDivider text={"Pago"} />
-                    <Div>
-                        <PaidTable values={cleanData.payment} paidInfo={paidInfo} />
-                    </Div>
-                </>}
-                {cleanData.advances && <>
-                    <BoxDivider text={"Adelantos"} />
-                    <Div>
-                        <PaymentInfoTable values={cleanData.advances} totalPaid={paidInfo.advance} />
-                    </Div>
-                </>
-                }
-                {cleanData.extras && <>
-                    <BoxDivider text={"Horas extras"} />
-                    <Div>
-                        <PaymentInfoTable values={cleanData.extras} totalPaid={paidInfo.extra} />
-                    </Div>
-                </>}
-            </Container>
-        </EmployeeData>
+        <SlowlyShowing time={100}>
+            <EmployeeData >
+                <Container>
+                    {cleanData.payment && <>
+                        <BoxDivider text={"Pago"} />
+                        <Div>
+                            <PaidTable values={cleanData.payment} paidInfo={paidInfo} />
+                        </Div>
+                    </>}
+                    {cleanData.advances && <>
+                        <BoxDivider text={"Adelantos"} />
+                        <Div>
+                            <PaymentInfoTable values={cleanData.advances} totalPaid={paidInfo.advance} />
+                        </Div>
+                    </>
+                    }
+                    {cleanData.extras && <>
+                        <BoxDivider text={"Horas extras"} />
+                        <Div>
+                            <PaymentInfoTable values={cleanData.extras} totalPaid={paidInfo.extra} />
+                        </Div>
+                    </>}
+                </Container>
+            </EmployeeData>
+        </SlowlyShowing>
     )
 }

@@ -23,8 +23,6 @@ export const AuthProvider = ({ children }) => {
           email: decoded.sub,
           role: decoded.role
         };
-
-        console.log("SETEAR", newUser);
         setUser(newUser);
       } catch (error) {
         console.log("Error decoding token: ", error);
@@ -34,8 +32,6 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = (newUser, token, refreshToken) => {
-
-    console.log("Login");
     setUser(newUser);
     localStorage.setItem('token', token);  
     localStorage.setItem('refreshToken', refreshToken);  

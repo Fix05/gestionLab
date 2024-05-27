@@ -3,6 +3,7 @@ import Table from '../../components/table'
 import { useParams } from 'react-router-dom'
 import { useEffect, useState, createContext, useContext } from 'react';
 import Pagination from '../../components/pagination'
+import SlowlyShowing from '../../components/slowlyShowing'
 
 import { paginationContext } from './manager'
 
@@ -16,7 +17,7 @@ export default function Manager() {
     const [originalValues, setOriginalValues] = useState([{}])
     const { tablePage, setTablePage } = useContext(paginationContext);
     const ELEMENTS_PER_PAGE = 10
-    
+
     useEffect(() => {
         setTablePage(1)
         if (listResult.length) {
@@ -32,16 +33,17 @@ export default function Manager() {
             }));
             setChangedList(newRequestsList);
             setOriginalValues(newRequestsList)
-        } 
+        }
     }, [listResult]);
 
     return (
-        <div className="mt-6 rounded-lg border-2 border-gray-400 bg-white">
-            <Table values={changedList} setValues={setChangedList} originalValues={originalValues} bgcolor={'bg-cyan-200'} numberOfElements={ELEMENTS_PER_PAGE}/>
-            <div className="rounded-b-lg border-t border-gray-200 px-4 py-2">
-                <Pagination totalPages={Math.ceil(changedList.length / 10)} />
+        <SlowlyShowing time={100}>
+            <div className="mt-6 rounded-lg border-2 border-gray-400 bg-white">
+                <Table values={changedList} setValues={setChangedList} originalValues={originalValues} bgcolor={'bg-cyan-200'} numberOfElements={ELEMENTS_PER_PAGE} />
+                <div className="rounded-b-lg border-t border-gray-200 px-4 py-2">
+                    <Pagination totalPages={Math.ceil(changedList.length / 10)} />
+                </div>
             </div>
-        </div>
-
+        </SlowlyShowing>
     )
 }

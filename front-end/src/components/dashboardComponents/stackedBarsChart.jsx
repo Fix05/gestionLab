@@ -111,7 +111,6 @@ export default function StackBarsChart() {
     return (
 
         <div className='w-[90%]'>
-            {console.log(Object.keys(data).length>0)}
             {Object.keys(data).length>0 &&
                 <Bar data={data} options={OPTIONS} />
             }

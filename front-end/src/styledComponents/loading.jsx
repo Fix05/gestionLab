@@ -69,9 +69,9 @@ const Shadow = styled.div`
 const Loading = () => {
   return (
     <TypingIndicatorContainer>
-      <Circle left="10%" delay="0s" />
-      <Circle left="50%" delay="0.2s" />
-      <Circle left="90%" delay="0.3s" />
+      <Circle left="5%" delay="0s" />
+      <Circle left="45%" delay="0.2s" />
+      <Circle left="85%" delay="0.3s" />
       <Shadow left="10%" delay="0s" />
       <Shadow left="50%" delay="0.2s" />
       <Shadow left="90%" delay="0.3s" />

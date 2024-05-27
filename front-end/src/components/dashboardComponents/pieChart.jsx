@@ -77,7 +77,6 @@ export default function PieChart() {
     return (
 
         <div className='w-[70%]'>
-            {console.log(Object.keys(data).length > 0)}
             {Object.keys(data).length > 0 &&
                 <Pie data={data} options={OPTIONS} />
             }

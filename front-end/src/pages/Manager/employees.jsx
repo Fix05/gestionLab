@@ -3,9 +3,10 @@ import Table from '../../components/table'
 import { useEffect, useState, createContext, useContext } from 'react';
 import Pagination from '../../components/pagination'
 import { paginationContext } from './manager'
-import {useAnimation} from '../../contexts/doneAnimationContext'
+import { useAnimation } from '../../contexts/doneAnimationContext'
 import DoneAnimation from '../../components/doneAnimationWindow'
 import AddedEmployee from '../../assets/gif/addedEmployee.gif'
+import SlowlyShowing from '../../components/slowlyShowing'
 
 
 export default function Manager() {
@@ -43,13 +44,15 @@ export default function Manager() {
     }, [listResult]);
 
     return (
-        <div className="mt-6 rounded-lg border-2 border-gray-400 bg-white ">
-            <DoneAnimation open={showAnimation} setOpen={setShowAnimation} message={message} gif={renderComponent}/>
-            <Table values={changedList} setValues={setChangedList} originalValues={originalValues} bgcolor={"bg-lime-200"} numberOfElements={ELEMENTS_PER_PAGE} />
-            <div className="rounded-b-lg border-t border-gray-200 px-4 py-2">
-                <Pagination totalPages={Math.ceil(changedList.length / 10)} />
+        <SlowlyShowing time={100}>
+            <div className="mt-6 rounded-lg border-2 border-gray-400 bg-white ">
+                <DoneAnimation open={showAnimation} setOpen={setShowAnimation} message={message} gif={renderComponent} />
+                <Table values={changedList} setValues={setChangedList} originalValues={originalValues} bgcolor={"bg-lime-200"} numberOfElements={ELEMENTS_PER_PAGE} />
+                <div className="rounded-b-lg border-t border-gray-200 px-4 py-2">
+                    <Pagination totalPages={Math.ceil(changedList.length / 10)} />
+                </div>
             </div>
-        </div>
+        </SlowlyShowing>
     )
 }
 

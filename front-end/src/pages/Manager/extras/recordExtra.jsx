@@ -6,6 +6,7 @@ import Table from '../../../components/table'
 import RecordDetailedInfo from '../pageComponents/recordDetailedInfo'
 import { ExtraRecordMapping } from '../../../mapping/dataMapping'
 import Pagination from '../../../components/pagination'
+import SlowlyShowing from '../../../components/slowlyShowing'
 
 
 export default function RecordExtra() {
@@ -39,39 +40,38 @@ export default function RecordExtra() {
     }
 
     return (
+        <SlowlyShowing time={100}>
+            <div className="mt-6 rounded-lg border-2 border-gray-400 bg-white">
+                <RecordDetailedInfo open={open} setOpen={setOpen} endpoint={DESCRIPTION_ENDPOINT} values={modalData} />
+                {message ?
 
-        <div className="mt-6 rounded-lg border-2 border-gray-400 bg-white">
+                    (< div className="bg-gray-300 px-4 py-3 text-white rounded">
+                        <p className="text-center text-sm font-medium text-gray-800">
+                            {message}
+                        </p>
+                    </div>
+                    ) : (
+                        <Table values={changedList} setValues={setChangedList} originalValues={originalValues} bgcolor={"bg-teal-200"} numberOfElements={ELEMENTS_PER_PAGE} setOpen={setOpen} sthElse={true} setId={setId} />
+                    )
+                }
 
-            <RecordDetailedInfo open={open} setOpen={setOpen} endpoint={DESCRIPTION_ENDPOINT} values={modalData} />
-            {message ?
-
-                (< div className="bg-gray-300 px-4 py-3 text-white rounded">
-                    <p className="text-center text-sm font-medium text-gray-800">
-                        {message}
-                    </p>
+                <div className="flex flex-row justify-between rounded-b-lg border-t border-gray-200 px-4 py-2">
+                    <div className='text-gray-700 text-sm'>
+                        <label htmlFor="monthLimited">Escoja el mes: </label>
+                        <input
+                            className='w-[180px] cursor-pointer'
+                            value={Object.keys(date).length ? date.start_date : ""}
+                            type="month"
+                            id="monthLimited"
+                            name="monthLimited"
+                            onChange={handleDateChange}
+                            min={dateRange.min ? dateRange.min.slice(0, 7) : ""}
+                            max={dateRange.max ? dateRange.max.slice(0, 7) : ""}
+                        />
+                    </div>
+                    <Pagination totalPages={Math.ceil(changedList.length / 10)} />
                 </div>
-                ) : (
-                    <Table values={changedList} setValues={setChangedList} originalValues={originalValues} bgcolor={"bg-teal-200"} numberOfElements={ELEMENTS_PER_PAGE} setOpen={setOpen} sthElse={true} setId={setId} />
-                )
-            }
-            
-            <div className="flex flex-row justify-between rounded-b-lg border-t border-gray-200 px-4 py-2">
-                <div className='text-gray-700 text-sm'>
-                    <label htmlFor="monthLimited">Escoja el mes: </label>
-                    <input
-                        className='w-[180px] cursor-pointer'
-                        value={Object.keys(date).length ? date.start_date : ""}
-                        type="month"
-                        id="monthLimited"
-                        name="monthLimited"
-                        onChange={handleDateChange}
-                        min={dateRange.min ? dateRange.min.slice(0, 7) : ""}
-                        max={dateRange.max ? dateRange.max.slice(0, 7) : ""}
-                    />
-                </div>
-                <Pagination totalPages={Math.ceil(changedList.length / 10)} />
-            </div>
-        </div >
-
+            </div >
+        </SlowlyShowing>
     )
 }

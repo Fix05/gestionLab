@@ -7,18 +7,20 @@ from datetime import timedelta, datetime, timezone
 from db_connection import get_db
 
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
 
 SECRET_KEY = "monolosu"
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 1
-REFRESH_TOKEN_EXPIRE_DAYS = 7
+ACCESS_TOKEN_EXPIRE_HOURS = 5
+REFRESH_TOKEN_EXPIRE_DAYS = 30
 
 router = APIRouter()
+
 
 class User(BaseModel):
     email: str
     password: str
+
 
 class RefreshData(BaseModel):
     role: str
@@ -31,10 +33,10 @@ class Token(BaseModel):
 
 
 @router.post("/")
-def validate_user(user: User, db: mysql.connector.MySQLConnection = Depends(get_db)):  
+def validate_user(user: User, db: mysql.connector.MySQLConnection = Depends(get_db)):
     if not user.email or not user.password:
         return {"status_code": 402, "message": "Missing params"}
-    
+
     try:
         cursor = db.cursor(dictionary=True)
         query = """
@@ -56,15 +58,11 @@ def validate_user(user: User, db: mysql.connector.MySQLConnection = Depends(get_
         else:
             return {"status_code": 401, "message": "Invalid user or password"}
     except mysql.connector.Error as e:
-        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Database error: {str(e)}")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"An unexpected error occurred: {str(e)}")
-
-
-
-
-
-
+        raise HTTPException(
+            status_code=500, detail=f"An unexpected error occurred: {str(e)}")
 
 
 @router.get("/{id}")
@@ -76,31 +74,29 @@ def get_employees(id: int, db: mysql.connector.MySQLConnection = Depends(get_db)
     return result
 
 
-
-
-
-
 @router.post("/token")
 def login_for_access_token(form_data: User, db: mysql.connector.MySQLConnection = Depends(get_db)):
     user = validate_user(form_data, db)
     print(user)
     if not user:
         return {"status_code": 401, "message": "Invalid user or password"}
-    
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+
+    access_token_expires = timedelta(hours=ACCESS_TOKEN_EXPIRE_HOURS)
+    token_data = {"sub": user["email"], "id": user["id"], "role": user["permission"]}
     access_token = create_access_token(
-        data={"sub": user["email"], "id": user["id"], "role": user["permission"]}, 
+        data = token_data,
         expires_delta=access_token_expires
     )
 
-    refresh_token = create_refresh_token(data={"sub": user["email"], "id": user["id"]})
+    refresh_token = create_refresh_token(
+        data=token_data)
 
     return {"access_token": access_token, "token_type": "bearer", "refresh_token": refresh_token}
 
 
-
 @router.post("/refresh")
 def refresh_token(refresh_token: str = Depends(oauth2_scheme), db: mysql.connector.MySQLConnection = Depends(get_db)):
+
     try:
         payload = jwt.decode(refresh_token, SECRET_KEY, algorithms=[ALGORITHM])
         role = payload.get('role')
@@ -110,21 +106,17 @@ def refresh_token(refresh_token: str = Depends(oauth2_scheme), db: mysql.connect
             raise HTTPException(status_code=400, detail="Invalid user")
     except jwt.PyJWTError as e:
         raise HTTPException(status_code=400, detail="Invalid token")
-    
-    print("Pasó")
 
-
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token_expires = timedelta(hours=ACCESS_TOKEN_EXPIRE_HOURS)
     access_token = create_access_token(
-        data={"sub": user["email"], "id": user["id"], "role": user["role"]},
+        data={"sub": email, "id": user["id"], "role": role},
         expires_delta=access_token_expires
     )
     return {
         "access_token": access_token,
         "token_type": "bearer",
-        "refresh_token": refresh_token  # Puede optar por emitir un nuevo refresh token aquí
+        "refresh_token": refresh_token
     }
-
 
 
 def validate_user(user: User, db):
@@ -144,9 +136,8 @@ def validate_user(user: User, db):
         return result  # Retorna el resultado con id, permiso y email
     else:
         return None
-    
 
-    
+
 def validate_refresh(data: RefreshData, db):
     cursor = db.cursor(dictionary=True)
     query = """
@@ -167,20 +158,24 @@ def validate_refresh(data: RefreshData, db):
         return None
 
 
-
 def create_access_token(data: dict, expires_delta: timedelta = None):
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.now(timezone.utc) + expires_delta
     else:
-        expire = datetime.now(timezone.utc)+ timedelta(minutes=15)
+        expire = datetime.now(timezone.utc) + timedelta(minutes=15)
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
 
 def create_refresh_token(data: dict):
-    expire = datetime.now(timezone.utc) + timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
+    expire = datetime.now(timezone.utc) + \
+        timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
     to_encode = data.copy()
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+
+
+
+""" timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS) """

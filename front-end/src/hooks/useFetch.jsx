@@ -27,8 +27,6 @@ const useFetch = (url, data, method, shouldFetch = true, token = null) => {
     410: "Este empleado ya tiene ausencias registradas para el rango de días escogido"
   }
 
-  method == "PUT" ? console.log("Se renderizó el componente, el valor de loading es:", loading): null
-
   const doFetch = async (inFunctionData, inFnctionUrl) => {
 
     try {
@@ -60,7 +58,6 @@ const useFetch = (url, data, method, shouldFetch = true, token = null) => {
       
       if (url && !url.includes("undefined")) {
         if (!("body" in options) || Object.keys(data).length || data instanceof FormData) {
-          console.log(options);
           const response = await fetch(url, options)
           const jsonResponse = await response.json()
 

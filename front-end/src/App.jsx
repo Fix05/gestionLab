@@ -44,6 +44,11 @@ function App() {
             <ManagerPage />
           </ProtectedRoute>
         }>
+          {/* <Route path="/Manager/:id/employees" element={
+            
+              <Employees />
+
+          } /> */}
           <Route path="/Manager/:id/employees" element={
             <ProtectedRoute role={'Manager'}>
               <Employees />
