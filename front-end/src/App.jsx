@@ -134,23 +134,25 @@ function App() {
         <Route path="/Admin/:id/:page" element={<AdminPage />} />
 
 
+
+
         <Route path="/User/:id" element={
-          <ProtectedRoute role={'Manager'}>
+          <ProtectedRoute role={'User'}>
             <EmployeePage />
           </ProtectedRoute>
 
         } >
           {/* <Route path="/User/:id/mainPage" element={
-          <ProtectedRoute role={'Manager'}>
+          <ProtectedRoute role={'User'}>
             <MainPage />
           </ProtectedRoute>} /> */}
 
 
           <Route path="/User/:id/addRequest" element={
-            <ProtectedRoute role={'Manager'}>
+            <ProtectedRoute role={'User'}>
               <AddRequest />
             </ProtectedRoute>} />
-          <Route path="/User/:id/recordRequest" element={<ProtectedRoute role={'Manager'}>
+          <Route path="/User/:id/recordRequest" element={<ProtectedRoute role={'User'}>
             <RecordRequest />
           </ProtectedRoute>} />
         </Route>

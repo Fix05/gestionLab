@@ -33,25 +33,27 @@ function ProtectedRoute({ role, children }) {
     const tokenIsValid = checkExpireToken();
     useEffect(() => {
         console.log("Efecto del protectRoute");
-        if (!tokenIsValid) {
+        if (token && !tokenIsValid) {
             console.log("Token caducó");
             getNewToken().then((response) => {
                 console.log("REspuesta del refresh", response);
-                if (response.access_token) {
+                if (response && response.access_token) {
                     localStorage.setItem('token', response.access_token);
                     console.log("Nuevo token seteado");
                     console.log("Se va a navegar al login");
-                    navigate("/")
                 }
+                navigate("/")
             })
 
         }
     }, [getNewToken, refreshToken])
 
     const checkId = () => {
-        const decoded = jwtDecode(token);
-        const isCorrectId = (id == decoded.id)
-        return isCorrectId
+        if (token) {
+            const decoded = jwtDecode(token);
+            const isCorrectId = (id == decoded.id)
+            return isCorrectId
+        }
     }
 
     if (loading) {
@@ -62,26 +64,29 @@ function ProtectedRoute({ role, children }) {
         )
     }
 
-    const sameId = checkId()
 
-    if (!sameId) {
-        return <Navigate to="/Error" state={{ from: location }} replace />;
-    }
-
-    if (!refreshLoading) {
-        if (!user || user.role != role || !tokenIsValid) {
-            console.log("Usuario rol o tiempo de validez no valido, se redirigirá al login");
-            return <Navigate to="/" state={{ from: location }} replace />;
+    if(token){
+        if (!refreshLoading) {
+            if (!user || user.role != role || !tokenIsValid) {
+                console.log("user", user);
+                console.log(user.role, "==", role);
+                console.log(tokenIsValid);
+                console.log("Usuario rol o tiempo de validez no valido, se redirigirá al login");
+                return <Navigate to="/" state={{ from: location }} replace />;
+            }
+        } else {
+            return (
+                <div>Loading...</div>
+            )
         }
-    } else {
-        return (
 
-            <div>Loading...</div>
-
-        )
+        if (!checkId()) {
+            return <Navigate to="/Error" state={{ from: location }} replace />;
+        }
+    }else{
+        return <Navigate to="/" state={{ from: location }} replace />;
     }
-
-
+    
 
     return children;
 }

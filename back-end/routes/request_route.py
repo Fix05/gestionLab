@@ -27,7 +27,7 @@ def get_manager_assigned_requests(id: int, roles: List[str] = Query(['User'], de
             join employee on fk_employee = id_employee
             join person on fk_person = id_person
             WHERE permission_employee IN ({in_clause})
-            AND state_employee != "Deshabilitado";
+            AND state_employee != "Deshabilitado"
             ORDER BY id_request DESC;"""
 
         cursor.execute(query, roles)
@@ -56,9 +56,11 @@ def get_all_employee_requests_info(id: int, db: mysql.connector.MySQLConnection 
         cursor = db.cursor(dictionary=True)
         infoQuery = """
             SELECT type_request as type, date_request as date, reason_request as reason, explanation_request as explanation, 
-            state_request as state, name_document_request as doc, body_response_request as response, 
-            date_response_request as date_response
+            state_request as state, name_document_request as doc, body_response_request as response,
+            name_person as name, lastname_person as lastname, date_response_request as date_response
             FROM requests
+            JOIN employee ON requests.fk_employee = employee.id_employee
+            JOIN person ON fk_person = id_person
             LEFT JOIN document_request ON document_request.fk_request = id_request
             LEFT JOIN response_request ON response_request.fk_request = id_request
             WHERE id_request = %s;

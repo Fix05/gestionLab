@@ -73,7 +73,7 @@ export default function Login() {
         }, result.access_token, result.refresh_token)
 
         if (decoded.role == "User") {
-          navigate(`/User/${decoded.id}/mainPage`)
+          navigate(`/User/${decoded.id}`)
         } else {
           navigate(`/Manager/${decoded.id}/dashboard`)
         }

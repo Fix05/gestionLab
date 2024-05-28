@@ -7,7 +7,7 @@ import dictionary from '../../../dictionaries/employeeInfo.json'
 import IconsDictionary from '../../../dictionaries/fileIcons.json'
 import { EmployeeData, Container, Div, Info, GridDiv } from '../../../styledComponents/detailsBox'
 import Loading from '../../../components/loadingModal'
-import DefaultImage from '../../../assets/images/defaultUser-removebg-preview.png'
+import defaultUser from '../../../assets/images/defaultUser.png'
 import ParamsDict from '../../../dictionaries/updateInputParams.json'
 import ConfirmAction from '../../../components/confirmAction'
 import { useAnimation } from '../../../contexts/doneAnimationContext'
@@ -72,7 +72,7 @@ export default function EmployeeInfo() {
     }, [open])
 
     const handleImgError = (ev) => {
-        ev.target.src = DefaultImage
+        ev.target.src = defaultUser
     }
 
     const getFormat = (name) => {

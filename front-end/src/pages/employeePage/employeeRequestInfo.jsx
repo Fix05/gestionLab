@@ -1,7 +1,7 @@
 import GenericModalTemplate from '../../components/genericModalTemplate'
 import useFetch from '../../hooks/useFetch'
 import { Container } from '../../styledComponents/detailsBox'
-import ColorStates from '../../dictionaries/employeeInfoColorStates.json'
+import ColorStates from '../../dictionaries/paymentState.json'
 
 export default function EmployeeRequestInfo({ id, open, setOpen }) {
 

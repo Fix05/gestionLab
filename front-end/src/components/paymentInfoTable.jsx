@@ -32,7 +32,7 @@ export default function PaymentInfoTable({ values, totalPaid }) {
                                     return (
                                         payment_states[value] ? (
                                             <td key={index} className={`flex justify-center whitespace-nowrap text-center px-4 py-2 text-gray-700`}>
-                                                <div className={`${payment_states[value]} flex justify-center items-center text-xs rounded w-16 h-5`}>
+                                                <div className={`flex justify-center items-center text-xs rounded w-16 h-5`} style={{backgroundColor: payment_states[value] }}>
                                                     {value}
                                                 </div>
                                             </td>

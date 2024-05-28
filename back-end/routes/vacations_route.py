@@ -222,12 +222,13 @@ def update_employee_state(db):
                 WHERE start_date_absence <= DATE(NOW())
                 AND end_date_absence >= DATE(NOW())
                 AND type_absence != 'Vacaciones'
+                AND type_absence != 'Falta injustificada'
             );
         """
 
         update_to_vacation_state_query = f""" 
             UPDATE employee
-            SET state_employee = 'En vacaciones'
+            SET state_employee = 'Vacaciones'
             WHERE state_employee != "Deshabilitado"
             AND id_employee IN (
                 select fk_employee from absences
@@ -236,6 +237,21 @@ def update_employee_state(db):
                 AND type_absence = 'Vacaciones'
             );
         """
+
+
+        update_to_unjustified_state_query = f""" 
+            UPDATE employee
+            SET state_employee = 'Ausente'
+            WHERE state_employee != "Deshabilitado"
+            AND id_employee IN (
+                select fk_employee from absences
+                WHERE start_date_absence <= DATE(NOW())
+                AND end_date_absence >= DATE(NOW())
+                AND type_absence = 'Falta injustificada'
+            );
+        """
+
+        #Actualizar estado del empleado a ausente
 
         update_to_active_state_query = f""" 
             UPDATE employee
@@ -264,6 +280,7 @@ def update_employee_state(db):
 
         cursor.execute(update_to_permission_state_query)
         cursor.execute(update_to_vacation_state_query)
+        cursor.execute(update_to_unjustified_state_query)
         cursor.execute(update_to_active_state_query)
         cursor.execute(update_to_ended_state_query)
         cursor.execute(update_to_inprogress_state_query)

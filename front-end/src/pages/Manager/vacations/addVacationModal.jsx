@@ -183,6 +183,7 @@ export default function AddVacationModal({ open, setOpen, id, employeeData, setA
                         <option value="Vacaciones">Vacaciones</option>
                         <option value="Salud">Salud</option>
                         <option value="Calamidad doméstica">Calamidad doméstica</option>
+                        <option value="Falta injustificada">Falta injustificada</option>
                         <option value="Otro">Otro</option>
                     </select>
                 </div>

@@ -1,12 +1,14 @@
 from fastapi import APIRouter, Query, HTTPException, Depends, Form, UploadFile, File
 from pydantic import BaseModel
-import shutil
-from datetime import datetime
-from typing import List
-import mysql.connector
 from fastapi.responses import FileResponse
 from db_connection import get_db
+from datetime import datetime
+from typing import List
+from ..extra_functionalities.send_mail import send_email
+import shutil
+import mysql.connector
 import os
+import random
 import uuid
 import time
 import traceback
@@ -167,11 +169,8 @@ def get_all_employee_info(id: int, db: mysql.connector.MySQLConnection = Depends
 @router.put("/update-employee-info/{id}")
 def update_employee_info(id: int, updated_data: dict, db: mysql.connector.MySQLConnection = Depends(get_db)):
 
-    print(updated_data)
-
     try:
         cursor = db.cursor(dictionary=True)
-
         field, value = updated_data.popitem()
 
         if field in FIELD_TO_TABLE_MAPPING:
@@ -225,7 +224,6 @@ def update_employee_info(id: int, updated_data: dict, db: mysql.connector.MySQLC
 @router.post("/add-new-employee")
 def add_new_employee(data: NewEmployee, db: mysql.connector.MySQLConnection = Depends(get_db)):
     try:
-
         cursor = db.cursor(dictionary=True)
         add_person_query = f"""
             INSERT INTO person (name_person, lastname_person, dni_person,
@@ -245,8 +243,10 @@ def add_new_employee(data: NewEmployee, db: mysql.connector.MySQLConnection = De
         """
         add_employee_query = f"""
             INSERT INTO employee (pass_employee, permission_employee, department_employee, fk_person, fk_contract, fk_salary_info,  state_employee,  base_salary_employee)
-            VALUES ('abcd123456', 'User', %s, @last_person_id, @last_contract_id, @last_salary_id, 'Activo', %s)
+            VALUES (%s, 'User', %s, @last_person_id, @last_contract_id, @last_salary_id, 'Activo', %s)
         """
+        
+        password = generate_random_code()
         cursor.execute(add_person_query, (data.name, data.lastname, data.dni,
                                           data.email, data.number, data.address,
                                           data.birth, data.emergency_number,
@@ -260,12 +260,11 @@ def add_new_employee(data: NewEmployee, db: mysql.connector.MySQLConnection = De
         cursor.execute("SET @last_contract_id = LAST_INSERT_ID();")
         cursor.execute(add_salary_info_query, (data.salary,))
         cursor.execute("SET @last_salary_id = LAST_INSERT_ID();")
-        cursor.execute(add_employee_query, (data.department, data.salary))
+        cursor.execute(add_employee_query, (password, data.department, data.salary))
         employee_id = cursor.lastrowid
-
         db.commit()
         cursor.close()
-
+        send_email(data.email, f"{data.name} {data.lastname}", password)
         if(employee_id):
             return {"status_code": 200, "employe_inserted": employee_id}
         else:
@@ -439,3 +438,8 @@ def disble_employee(id: int, db: mysql.connector.MySQLConnection = Depends(get_d
     except Exception as e:
         raise HTTPException(
             status_code=500, detail=f"An unexpected error occurred: {str(e)}")
+    
+
+def generate_random_code():
+    code = random.randint(10000000, 99999999)
+    return code

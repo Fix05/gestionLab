@@ -24,7 +24,7 @@ const ICONS = {
 const Container = styled.div`
 `
 
-export default function Table({ values, setValues, bgcolor, originalValues, numberOfElements, setOpen, sthElse, setId }) {
+export default function Table({ values, setValues, bgcolor, originalValues, numberOfElements, setOpen, sthElse, setId, showId=false }) {
 
     const { tablePage, setTablePage } = useContext(paginationContext);
     const [searchQuery, setSearchQuery] = useState('');
@@ -82,7 +82,7 @@ export default function Table({ values, setValues, bgcolor, originalValues, numb
 
     const getCellProperties = (key, value) => {
         let classNames
-        if (key === 'Id' || key === 'Page') {
+        if ((key === 'Id' && showId == false) || key === 'Page') {
             return { ignore: true }
         }
         const isNumberColumn = key === 'N°';
@@ -100,7 +100,7 @@ export default function Table({ values, setValues, bgcolor, originalValues, numb
                     <thead className={`ltr:text-left rtl:text-right ${bgcolor} border-b-2 border-gray-400`}>
                         <tr>
                             {valuesArray.map((value) => (
-                                value != "Id" && <th key={value} className="text-left whitespace-nowrap px-4 py-2 font-medium text-gray-900">{value != "Page" && value}</th>
+                               (value != "Id" || showId==true) && <th key={value} className="text-left whitespace-nowrap px-4 py-2 font-medium text-gray-900">{value != "Page" && value}</th>
                             ))}
                         </tr>
                     </thead>
@@ -114,9 +114,8 @@ export default function Table({ values, setValues, bgcolor, originalValues, numb
                                     if (ignore) return null;
                                     return (
                                         <td key={index} className={classNames}>
-                                        {payment_states[value] ? (
-                                            
-                                            <div className={`${payment_states[value]} text-xs text-center rounded w-16`}>
+                                        {key == 'Estado' ? (
+                                            <div className={`text-xs text-center flex justify-center rounded w-16`} style={{backgroundColor: payment_states[value] || 'white'}}>
                                                 {cellValue}
                                             </div>
                                         ) : (

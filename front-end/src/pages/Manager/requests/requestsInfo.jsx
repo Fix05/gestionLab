@@ -59,7 +59,15 @@ export default function RequestInfo() {
                     <BoxDivider text={`Solicitud Nº${requestId}`} />
 
                     <Div>
-                        <Info flexbasis={'calc(50% - 10px)'}>
+                        <Info flexbasis={'calc(25% - 10px)'}>
+                            <h1 className='text-gray-600 font-bold text-xs'>Empleado:</h1>
+                            <div className='min-h-6 bg-white mt-2 border-solid border-2 border-slate-300 rounded'>
+                                <span className='text-gray-800 text-sm ml-2 flex direction-row justify-between items-center'>
+                                    {`${result.name} ${result.lastname}`}
+                                </span>
+                            </div>
+                        </Info>
+                        <Info flexbasis={'calc(25% - 10px)'}>
                             <h1 className='text-gray-600 font-bold text-xs'>Razón:</h1>
                             <div className='min-h-6 bg-white mt-2 border-solid border-2 border-slate-300 rounded'>
                                 <span className='text-gray-800 text-sm ml-2 flex direction-row justify-between items-center'>
@@ -73,7 +81,6 @@ export default function RequestInfo() {
                                 <span className='text-gray-800 text-sm ml-2 flex direction-row justify-between items-center'>
                                     {result.type}
                                 </span>
-
                             </div>
                         </Info>
                         <Info flexbasis={'calc(25% - 10px)'}>

@@ -39,20 +39,21 @@ export default function Manager() {
 
     const MESSAGE = "Manager"
     const { id } = useParams();
-    const DATA_URL = `http://127.0.0.1:8000/api/rh/get-info/${id}`
-    const [result] = useFetch(DATA_URL, null, "GET", id)
+    const DATA_ENDPOINT = `http://127.0.0.1:8000/api/rh/get-info/${id}`
+    const PHOTO_ENDPOINT = `http://127.0.0.1:8000/api/rh/download-photo/${id}`
+    const [result] = useFetch(DATA_ENDPOINT, null, "GET")
     const [page, setPage] = useState("Manager")
     const [tablePage, setTablePage] = useState(1)
     const [breadcrumbNames, setBreadcrumbNames] = useState()
 
     return (
-        <Container className='bg-black'>
+        <Container className='bg-white'>
             <paginationContext.Provider value={{ tablePage, setTablePage }}>
                 <AnimationProvider>
                     <pageContext.Provider value={{ page, setPage }}>
                         <breadcrumbContext.Provider value={(breadcrumbNames, setBreadcrumbNames)}>
                             <SlowlyShowing time={500}>
-                                <Header name={result.name} image={image} lastname={result.lastname} email={result.email} style={HEADER_BG} message={MESSAGE} />
+                                <Header name={result.name} image={PHOTO_ENDPOINT} lastname={result.lastname} email={result.email} style={HEADER_BG} message={MESSAGE} />
                                 <Aside />
                                 <Div className='relative top-24 py-4 px-6'>
                                     <div className='flex justify-between h-10'>
@@ -60,7 +61,6 @@ export default function Manager() {
                                     </div>
                                     <Outlet />
                                 </Div>
-
                             </SlowlyShowing>
                         </breadcrumbContext.Provider>
                     </pageContext.Provider>
