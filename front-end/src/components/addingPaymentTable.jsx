@@ -30,7 +30,6 @@ export default function AddingPaymentTable({ values, setValues, total, setTotal,
 
     }
 
-
     return (
         <Container className="max-h-[170px]">
             <table className="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">

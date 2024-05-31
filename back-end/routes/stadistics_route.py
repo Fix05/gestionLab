@@ -1,15 +1,13 @@
-from fastapi import APIRouter, Query, HTTPException, Depends
-import mysql.connector
+from fastapi import APIRouter, HTTPException, Depends
 from db_connection import get_db
-
+import mysql.connector
 
 router = APIRouter()
 
 @router.get("/get-extras-vs-time/{time}")
-def get_manager_assigned_requests(time: str, db: mysql.connector.MySQLConnection = Depends(get_db)):
-
+def get_manager_assigned_requests(
+    time: str, db: mysql.connector.MySQLConnection = Depends(get_db)):
     time_expression = f"{time}(date_extras)"
-
     try:
         cursor = db.cursor(dictionary=True)
         query = f"""
@@ -20,16 +18,13 @@ def get_manager_assigned_requests(time: str, db: mysql.connector.MySQLConnection
             WHERE state_employee != "Deshabilitado"
             GROUP BY {time_expression};
         """
-
         cursor.execute(query)
         result = cursor.fetchall()
         cursor.close()
-
         if result:
             return result
         else:
             return {"status_code": 403, "message": "Not found"}
-
     except mysql.connector.Error as e:
         raise HTTPException(
             status_code=500, detail=f"Database error: {str(e)}")
@@ -38,12 +33,9 @@ def get_manager_assigned_requests(time: str, db: mysql.connector.MySQLConnection
             status_code=500, detail=f"An unexpected error occurred: {str(e)}")
     
 
-
-
-
 @router.get("/get-absences-vs-employee-vs-type")
-def get_absences_employee_type_relation(db: mysql.connector.MySQLConnection = Depends(get_db)):
-
+def get_absences_employee_type_relation(
+    db: mysql.connector.MySQLConnection = Depends(get_db)):
     try:
         cursor = db.cursor(dictionary=True)
         query = f"""
@@ -65,20 +57,16 @@ def get_absences_employee_type_relation(db: mysql.connector.MySQLConnection = De
         cursor.execute(query)
         result = cursor.fetchall()
         cursor.close()
-
         if result:
             return result
         else:
             return {"status_code": 403, "message": "Not found"}
-
     except mysql.connector.Error as e:
         raise HTTPException(
             status_code=500, detail=f"Database error: {str(e)}")
     except Exception as e:
         raise HTTPException(
             status_code=500, detail=f"An unexpected error occurred: {str(e)}")
-    
-
 
 
 @router.get("/get-count-requests-vs-type")
@@ -92,16 +80,13 @@ def get_count_requests_vs_type(db: mysql.connector.MySQLConnection = Depends(get
             AND state_employee != "Deshabilitado"
             GROUP BY (type_request)
         """
-
         cursor.execute(query)
         result = cursor.fetchall()
         cursor.close()
-
         if result:
             return result
         else:
             return {"status_code": 403, "message": "Not found"}
-
     except mysql.connector.Error as e:
         raise HTTPException(
             status_code=500, detail=f"Database error: {str(e)}")
@@ -110,9 +95,9 @@ def get_count_requests_vs_type(db: mysql.connector.MySQLConnection = Depends(get
             status_code=500, detail=f"An unexpected error occurred: {str(e)}")
             
             
-            
 @router.get("/get-requests-vs-employee-vs-type")
-def get_requests_employee_type_relation(db: mysql.connector.MySQLConnection = Depends(get_db)):
+def get_requests_employee_type_relation(
+    db: mysql.connector.MySQLConnection = Depends(get_db)):
     try:
         cursor = db.cursor(dictionary=True)
         query = f"""
@@ -129,16 +114,13 @@ def get_requests_employee_type_relation(db: mysql.connector.MySQLConnection = De
             WHERE e.state_employee != "Deshabilitado"
             GROUP BY r.fk_employee;
         """
-
         cursor.execute(query)
         result = cursor.fetchall()
         cursor.close()
-
         if result:
             return result
         else:
             return {"status_code": 403, "message": "Not found"}
-
     except mysql.connector.Error as e:
         raise HTTPException(
             status_code=500, detail=f"Database error: {str(e)}")

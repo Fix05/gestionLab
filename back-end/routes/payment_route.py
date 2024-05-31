@@ -1,17 +1,12 @@
-from fastapi import FastAPI, APIRouter, Query, HTTPException, Depends
+from fastapi import APIRouter, Query, HTTPException, Depends
 from datetime import datetime, timedelta
+from db_connection import get_db
 from pydantic import BaseModel
 from typing import List
-from contextlib import asynccontextmanager
 import mysql.connector
-import asyncio
-import schedule
-import time
-import threading
-from db_connection import get_db
+DATE_FORMAT = "%Y-%m-%d"
 
 router = APIRouter()
-
 
 class PaymentData(BaseModel):
     amount: float
@@ -19,24 +14,19 @@ class PaymentData(BaseModel):
     advances: bool
     description: str
 
-
 class Dates(BaseModel):
     start_date: str
-
 
 @router.post("/get-payment-overall")
 def get_payment_overall(dates: Dates, roles: List[str] = Query(['User'], description='List of roles'), db: mysql.connector.MySQLConnection = Depends(get_db)):
     try:
-        DATE_FORMAT = "%Y-%m-%d"
         formated_start = dates.start_date + "-01"
         date = datetime.strptime(formated_start, DATE_FORMAT)
         new_date = date + timedelta(days=32)
         new_date = new_date.replace(day=1)
         formated_end = new_date.strftime(DATE_FORMAT)
-
         cursor = db.cursor(dictionary=True)
         in_clause = ', '.join(['%s' for _ in roles])
-
         query = f"""
             SELECT name_person as name, lastname_person as lastname, id_employee,
             base_salary_employee as base_salary, id_remuneration_record as id_payment, date_remuneration as date, state_remuneration as state,
@@ -49,12 +39,10 @@ def get_payment_overall(dates: Dates, roles: List[str] = Query(['User'], descrip
             AND permission_employee IN ({in_clause})
             AND state_employee != "Deshabilitado";
         """
-
         params = (formated_start, formated_end, *roles)
         cursor.execute(query, params)
         result = cursor.fetchall()
         cursor.close()
-
         if result:
             return result
         else:
@@ -66,7 +54,6 @@ def get_payment_overall(dates: Dates, roles: List[str] = Query(['User'], descrip
         raise HTTPException(
             status_code=500, detail=f"An unexpected error occurred: {str(e)}")
 
-
 @router.get("/payment-date-range")
 def get_payment_date_range(db: mysql.connector.MySQLConnection = Depends(get_db)):
     try:
@@ -76,16 +63,13 @@ def get_payment_date_range(db: mysql.connector.MySQLConnection = Depends(get_db)
             MIN(min_pay_date_remuneration) AS min
             FROM remuneration_record;
         """
-
         cursor.execute(query)
         result = cursor.fetchone()
         cursor.close()
-
-        DATE_FORMAT = "%Y-%m-%d"
+        
 
         if result:
             new_date = result['max'] - timedelta(days=22)
-            print(new_date)
             new_date = new_date.replace(day=1)
             new_result = new_date.strftime(DATE_FORMAT)
             result['max'] = new_result
@@ -103,7 +87,6 @@ def get_payment_date_range(db: mysql.connector.MySQLConnection = Depends(get_db)
 def insert_data(db):
     try:
         cursor = db.cursor(dictionary=True)
-        """ in_clause = ', '.join(['%s' for _ in roles]) """
         query = f"""
             SELECT id_employee
             FROM employee
@@ -111,13 +94,11 @@ def insert_data(db):
         """
         cursor.execute(query)
         result = cursor.fetchall()
-
         current_date = datetime.now()
         next_month_date = (current_date + timedelta(days=31)).replace(day=1)
         formated_date1 = current_date.strftime("%Y-%m-%d")
         formated_date2 = next_month_date.strftime("%Y-%m-%d")
         script = ""
-        print(result)
         for element in result:
             string = f"('{formated_date1}', '{formated_date2}', 'Por pagar', {element['id_employee']}), "
             script = script + string
@@ -129,11 +110,9 @@ def insert_data(db):
              state_remuneration, fk_employee)
             VALUES {script}
         """
-
         cursor.execute(query)
         db.commit()
         cursor.close()
-
         return {"status_code": 200, "message": "Inserted successfully"}
     except mysql.connector.Error as e:
         raise HTTPException(
@@ -141,7 +120,6 @@ def insert_data(db):
     except Exception as e:
         raise HTTPException(
             status_code=500, detail=f"An unexpected error occurred: {str(e)}")
-
 
 def update_state(db):
     try:
@@ -156,7 +134,6 @@ def update_state(db):
         cursor.execute(query)
         db.commit()
         cursor.close()
-
         return {"status_code": 200, "message": "Updated successfully"}
     except mysql.connector.Error as e:
         raise HTTPException(
@@ -182,13 +159,11 @@ def get_payment_extras_and_advances(id: int, db: mysql.connector.MySQLConnection
             JOIN remuneration_record ON id_remuneration_record = fk_remuneration_record
             WHERE id_remuneration_record = %s;
         """
-
         cursor.execute(totalExtrasQuery, (id,))
         totalExtras = cursor.fetchone()
         cursor.execute(totalAdvancesQuery, (id,))
         totalAdvances = cursor.fetchone()
         cursor.close()
-
         if totalExtras["amount"] is not None or totalAdvances["amount"] is not None:
             paymentTotal = {
                 "extras": totalExtras["amount"],
@@ -274,15 +249,12 @@ def get_payment_info(id: int, db: mysql.connector.MySQLConnection = Depends(get_
         queriesList = [{"query": paymentQuery, "name": "payment"}, {
             "query": advanceQuery, "name": "advances"}, {"query": extraQuery, "name": "extras"}]
         result = []
-
         for query in queriesList:
             cursor.execute(query["query"], (id,))
             query_results = cursor.fetchall()
             if query_results:
                 result.append({query["name"]: query_results})
-
         cursor.close()
-
         if result:
             return result
         else:
@@ -314,12 +286,9 @@ def get_paid_extras_and_advances(id: int, db: mysql.connector.MySQLConnection = 
             JOIN remuneration_record ON fk_employee = id_employee 
             WHERE id_remuneration_record = %s) AS base_salary;
         """
-        
-
         cursor.execute(Query, (id, id, id))
         result = cursor.fetchone()
         cursor.close()
-
         if result:
             return result
         else:
@@ -336,7 +305,6 @@ def run_tasks(execution):
     now = datetime.now()
     last_execution = execution.get_last_execution_date()
     if (now.day == 1 and (last_execution is None or last_execution.month != now.month)):
-        print("Hola")
         insert_data(get_db())
         update_state(get_db())
         execution.set_last_execution_date(now)

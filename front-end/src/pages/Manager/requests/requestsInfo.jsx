@@ -126,6 +126,7 @@ export default function RequestInfo() {
                                             className="w-full rounded border-slate-300 align-top shadow-sm sm:text-sm"
                                             rows="4"
                                             placeholder="Escribe la respuesta a la solicitud."
+                                            maxLength={490}
                                             onChange={rquestResponse.handleChange}
                                         ></Textarea>
 

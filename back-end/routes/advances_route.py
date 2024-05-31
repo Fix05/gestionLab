@@ -1,11 +1,10 @@
 from fastapi import APIRouter, Query, HTTPException, Depends
-from datetime import datetime, timedelta
+from db_connection import get_db
 from pydantic import BaseModel
-import os
+from datetime import datetime
 from typing import List
 import mysql.connector
-from db_connection import get_db
-
+DATE_FORMAT = "%Y-%m-%d"
 router = APIRouter()
 
 
@@ -17,7 +16,6 @@ class NewAdvance(BaseModel):
     description: str
 
 
-
 @router.post("/get-advances-record")
 def get_advances_record(dates: Dates, roles: List[str] = Query(['User'], description='List of roles'), db: mysql.connector.MySQLConnection = Depends(get_db)):
     try:    
@@ -25,7 +23,6 @@ def get_advances_record(dates: Dates, roles: List[str] = Query(['User'], descrip
         date = datetime.strptime(formated_start, "%Y-%m")
         month = date.month
         year = date.year
-
         cursor = db.cursor(dictionary=True)
         in_clause = ', '.join(['%s' for _ in roles])
         query = f"""
@@ -41,12 +38,10 @@ def get_advances_record(dates: Dates, roles: List[str] = Query(['User'], descrip
             AND permission_employee IN ({in_clause})
             AND state_employee != "Deshabilitado";
         """
-
         params = (year, month, *roles)
         cursor.execute(query, params)
         result = cursor.fetchall()
         cursor.close()
-
         if result:
             return result
         else:
@@ -69,15 +64,9 @@ def get_advances_date_range(db: mysql.connector.MySQLConnection = Depends(get_db
             MIN(date_advance) AS min 
             FROM advance_record;
         """
-
         cursor.execute(query)
         result = cursor.fetchone()
         cursor.close()
-
-        DATE_FORMAT = "%Y-%m-%d"
-
-        print(result)
-
         if result['max']:
             new_date = result['max']
             new_date = new_date.replace(day=1)
@@ -93,7 +82,6 @@ def get_advances_date_range(db: mysql.connector.MySQLConnection = Depends(get_db
         raise HTTPException(
             status_code=500, detail=f"An unexpected error occurred: {str(e)}")
     
-
 #info to show in the Add Advance page table 
 @router.get("/get-add-advances-overall")
 def get_add_advances_overall(roles: List[str] = Query(['User'], description='List of roles'), db: mysql.connector.MySQLConnection = Depends(get_db)):
@@ -114,12 +102,10 @@ def get_add_advances_overall(roles: List[str] = Query(['User'], description='Lis
         cursor.execute(query, roles)
         result = cursor.fetchall()
         cursor.close()
-        
         if result:
             return result
         else:
             return {"status_code": 403, "message": "Not found"}
-        
     except mysql.connector.Error as e:
         raise HTTPException(
             status_code=500, detail=f"Database error: {str(e)}")
@@ -143,16 +129,13 @@ def get_employees_advances(id: int, db: mysql.connector.MySQLConnection = Depend
             AND DATE_FORMAT(date_advance, '%Y-%m') = %s
             AND state_advance = 'Por cobrar';
         """
-
         cursor.execute(query, (id, current_date))
         result = cursor.fetchall()
         cursor.close()
-
         if result:
             return result
         else:
             return {"status_code": 407, "message": "No info yet"}
-
     except mysql.connector.Error as e:
         raise HTTPException(
             status_code=500, detail=f"Database error: {str(e)}")
@@ -160,7 +143,6 @@ def get_employees_advances(id: int, db: mysql.connector.MySQLConnection = Depend
         raise HTTPException(
             status_code=500, detail=f"An unexpected error occurred: {str(e)}")
     
-
 
 
 @router.post("/add-advances/{id}")
@@ -177,11 +159,9 @@ def add_advance(id: int, data: NewAdvance, db: mysql.connector.MySQLConnection =
             AND %s >= min_pay_date_remuneration
             AND fk_employee = %s)); 
         """
-
         cursor.execute(query, (data.amount, current_date, data.description, current_date, current_date, id))
         db.commit()
         cursor.close()
-
         return {"status_code": 200, "message": "Inserted successfully"}
 
     except mysql.connector.Error as e:
@@ -199,11 +179,9 @@ def delete_advance(id: int, db: mysql.connector.MySQLConnection = Depends(get_db
         query = f"""
             DELETE FROM advance_record WHERE id_advance_record = %s;
         """
-        
         cursor.execute(query, (id,))
         db.commit()
         cursor.close()
-
         return {"status_code": 200, "message": "Deleted successfully"}
 
     except mysql.connector.Error as e:
@@ -213,8 +191,6 @@ def delete_advance(id: int, db: mysql.connector.MySQLConnection = Depends(get_db
         raise HTTPException(
             status_code=500, detail=f"An unexpected error occurred: {str(e)}")
     
-
-
 @router.get("/get-advance-description/{id}")
 def get_advance_description(id: int, db: mysql.connector.MySQLConnection = Depends(get_db)):
     try:
@@ -224,16 +200,13 @@ def get_advance_description(id: int, db: mysql.connector.MySQLConnection = Depen
             FROM advance_record
             WHERE id_advance_record = %s
         """
-
         cursor.execute(query, (id,))
         result = cursor.fetchone()
         cursor.close()
-
         if result:
             return result
         else:
             return {"status_code": 407, "message": "No info yet"}
-
     except mysql.connector.Error as e:
         raise HTTPException(
             status_code=500, detail=f"Database error: {str(e)}")

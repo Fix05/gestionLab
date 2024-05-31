@@ -115,6 +115,7 @@ export default function AddExtraModal({ open, setOpen, id, employeeData }) {
                     type="text"
                     id="description"
                     placeholder=""
+                    maxLength={54}
                     min="0"
                     className="outline-none h-8 pl-2 ml-2 w-full rounded-md border-solid border border-gray-200 shadow-sm sm:text-sm"
                     onChange={description.handleChange}

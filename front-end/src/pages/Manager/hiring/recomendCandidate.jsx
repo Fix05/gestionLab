@@ -1,14 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { EmployeeData, Container, Div, Info, GridDivCand } from '../../../styledComponents/detailsBox'
 import IconsDictionary from '../../../dictionaries/fileIcons.json'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faX, faPlus } from '@fortawesome/free-solid-svg-icons'
-import styled from 'styled-components';
-import useFetch from '../../../hooks/useFetch'
-import Warning from '../../../components/warningMessage'
-import { PDFDocument } from 'pdf-lib';
-import { EmployeeData, Container, Div, Info, Form, GridDiv, GridDivCand } from '../../../styledComponents/detailsBox'
 import BoxDivider from '../../../styledComponents/boxDivider'
 import SlowlyShowing from '../../../components/slowlyShowing'
+import LoadingModal from '../../../components/loadingModal'
+import Warning from '../../../components/warningMessage'
+import ShowRecomendation from './showRecomendation'
+import useFetch from '../../../hooks/useFetch'
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import { PDFDocument } from 'pdf-lib';
 
 const HiddenFileInput = styled.input`
   width: 0.1px;
@@ -23,15 +25,14 @@ export default function RecomendCandidate() {
     const [files, setFiles] = useState({ 1: [], 2: [] });
 
     const RECOMENDATION_ENDPOINT = 'http://127.0.0.1:8000/api/ml/upload-multiple-pdfs'
-    const [result, getResult] = useFetch(RECOMENDATION_ENDPOINT, null, "POST", false);
-    const [candidates, setCandidates] = useState(0)
+    const [result, getResult, , loading] = useFetch(RECOMENDATION_ENDPOINT, null, "POST", false);
     const [formData, setFormData] = useState({
-        category: '',
-        description: '',
+        position: '',
+        requirements: '',
     });
     const [openWarning, setOpenWarning] = useState(false)
     const [warningMessage, setWarningMessage] = useState('')
-    const DOCS_PER_CANDIDATE = 4;
+    const DOCS_PER_CANDIDATE = 1;
     const MAX_CANDIDATES_PER_REQUEST = 15
     const MIN_CANDIDATES_PER_REQUEST = 2
 
@@ -84,9 +85,18 @@ export default function RecomendCandidate() {
         });
     };
 
+    const validateFilesInserted = () => {
+        const hasFiles = Object.entries(files).every(([key, value]) => value.length > 0)
+        return hasFiles
+    }
+
+    const validateFields = () => {
+        const fullFields = Object.values(formData).every((value) => value)
+        return fullFields
+    }
+
 
     const validatePages = async (array) => {
-
         let fileName = ''
         try {
             for (const file of array) {
@@ -107,7 +117,6 @@ export default function RecomendCandidate() {
             setWarningMessage(`El archivo ${fileName} parece estar dañado`)
             setOpenWarning(true);
             return false
-            console.error('Error processing PDF: ', error);
         }
     }
 
@@ -116,9 +125,7 @@ export default function RecomendCandidate() {
         const filesToInsert = ev.target.files.length
         const filesInserted = files[ev.target.name].length
 
-
         if ((filesToInsert + filesInserted) > DOCS_PER_CANDIDATE) {
-            console.log("NUMNERO DE DOCS");
             setWarningMessage(`El limite de documentos es ${DOCS_PER_CANDIDATE}, por favor intentelo de nuevo`)
             setOpenWarning(true)
             ev.target.value = null;
@@ -146,6 +153,18 @@ export default function RecomendCandidate() {
 
     const handleSubmit = async () => {
 
+        if (!validateFilesInserted()) {
+            setWarningMessage("Deben de haber archivos cargados")
+            setOpenWarning(true)
+            return
+        }
+
+        if (!validateFields()) {
+            setWarningMessage("Todos los campos deben de ser completados")
+            setOpenWarning(true)
+            return
+        }
+
         const data = new FormData();
 
         data.append('position', formData.position);
@@ -153,7 +172,6 @@ export default function RecomendCandidate() {
 
         Object.keys(files).forEach((key, listIndex) => {
             files[key].forEach((file, fileIndex) => {
-                console.log(file.name, listIndex);
                 data.append(`files`, file);
                 data.append('fileGroups', listIndex);
             });
@@ -177,6 +195,7 @@ export default function RecomendCandidate() {
     return (
         <SlowlyShowing time={100}>
             <EmployeeData className='relative'>
+                <LoadingModal loading={loading} text={'Analizando CVs'} />
                 <Container >
                     <BoxDivider text={'Parametros del puesto'} />
                     <Warning open={openWarning} setOpen={setOpenWarning} className={'absolute top-0 bg-red-50 z-20 p-[5px] w-[400px] overflow-hidden rounded shadow font-semibold'}>
@@ -186,7 +205,7 @@ export default function RecomendCandidate() {
                         <div className='flex flex-row'>
                             <Info className='w-1/3'>
                                 <h1 className='text-gray-600 font-bold text-xs'>Puesto:</h1>
-                                <input type="text" onChange={handleInputChange} className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name='position' />
+                                <input type="text" maxLength={100} onChange={handleInputChange} className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name='position' />
                             </Info>
                             <Info className='w-1/3'>
                                 <h1 className='text-gray-600 font-bold text-xs'>Número de candidatos:</h1>
@@ -203,9 +222,20 @@ export default function RecomendCandidate() {
                         </div>
                         <Info>
                             <h1 className='text-gray-600 font-bold text-xs'>Descripción del puesto:</h1>
-                            <textarea onChange={handleInputChange} className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name='requirements' />
+                            <textarea onChange={handleInputChange} maxLength={500} className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name='requirements' />
                         </Info>
                     </Div>
+
+                    {Object.keys(result).length > 0 &&
+                        <>
+                            <BoxDivider text={'Resultados'} />
+                            <Div className='flex flex-col'>
+                                <ShowRecomendation results={result} />
+                            </Div>
+                        </>
+                    }
+
+
                     <BoxDivider text={'Candidatos'} />
                     <GridDivCand>
                         {Object.entries(files).map(([key, list]) => {
@@ -243,7 +273,9 @@ export default function RecomendCandidate() {
                     <div className='flex justify-center w-full pb-6'>
                         <button onClick={handleSubmit} className='w-1/4 font-semibold bg-blue-600 text-gray-100 p-2 rounded transition-all hover:shadow-md'>Procesar</button>
                     </div>
+
                 </Container>
+
             </EmployeeData>
         </SlowlyShowing>
     );

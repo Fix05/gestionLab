@@ -104,6 +104,7 @@ export default function AddAdvanceModal({ open, setOpen, id, employeeData }) {
                     id="description"
                     placeholder=""
                     min="0"
+                    maxLength={54}
                     className="outline-none h-8 pl-2 ml-2 w-full rounded-md border-solid border border-gray-200 shadow-sm sm:text-sm"
                     onChange={description.handleChange}
                 />

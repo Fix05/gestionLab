@@ -1,18 +1,19 @@
 import { EmployeeData, Container, Div, Form, Info, GridForm } from '../../../styledComponents/detailsBox'
-import useFileInput from '../../../hooks/useFileInput'
-import { useNavigate, useParams } from 'react-router-dom'
-import useFetch from '../../../hooks/useFetch'
-import ConfirmAction from '../../../components/confirmAction'
-import { useState, useRef, useReducer } from 'react'
-import BoxDivider from '../../../styledComponents/boxDivider'
-import { useForm } from 'react-hook-form';
-import ImgFileInput from '../../../components/imgFileInput'
-import SeveralFilesInput from '../../../components/severalFilesInput'
-import WarningMessage from '../../../components/warningMessage'
-import LoadingModal from '../../../components/loadingModal'
 import { useAnimation } from '../../../contexts/doneAnimationContext'
+import { useState, useRef, useReducer, useEffect } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
+import { useForm } from 'react-hook-form';
+import SeveralFilesInput from '../../../components/severalFilesInput'
 import AddedEmployee from '../../../assets/gif/addedEmployee.gif'
+import WarningMessage from '../../../components/warningMessage'
+import ConfirmAction from '../../../components/confirmAction'
+import BoxDivider from '../../../styledComponents/boxDivider'
 import SlowlyShowing from '../../../components/slowlyShowing'
+import ImgFileInput from '../../../components/imgFileInput'
+import LoadingModal from '../../../components/loadingModal'
+import useFileInput from '../../../hooks/useFileInput'
+import useFetch from '../../../hooks/useFetch'
+import Modal from '../../../components/modal'
 
 
 export default function AddEmployee() {
@@ -29,8 +30,9 @@ export default function AddEmployee() {
     const idFiles = useFileInput(false, 4)
     const contractFiles = useFileInput(false, 4)
     const formData = useRef({})
-
     const [open, setOpen] = useState(false)
+    const [showError, setShowError] = useState(false)
+
     let fieldsToEvaluate = []
 
 
@@ -95,20 +97,25 @@ export default function AddEmployee() {
                     setMessage('Empleado añadido')
                     setShowAnimation(true)
                 }
+            }else{
+                console.log(result.status_code);
+                setShowError(true)
             }
         })
-
         setOpen(false)
     }
+
+    
 
     return (
         <SlowlyShowing time={100}>
             <EmployeeData className='w-full mt-6'>
                 <Container className='w-full'>
-                    <LoadingModal laoding={resultLoading} text={'Insertando nuevo empleado'} />
+                    <LoadingModal loading={resultLoading} text={'Insertando nuevo empleado'} />
                     <ConfirmAction open={open} setOpen={setOpen} positiveAction={() => sendData()} negativeAction={() => setOpen(false)} positiveText={'Aceptar'} negativeText={'Cancelar'}>
                         Hay archivos que no han sido insertados, desea continuar?
                     </ConfirmAction>
+                    <Modal open={showError} setOpen={setShowError} text={resultError}/>
                     <BoxDivider text={`Datos personales del empleado`} />
                     <form onSubmit={manageSubmit}>
                         <GridForm >
@@ -243,7 +250,7 @@ export default function AddEmployee() {
                             <Info >
                                 <h1 className='text-gray-600 font-bold text-xs'>Horas de trabajo por día:</h1>
                                 <div className='min-h-6 bg-white mt-2 '>
-                                    <input type="number" {...register("hours_per_day", { required: true })} maxLength={5} className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="" required />
+                                    <input type="number" min={1} max={15} {...register("hours_per_day", { required: true })} maxLength={5} className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="" required />
                                     <div className='relative'>
                                         {errors.hours_per_day && <span className='absolute top-0 text-red-500 text-xs'>Campo requerido</span>}
                                     </div>
@@ -273,7 +280,7 @@ export default function AddEmployee() {
                             <Info >
                                 <h1 className='text-gray-600 font-bold text-xs'>Salario:</h1>
                                 <div className='min-h-6 bg-white mt-2 '>
-                                    <input type="number" {...register("salary", { required: true })} maxLength={10} className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="" required />
+                                    <input type="number" min={1} {...register("salary", { required: true })} maxLength={10} className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="" required />
                                     <div className='relative'>
                                         {errors.salary && <span className='absolute top-0 text-red-500 text-xs'>Campo requerido</span>}
                                     </div>
@@ -282,7 +289,7 @@ export default function AddEmployee() {
                             <Info >
                                 <h1 className='text-gray-600 font-bold text-xs'>Días de vacaciones al año:</h1>
                                 <div className='min-h-6 bg-white mt-2 '>
-                                    <input type="number" {...register("days_vacation", { required: true })} maxLength={5} className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="" required />
+                                    <input type="number" min={1} {...register("days_vacation", { required: true })} maxLength={5} className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="" required />
                                     <div className='relative'>
                                         {errors.days_vacation && <span className='absolute top-0 text-red-500 text-xs'>Campo requerido</span>}
                                     </div>

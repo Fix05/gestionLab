@@ -1,31 +1,42 @@
 from fastapi import APIRouter, HTTPException, Depends
-from pydantic import BaseModel
-import mysql.connector
-from fastapi.security import OAuth2PasswordBearer
-import jwt
 from datetime import timedelta, datetime, timezone
+from fastapi.security import OAuth2PasswordBearer
 from db_connection import get_db
-
+from pydantic import BaseModel
+from dotenv import load_dotenv
+import mysql.connector
+import json
+import jwt
+import os
+load_dotenv()
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
 
-SECRET_KEY = "monolosu"
+
+
+
+key_path = os.getenv("KEYS", '.')
+print(key_path)
+with open(key_path, 'r') as file:
+    data = json.load(file)
+    key = data['jwt_key']
+
+
+
+SECRET_KEY = key
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_HOURS = 5
 REFRESH_TOKEN_EXPIRE_DAYS = 30
 
 router = APIRouter()
 
-
 class User(BaseModel):
     email: str
     password: str
 
-
 class RefreshData(BaseModel):
     role: str
     email: str
-
 
 class Token(BaseModel):
     access_token: str
@@ -36,7 +47,6 @@ class Token(BaseModel):
 def validate_user(user: User, db: mysql.connector.MySQLConnection = Depends(get_db)):
     if not user.email or not user.password:
         return {"status_code": 402, "message": "Missing params"}
-
     try:
         cursor = db.cursor(dictionary=True)
         query = """
@@ -54,7 +64,8 @@ def validate_user(user: User, db: mysql.connector.MySQLConnection = Depends(get_
         if result:
             permission_employee = result["permission_employee"]
             id_employee = result["id_employee"]
-            return {"permission_employee": permission_employee, "id_employee": id_employee}
+            return {"permission_employee": permission_employee, 
+                    "id_employee": id_employee}
         else:
             return {"status_code": 401, "message": "Invalid user or password"}
     except mysql.connector.Error as e:
@@ -75,28 +86,26 @@ def get_employees(id: int, db: mysql.connector.MySQLConnection = Depends(get_db)
 
 
 @router.post("/token")
-def login_for_access_token(form_data: User, db: mysql.connector.MySQLConnection = Depends(get_db)):
+def login_for_access_token(form_data: User, 
+                           db: mysql.connector.MySQLConnection = Depends(get_db)):
     user = validate_user(form_data, db)
-    print(user)
     if not user:
         return {"status_code": 401, "message": "Invalid user or password"}
-
     access_token_expires = timedelta(hours=ACCESS_TOKEN_EXPIRE_HOURS)
     token_data = {"sub": user["email"], "id": user["id"], "role": user["permission"]}
     access_token = create_access_token(
         data = token_data,
         expires_delta=access_token_expires
     )
-
     refresh_token = create_refresh_token(
         data=token_data)
-
-    return {"access_token": access_token, "token_type": "bearer", "refresh_token": refresh_token}
+    return {"access_token": access_token, "token_type": "bearer", 
+            "refresh_token": refresh_token}
 
 
 @router.post("/refresh")
-def refresh_token(refresh_token: str = Depends(oauth2_scheme), db: mysql.connector.MySQLConnection = Depends(get_db)):
-
+def refresh_token(refresh_token: str = Depends(oauth2_scheme), 
+                  db: mysql.connector.MySQLConnection = Depends(get_db)):
     try:
         payload = jwt.decode(refresh_token, SECRET_KEY, algorithms=[ALGORITHM])
         role = payload.get('role')
@@ -122,7 +131,8 @@ def refresh_token(refresh_token: str = Depends(oauth2_scheme), db: mysql.connect
 def validate_user(user: User, db):
     cursor = db.cursor(dictionary=True)
     query = """
-        SELECT id_employee as id, permission_employee as permission, email_person as email
+        SELECT id_employee as id, permission_employee as permission, 
+        email_person as email
         FROM employee
         JOIN person ON employee.fk_person = person.id_person
         WHERE employee.pass_employee = %s AND person.email_person = %s
@@ -132,11 +142,10 @@ def validate_user(user: User, db):
     result = cursor.fetchone()
     cursor.close()
     if result:
-        print(result)
-        return result  # Retorna el resultado con id, permiso y email
+        return result 
     else:
         return None
-
+    
 
 def validate_refresh(data: RefreshData, db):
     cursor = db.cursor(dictionary=True)
@@ -152,11 +161,10 @@ def validate_refresh(data: RefreshData, db):
     result = cursor.fetchone()
     cursor.close()
     if result:
-        print(result)
-        return result  # Retorna el resultado con id, permiso y email
+        return result
     else:
         return None
-
+    
 
 def create_access_token(data: dict, expires_delta: timedelta = None):
     to_encode = data.copy()
@@ -177,5 +185,3 @@ def create_refresh_token(data: dict):
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
 
-
-""" timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS) """

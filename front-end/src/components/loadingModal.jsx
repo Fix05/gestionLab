@@ -7,6 +7,7 @@ export default function LoadingModal({ text, loading }) {
     const [open, setOpen] = useState(false)
 
     useEffect(() => {
+        console.log(loading);
         loading ? setOpen(true) : setOpen(false)
     }, [loading])
 

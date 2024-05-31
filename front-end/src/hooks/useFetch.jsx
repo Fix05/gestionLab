@@ -24,7 +24,8 @@ const useFetch = (url, data, method, shouldFetch = true, token = null) => {
     403: "Empleado no encontrado",
     406: "Item no encontrado",
     407: "No hay registros aún",
-    410: "Este empleado ya tiene ausencias registradas para el rango de días escogido"
+    410: "Este empleado ya tiene ausencias registradas para el rango de días escogido",
+    411: "El correo electrónico ingresado ya está en uso"
   }
 
   const doFetch = async (inFunctionData, inFnctionUrl) => {
@@ -66,7 +67,9 @@ const useFetch = (url, data, method, shouldFetch = true, token = null) => {
           }
 
           if (jsonResponse && jsonResponse.status_code && errorCodes[jsonResponse.status_code]) {
-            jsonResponse.message = errorCodes[jsonResponse.status_code];
+            if(errorCodes[jsonResponse.status_code]){
+              jsonResponse.message = errorCodes[jsonResponse.status_code];
+            }
             setError(jsonResponse.message)
             if (jsonResponse.status_code == 403) {
               navigate("/Error")
@@ -85,6 +88,11 @@ const useFetch = (url, data, method, shouldFetch = true, token = null) => {
       setLoading(false)
     }
   }
+
+
+  /* useEffect(()=>{
+    console.log("Loading ha cambiao");
+  }, [loading]) */
 
   useEffect(() => {
     shouldFetch ? doFetch() : null;

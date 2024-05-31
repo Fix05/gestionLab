@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Query, HTTPException, Depends
 from datetime import datetime, timedelta
+from db_connection import get_db
 from pydantic import BaseModel
 from typing import List
 import mysql.connector
-from db_connection import get_db
 
 router = APIRouter()
 
@@ -20,12 +20,10 @@ class NewExtras(BaseModel):
 @router.post("/get-extrahours-record")
 def get_vacations_record(dates: Dates, roles: List[str] = Query(['User'], description='List of roles'), db: mysql.connector.MySQLConnection = Depends(get_db)):
     try:
-
         formated_start = dates.month
         date = datetime.strptime(formated_start, "%Y-%m")
         month = date.month
         year = date.year
-
         cursor = db.cursor(dictionary=True)
         in_clause = ', '.join(['%s' for _ in roles])
         query = f"""
@@ -41,13 +39,10 @@ def get_vacations_record(dates: Dates, roles: List[str] = Query(['User'], descri
             AND permission_employee IN ({in_clause})
             AND state_employee != "Deshabilitado";            
         """
-
-
         params = (year, month, *roles)
         cursor.execute(query, params)
         result = cursor.fetchall()
         cursor.close()
-
         if result:
             return result
         else:
@@ -60,8 +55,6 @@ def get_vacations_record(dates: Dates, roles: List[str] = Query(['User'], descri
             status_code=500, detail=f"An unexpected error occurred: {str(e)}")
 
 
-
-
 @router.get("/extrahours-date-range")
 def get_extrahours_date_range(db: mysql.connector.MySQLConnection = Depends(get_db)):
     try:
@@ -71,16 +64,12 @@ def get_extrahours_date_range(db: mysql.connector.MySQLConnection = Depends(get_
             MIN(date_extras) AS min 
             FROM extras_record;
         """
-
         cursor.execute(query)
         result = cursor.fetchone()
         cursor.close()
-
         DATE_FORMAT = "%Y-%m-%d"
-
         if result:
             new_date = result['max']
-            print(new_date)
             new_date = new_date.replace(day=1)
             new_result = new_date.strftime(DATE_FORMAT)
             result['max'] = new_result
@@ -93,7 +82,6 @@ def get_extrahours_date_range(db: mysql.connector.MySQLConnection = Depends(get_
     except Exception as e:
         raise HTTPException(
             status_code=500, detail=f"An unexpected error occurred: {str(e)}")
-
 
 #get extra info to show in the Add Extra page table
 @router.get("/get-add-extras-overall")
@@ -111,16 +99,13 @@ def get_add_extras_overall(roles: List[str] = Query(['User'], description='List 
             WHERE permission_employee IN ({in_clause})
             AND state_employee != "Deshabilitado";
         """
-
         cursor.execute(query, roles)
         result = cursor.fetchall()
         cursor.close()
-
         if result:
             return result
         else:
             return {"status_code": 403, "message": "Not found"}
-
     except mysql.connector.Error as e:
         raise HTTPException(
             status_code=500, detail=f"Database error: {str(e)}")
@@ -144,17 +129,13 @@ def get_employess_extras(id: int, db: mysql.connector.MySQLConnection = Depends(
             AND DATE_FORMAT(date_extras, '%Y-%m') = %s
             AND state_extra = 'Por pagar';
         """
-
-        print(id, current_date)
         cursor.execute(query, (id, current_date))
         result = cursor.fetchall()
         cursor.close()
-
         if result:
             return result
         else:
             return {"status_code": 407, "message": "No info yet"}
-
     except mysql.connector.Error as e:
         raise HTTPException(
             status_code=500, detail=f"Database error: {str(e)}")
@@ -177,21 +158,16 @@ def add_extras(id: int, data: NewExtras, db: mysql.connector.MySQLConnection = D
             AND %s >= min_pay_date_remuneration
             AND fk_employee = %s)); 
         """
-        
         cursor.execute(query, (data.hours, current_date, data.amount, data.description, current_date, current_date, id))
         db.commit()
         cursor.close()
-
         return {"status_code": 200, "message": "Inserted successfully"}
-
     except mysql.connector.Error as e:
         raise HTTPException(
             status_code=500, detail=f"Database error: {str(e)}")
     except Exception as e:
         raise HTTPException(
             status_code=500, detail=f"An unexpected error occurred: {str(e)}")
-
-
 
 @router.delete("/delete-extras/{id}")
 def delete_extras(id: int, db: mysql.connector.MySQLConnection = Depends(get_db)):
@@ -200,13 +176,10 @@ def delete_extras(id: int, db: mysql.connector.MySQLConnection = Depends(get_db)
         query = f"""
             DELETE FROM extras_record WHERE id_extras_record = %s;
         """
-        
         cursor.execute(query, (id,))
         db.commit()
         cursor.close()
-
         return {"status_code": 200, "message": "Deleted successfully"}
-
     except mysql.connector.Error as e:
         raise HTTPException(
             status_code=500, detail=f"Database error: {str(e)}")
@@ -224,16 +197,13 @@ def get_extra_description(id: int, db: mysql.connector.MySQLConnection = Depends
             FROM extras_record
             WHERE id_extras_record = %s
         """
-
         cursor.execute(query, (id,))
         result = cursor.fetchone()
         cursor.close()
-
         if result:
             return result
         else:
             return {"status_code": 407, "message": "No info yet"}
-
     except mysql.connector.Error as e:
         raise HTTPException(
             status_code=500, detail=f"Database error: {str(e)}")

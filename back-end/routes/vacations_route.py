@@ -1,9 +1,11 @@
 from fastapi import APIRouter, Query, HTTPException, Depends
-from datetime import datetime, timedelta
-from pydantic import BaseModel
-from typing import List
-import mysql.connector
 from db_connection import get_db
+from pydantic import BaseModel
+from datetime import datetime
+import mysql.connector
+from typing import List
+
+DATE_FORMAT = "%Y-%m-%d"
 
 router = APIRouter()
 
@@ -36,16 +38,13 @@ def get_vacation_days_left(id: int, db: mysql.connector.MySQLConnection = Depend
                     AND type_absence = 'Vacaciones'
                     AND fk_employee = %s), 0) AS days_left;
         """
-
         cursor.execute(query, (id, current_year, id))
         result = cursor.fetchone()
         cursor.close()
-
         if result:
             return result
         else:
             return {"status_code": 407, "message": "No info yet"}
-
     except mysql.connector.Error as e:
         raise HTTPException(
             status_code=500, detail=f"Database error: {str(e)}")
@@ -55,7 +54,8 @@ def get_vacation_days_left(id: int, db: mysql.connector.MySQLConnection = Depend
 
 
 @router.post("/insert-new-absence/{id}")
-def get_vacation_days_left(id: int, data: NewAbsence, db: mysql.connector.MySQLConnection = Depends(get_db)):
+def get_vacation_days_left(id: int, data: NewAbsence, 
+                           db: mysql.connector.MySQLConnection = Depends(get_db)):
     try:
         cursor = db.cursor(dictionary=True)
         current_date = datetime.now()
@@ -64,7 +64,6 @@ def get_vacation_days_left(id: int, data: NewAbsence, db: mysql.connector.MySQLC
         endDate_datetime = datetime.fromisoformat(data.endDate)
         formatedStartDate = startDate_datetime.strftime("%Y-%m-%d")
         formatedEndDate = endDate_datetime.strftime("%Y-%m-%d")
-
         validationQuery = f""" 
             SELECT * FROM absences 
             WHERE (
@@ -73,11 +72,9 @@ def get_vacation_days_left(id: int, data: NewAbsence, db: mysql.connector.MySQLC
             )
             AND fk_employee = %s;
         """
-
         cursor.execute(validationQuery, (formatedStartDate,
                        formatedStartDate, formatedEndDate, formatedEndDate, id))
         result = cursor.fetchall()
-
         if (len(result) > 0):
             return {"status_code": 410, "message": "Date range already in use"}
         query = f"""
@@ -86,20 +83,15 @@ def get_vacation_days_left(id: int, data: NewAbsence, db: mysql.connector.MySQLC
            taken_days_absences, fk_employee) 
            VALUES (%s, %s, %s, null, %s, %s, %s, %s)
         """
-
         if (formatedStartDate == formated_date):
             state = "En curso"
         state = "Pendiente"
-
         cursor.execute(query, (formatedStartDate, formatedEndDate,
                        data.description, state, data.type, data.days, id))
         db.commit()
         cursor.close()
-        
         update_employee_state(get_db())
-
         return {"status_code": 200, "message": "Inserted successfully"}
-
     except mysql.connector.Error as e:
         raise HTTPException(
             status_code=500, detail=f"Database error: {str(e)}")
@@ -117,16 +109,11 @@ def get_vacations_date_range(db: mysql.connector.MySQLConnection = Depends(get_d
             MIN(start_date_absence) AS min 
             FROM absences;
         """
-
         cursor.execute(query)
         result = cursor.fetchone()
         cursor.close()
-
-        DATE_FORMAT = "%Y-%m-%d"
-
         if result:
             new_date = result['max']
-            print(new_date)
             new_date = new_date.replace(day=1)
             new_result = new_date.strftime(DATE_FORMAT)
             result['max'] = new_result
@@ -144,12 +131,10 @@ def get_vacations_date_range(db: mysql.connector.MySQLConnection = Depends(get_d
 @router.post("/get-vacations-record")
 def get_vacations_record(dates: Dates, roles: List[str] = Query(['User'], description='List of roles'), db: mysql.connector.MySQLConnection = Depends(get_db)):
     try:
-
         formated_start = dates.month
         date = datetime.strptime(formated_start, "%Y-%m")
         month = date.month
         year = date.year
-
         cursor = db.cursor(dictionary=True)
         in_clause = ', '.join(['%s' for _ in roles])
         query = f"""
@@ -165,12 +150,10 @@ def get_vacations_record(dates: Dates, roles: List[str] = Query(['User'], descri
             AND permission_employee IN ({in_clause})
             AND state_employee != "Deshabilitado";            
         """
-
         params = (year, month, *roles)
         cursor.execute(query, params)
         result = cursor.fetchall()
         cursor.close()
-
         if result:
             return result
         else:
@@ -195,19 +178,16 @@ def get_vacation_description(id: int, db: mysql.connector.MySQLConnection = Depe
         cursor.execute(query, (id,))
         result = cursor.fetchone()
         cursor.close()
-
         if result:
             return result
         else:
             return {"status_code": 407, "message": "No info yet"}
-
     except mysql.connector.Error as e:
         raise HTTPException(
             status_code=500, detail=f"Database error: {str(e)}")
     except Exception as e:
         raise HTTPException(
             status_code=500, detail=f"An unexpected error occurred: {str(e)}")
-
 
 
 def update_employee_state(db):
@@ -225,7 +205,6 @@ def update_employee_state(db):
                 AND type_absence != 'Falta injustificada'
             );
         """
-
         update_to_vacation_state_query = f""" 
             UPDATE employee
             SET state_employee = 'Vacaciones'
@@ -237,8 +216,6 @@ def update_employee_state(db):
                 AND type_absence = 'Vacaciones'
             );
         """
-
-
         update_to_unjustified_state_query = f""" 
             UPDATE employee
             SET state_employee = 'Ausente'
@@ -250,9 +227,6 @@ def update_employee_state(db):
                 AND type_absence = 'Falta injustificada'
             );
         """
-
-        #Actualizar estado del empleado a ausente
-
         update_to_active_state_query = f""" 
             UPDATE employee
             SET state_employee = 'Activo'
@@ -264,20 +238,17 @@ def update_employee_state(db):
             )
             AND id_employee >0;
         """
-
         update_to_ended_state_query = f""" 
             UPDATE absences set state_absence = 'Finalizado' 
             where end_date_absence < DATE(NOW())
             and id_absences > 0;
         """
-
         update_to_inprogress_state_query = f""" 
             UPDATE absences set state_absence = 'En curso' 
             where start_date_absence <= DATE(NOW())
             AND end_date_absence >= DATE(NOW())
             and id_absences > 0;
         """
-
         cursor.execute(update_to_permission_state_query)
         cursor.execute(update_to_vacation_state_query)
         cursor.execute(update_to_unjustified_state_query)
@@ -286,7 +257,6 @@ def update_employee_state(db):
         cursor.execute(update_to_inprogress_state_query)
         db.commit()
         cursor.close()
-
         return {"status_code": 200, "message": "Updated successfully"}
     except mysql.connector.Error as e:
         print("Error:", e)

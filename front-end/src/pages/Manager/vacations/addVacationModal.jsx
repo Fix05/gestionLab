@@ -194,6 +194,7 @@ export default function AddVacationModal({ open, setOpen, id, employeeData, setA
                         id="description"
                         placeholder=""
                         min="0"
+                        maxLength={145}
                         className="outline-none h-16 w-full rounded-md border-solid border border-gray-300 shadow-sm sm:text-sm"
                         onChange={reason.handleChange}
                     />
