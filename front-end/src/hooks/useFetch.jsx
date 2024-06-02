@@ -3,20 +3,17 @@ data it's necessary to pass the paramters (like data or url with some params)
 directly with the doFetch function instead of defining the data and the url 
 in the calling of useFetch hook, because setting a data or the url state is
 an asynchronous event.
-
-
 */
 
 
-import { useEffect, useState, useRef } from "react";
-import { useNavigate, useParams } from 'react-router-dom'
+import { useEffect, useState } from "react";
+import { useNavigate } from 'react-router-dom'
 
-const useFetch = (url, data, method, shouldFetch = true, token = null) => {
+const useFetch = (url, data, method, shouldFetch = true, token = null, loadingInitialState=false) => {
 
-  var POST_PUT
   const navigate = useNavigate()
   const [result, setResult] = useState({})
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(loadingInitialState)
   const [error, setError] = useState(null)
   const errorCodes = {
     402: "Debe de completar todos los campos",
@@ -88,11 +85,6 @@ const useFetch = (url, data, method, shouldFetch = true, token = null) => {
       setLoading(false)
     }
   }
-
-
-  /* useEffect(()=>{
-    console.log("Loading ha cambiao");
-  }, [loading]) */
 
   useEffect(() => {
     shouldFetch ? doFetch() : null;

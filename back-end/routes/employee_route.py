@@ -11,6 +11,7 @@ import traceback
 import random
 import shutil
 import uuid
+import json
 import time
 import os
 load_dotenv()
@@ -40,7 +41,10 @@ class NewEmployee(BaseModel):
     department: str
 
 
-FIELD_TO_TABLE_MAPPING = {
+with open('./src/dictionaries/table_fields.json', 'r') as file:
+    FIELD_TO_TABLE_MAPPING = json.load(file)
+
+""" FIELD_TO_TABLE_MAPPING = {
     "name_person": "person",
     "lastname_person": "person",
     "dni_person": "person",
@@ -62,7 +66,7 @@ FIELD_TO_TABLE_MAPPING = {
     "state_employee": "employee",
     "base_salary": "salary_info",
     "days_vacation": "contract",
-}
+} """
 
 # Get basic user info, email, name,
 

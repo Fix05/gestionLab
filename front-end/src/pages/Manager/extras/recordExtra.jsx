@@ -1,12 +1,13 @@
-import { useEffect, useState, useContext } from 'react'
-import useFetch from '../../../hooks/useFetch'
-import useTransformData from '../../../hooks/useTransformData'
-import useBasicData from '../../../hooks/useBasicData'
-import Table from '../../../components/table'
 import RecordDetailedInfo from '../pageComponents/recordDetailedInfo'
 import { ExtraRecordMapping } from '../../../mapping/dataMapping'
+import useTransformData from '../../../hooks/useTransformData'
+import LoadingModal from '../../../components/loadingModal'
 import Pagination from '../../../components/pagination'
-import SlowlyShowing from '../../../components/slowlyShowing'
+import useBasicData from '../../../hooks/useBasicData'
+import useFetch from '../../../hooks/useFetch'
+import Table from '../../../components/table'
+import { useEffect, useState } from 'react'
+
 
 
 export default function RecordExtra() {
@@ -17,7 +18,7 @@ export default function RecordExtra() {
     const DATE_RANGE_URL = "http://127.0.0.1:8000/api/extras/extrahours-date-range"
     const [dateRange] = useFetch(DATE_RANGE_URL, null, "GET")
     const [date, setDate] = useState({ month: "2024-01" })
-    const [listResult] = useFetch(EXTRA_LIST_URL, date, "POST")
+    const [listResult, , , loading] = useFetch(EXTRA_LIST_URL, date, "POST", true, null, true)
     const { changedList, setChangedList, originalValues,
         setOriginalValues, message, setMessage } = useTransformData(listResult, ExtraRecordMapping, ELEMENTS_PER_PAGE)
     const [open, setOpen] = useState(false)
@@ -40,8 +41,9 @@ export default function RecordExtra() {
     }
 
     return (
-        <SlowlyShowing time={100}>
-            <div className="mt-6 rounded-lg border-2 border-gray-400 bg-white">
+        <>
+            <LoadingModal loading={loading} text={''} />
+            <div className={`mt-6 rounded-lg border-2 border-gray-400 bg-white transition-opacity duration-300 ${loading ? 'opacity-0' : 'opacity-100'}`}>
                 <RecordDetailedInfo open={open} setOpen={setOpen} endpoint={DESCRIPTION_ENDPOINT} values={modalData} />
                 {message ?
 
@@ -72,6 +74,6 @@ export default function RecordExtra() {
                     <Pagination totalPages={Math.ceil(changedList.length / 10)} />
                 </div>
             </div >
-        </SlowlyShowing>
+        </>
     )
 }

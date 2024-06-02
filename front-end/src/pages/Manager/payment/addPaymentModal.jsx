@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react'
-import useFetch from '../../../hooks/useFetch'
-import useField from '../../../hooks/useField'
-import ModalTemplate from '../pageComponents/modalTemplate'
 import AddingPaymentTable from '../../../components/addingPaymentTable'
 import WarningMessage from '../../../components/warningMessage'
+import ModalTemplate from '../pageComponents/modalTemplate'
+import useFetch from '../../../hooks/useFetch'
+import useField from '../../../hooks/useField'
+import { useState, useEffect } from 'react'
 
 
 export default function AddPaymentModal({ open, setOpen, id, employeeData, paymentData, reloadResults, setAnimation }) {

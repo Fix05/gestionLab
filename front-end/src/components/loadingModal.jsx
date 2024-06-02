@@ -12,7 +12,7 @@ export default function LoadingModal({ text, loading }) {
     }, [loading])
 
     return (
-        <GenericModalTemplate open={open} setOpen={setOpen}>
+        <GenericModalTemplate open={open} setOpen={setOpen} zIndex={'z-40'}>
             <Loading />
             <p className='font-semibold mt-2'>{text}</p>
         </GenericModalTemplate>

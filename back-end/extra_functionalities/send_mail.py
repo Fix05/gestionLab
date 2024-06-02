@@ -1,14 +1,21 @@
-from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 from dotenv import load_dotenv
 import smtplib
 import random
+import json
+import os
 load_dotenv()
 
 
 def send_email(receiver, name, user_password):
-    sender = 'arnoglez05@gmail.com'
-    password = 'wbmh xhsy rlir axbu'
+
+    credentials_path = os.getenv("GOOGLE_CREDENTIALS", '.')
+    with open(credentials_path, 'r') as file:
+        credentials = json.load(file)
+
+    sender = credentials['user']
+    password = credentials['password']
     msg = MIMEMultipart()
     msg['From'] = sender
     msg['To'] = receiver

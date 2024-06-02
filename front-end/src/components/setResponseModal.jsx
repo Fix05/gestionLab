@@ -17,27 +17,13 @@ export default function SetResponseModal({ open, setOpen, action, body, requestI
     const [, updateStateResult] = useFetch(UPDATEURL, requestState, "PUT")
 
     const handleSubmit = async (ev) => {
-
         await setResponseResult({
             body: body,
             date: formatedDatetime,
             rh: id
         })
-
         await updateStateResult({state: action})
-
         reloadInfo()
-
-        
-        /* setResponseResult({
-            body: body,
-            date: formatedDatetime,
-            rh: id
-        }).then(()=>{
-            updateStateResult({state: action}).then(()=>{
-                reloadInfo()
-            })
-        }) */
         setOpen(false)
     }
 

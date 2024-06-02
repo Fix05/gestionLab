@@ -1,12 +1,12 @@
-import styled from 'styled-components'
-import BoxDivider from '../../../styledComponents/boxDivider'
-import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
-import useFetch from '../../../hooks/useFetch'
-import useField from '../../../hooks/useField'
-import SetResponseModal from '../../../components/setResponseModal'
 import { EmployeeData, Container, Div, Info } from '../../../styledComponents/detailsBox'
-import SlowlyShowing from '../../../components/slowlyShowing'
+import SetResponseModal from '../../../components/setResponseModal'
+import BoxDivider from '../../../styledComponents/boxDivider'
+import LoadingModal from '../../../components/loadingModal'
+import useField from '../../../hooks/useField'
+import useFetch from '../../../hooks/useFetch'
+import { useParams } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import styled from 'styled-components'
 
 
 const Button = styled.button`
@@ -28,7 +28,7 @@ export default function RequestInfo() {
     const { requestId } = useParams()
     const REQUEST_INFO_ENDPOINT = `http://127.0.0.1:8000/api/employee/get-all-request-info/${requestId}`
     const REQUEST_DOC_ENDPOINT = `http://127.0.0.1:8000/api/employee/get-request-document/${requestId}`
-    const [result, doFetch] = useFetch(REQUEST_INFO_ENDPOINT, null, "GET")
+    const [result, doFetch, , loading] = useFetch(REQUEST_INFO_ENDPOINT, null, "GET", true, null, true)
     const [errorMessage, setErrorMessage] = useState('')
     const [open, setOpen] = useState(false)
     const rquestResponse = useField()
@@ -52,8 +52,9 @@ export default function RequestInfo() {
     };
 
     return (
-        <SlowlyShowing time={100}>
-            <EmployeeData>
+        <>
+            <LoadingModal loading={loading} text={''} />
+            <EmployeeData className={`transition-opacity duration-300 ${loading ? 'opacity-0': 'opacity-100'}`}>
                 <Container>
                     <SetResponseModal open={open} setOpen={setOpen} action={activeButton} body={rquestResponse.field} requestId={requestId} reloadInfo={doFetch} />
                     <BoxDivider text={`Solicitud Nº${requestId}`} />
@@ -180,6 +181,6 @@ export default function RequestInfo() {
                     </Div>
                 </Container>
             </EmployeeData>
-        </SlowlyShowing>
+        </>
     )
 }

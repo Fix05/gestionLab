@@ -1,7 +1,7 @@
-import { Line } from 'react-chartjs-2';
+import Months from '../../dictionaries/monthTranslates.json'
 import useFetch from '../../hooks/useFetch'
 import { useEffect, useState } from 'react'
-import Months from '../../dictionaries/monthTranslates.json'
+import { Line } from 'react-chartjs-2';
 
 import {
     Chart as ChartJS,
@@ -57,11 +57,15 @@ const OPTIONS = {
 
 
 
-export default function LineChart() {
+export default function LineChart({setLoading}) {
 
     const EXTRA_ENDPOINT = `http://127.0.0.1:8000/api/stadistics/get-extras-vs-time/MONTH`
-    const [extraResult] = useFetch(EXTRA_ENDPOINT, null, "GET")
+    const [extraResult, , ,loading] = useFetch(EXTRA_ENDPOINT, null, "GET", true, null, true)
     const [data, setData] = useState({})
+
+    useEffect(()=>{
+        setLoading(prevState => ({...prevState, line:loading}))
+    }, [loading])
 
 
     const getTranslateMonths = (list) => {

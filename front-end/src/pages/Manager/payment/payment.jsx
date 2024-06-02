@@ -1,15 +1,14 @@
-import { useEffect, useState, useContext } from 'react'
-import useFetch from '../../../hooks/useFetch'
+import DoneAnimation from '../../../components/doneAnimationWindow'
 import useTransformData from '../../../hooks/useTransformData'
-import useBasicData from '../../../hooks/useBasicData'
-import Table from '../../../components/table'
-import Pagination from '../../../components/pagination'
-import { paginationContext } from '../manager'
-import AddPaymentModal from './addPaymentModal'
 import { PaymentMapping } from '../../../mapping/dataMapping'
 import PaymentDoneGif from '../../../assets/gif/payment.gif'
-import DoneAnimation from '../../../components/doneAnimationWindow'
-import SlowlyShowing from '../../../components/slowlyShowing'
+import LoadingModal from '../../../components/loadingModal'
+import Pagination from '../../../components/pagination'
+import useBasicData from '../../../hooks/useBasicData'
+import AddPaymentModal from './addPaymentModal'
+import useFetch from '../../../hooks/useFetch'
+import Table from '../../../components/table'
+import { useEffect, useState } from 'react'
 
 export default function Payment() {
 
@@ -17,10 +16,10 @@ export default function Payment() {
     const SUCCESSFULLY_ADDING_MESSAGE = "Pago registrado con éxito"
     const CURRENT_DATE = new Date();
     const YEAR_MONTH = CURRENT_DATE.toISOString().split('T')[0].slice(0, 7)
-    const PAYMENT_LIST_URL = "http://127.0.0.1:8000/api/payment/get-payment-overall"
+    const PAYMENT_LIST_ENDPOINT = "http://127.0.0.1:8000/api/payment/get-payment-overall"
     const [date, setDate] = useState({ start_date: YEAR_MONTH })
     const [dateRange] = useFetch("http://127.0.0.1:8000/api/payment/payment-date-range", null, "GET")
-    const [listResult, getListResult] = useFetch(PAYMENT_LIST_URL, date, "POST")
+    const [listResult, getListResult, , loading] = useFetch(PAYMENT_LIST_ENDPOINT, date, "POST", true, null, true)
     const { changedList, setChangedList, originalValues, setOriginalValues } = useTransformData(listResult, PaymentMapping, ELEMENTS_PER_PAGE)
     const { id, setId, modalData } = useBasicData(originalValues)
     const [open, setOpen] = useState(false)
@@ -39,8 +38,9 @@ export default function Payment() {
     }, [modalData])
 
     return (
-        <SlowlyShowing time={100}>
-            <div className="mt-6 rounded-lg border-2 border-gray-400 bg-white">
+        <>
+            <LoadingModal loading={loading} text={''} />
+            <div className={`mt-6 rounded-lg border-2 border-gray-400 bg-white transition-opacity duration-300 ${loading ? 'opacity-0' : 'opacity-100'}`}>
                 <DoneAnimation open={openAnimation} setOpen={setOpenAnimation} message={SUCCESSFULLY_ADDING_MESSAGE} gif={PaymentDoneGif} />
                 <AddPaymentModal open={open} setOpen={setOpen} id={id} employeeData={modalData} paymentData={changedList} reloadResults={getListResult} setAnimation={setOpenAnimation} />
                 <Table values={changedList} setValues={setChangedList} originalValues={originalValues} bgcolor={"bg-orange-200"} numberOfElements={ELEMENTS_PER_PAGE} setOpen={setOpen} sthElse={true} setId={setId} />
@@ -61,6 +61,6 @@ export default function Payment() {
                     <Pagination totalPages={Math.ceil(changedList.length / 10)} />
                 </div>
             </div>
-        </SlowlyShowing>
+        </>
     )
 }

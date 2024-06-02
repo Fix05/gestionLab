@@ -24,7 +24,7 @@ const ICONS = {
 const Container = styled.div`
 `
 
-export default function Table({ values, setValues, bgcolor, originalValues, numberOfElements, setOpen, sthElse, setId, showId=false }) {
+export default function Table({className, values, setValues, bgcolor, originalValues, numberOfElements, setOpen, sthElse, setId, showId=false }) {
 
     const { tablePage, setTablePage } = useContext(paginationContext);
     const [searchQuery, setSearchQuery] = useState('');
@@ -93,7 +93,7 @@ export default function Table({ values, setValues, bgcolor, originalValues, numb
 
     return (
 
-        <div className='relative'>
+        <div className={`relative ${className}`}>
             <SearchInput onSearchChange={setSearchQuery} />
             <Container className="relative flex overflow-x-hidden rounded-t-lg items-end flex-col">
                 <table className="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">

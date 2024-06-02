@@ -64,12 +64,16 @@ const OPTIONS = {
 
 
 
-export default function StackBarsChart() {
+export default function StackBarsChart({setLoading}) {
 
     const ABSENCES_ENDPOINT = `http://127.0.0.1:8000/api/stadistics/get-absences-vs-employee-vs-type`
-    const [absencesResult] = useFetch(ABSENCES_ENDPOINT, null, "GET")
+    const [absencesResult, , , loading] = useFetch(ABSENCES_ENDPOINT, null, "GET", true, null, true)
     const absencesHasData = Object.keys(absencesResult).length > 0
     const [data, setData] = useState({})
+
+    useEffect(()=>{
+        setLoading(prevState => ({...prevState, stack:loading}))
+    }, [loading])
 
     useEffect(() => {
         if (Object.keys(absencesResult).length > 0) {
@@ -78,8 +82,6 @@ export default function StackBarsChart() {
             const label1 = absencesResult.map((element) => element["Salud"])
             const label2 = absencesResult.map((element) => element["Calamidad doméstica"])
             const label3 = absencesResult.map((element) => element["Otro"])
-
-
 
             const newData = {
                 labels: names,

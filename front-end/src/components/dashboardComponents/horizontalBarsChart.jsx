@@ -1,6 +1,6 @@
-import { Bar } from 'react-chartjs-2';
-import useFetch from '../../hooks/useFetch'
 import { useEffect, useState } from 'react'
+import useFetch from '../../hooks/useFetch'
+import { Bar } from 'react-chartjs-2';
 
 import {
     Chart as ChartJS,
@@ -77,11 +77,15 @@ const OPTIONS = {
 
 
 
-export default function HorizontalBarsChart() {
+export default function HorizontalBarsChart({setLoading}) {
 
     const EMPLOYEE_REQUEST_ENDPOINT = `http://127.0.0.1:8000/api/stadistics/get-requests-vs-employee-vs-type`
-    const [employeePerRequestResult] = useFetch(EMPLOYEE_REQUEST_ENDPOINT, null, "GET")
+    const [employeePerRequestResult, , , loading] = useFetch(EMPLOYEE_REQUEST_ENDPOINT, null, "GET", true, null, true)
     const [data, setData] = useState({})
+
+    useEffect(()=>{
+        setLoading(prevState => ({...prevState, horizontal:loading}))
+    }, [loading])
 
     useEffect(() => {
         if (Object.keys(employeePerRequestResult).length > 0) {

@@ -1,18 +1,19 @@
-import styled from 'styled-components'
+import { EmployeeData, Container, Info, GridDiv } from '../../../styledComponents/detailsBox'
+import { useAnimation } from '../../../contexts/doneAnimationContext'
+import ParamsDict from '../../../dictionaries/updateInputParams.json'
+import IconsDictionary from '../../../dictionaries/fileIcons.json'
+import UpdateDataModal from '../../../components/updateDataModal'
+import defaultUser from '../../../assets/images/defaultUser.png'
+import dictionary from '../../../dictionaries/employeeInfo.json'
+import SlowlyShowing from '../../../components/slowlyShowing'
+import ConfirmAction from '../../../components/confirmAction'
+import LoadingModal from '../../../components/loadingModal'
 import { useParams, useNavigate } from 'react-router-dom'
+import DeleteGif from '../../../assets/gif/deleted.gif'
+import Loading from '../../../components/loadingModal'
 import useFetch from '../../../hooks/useFetch'
 import { useState, useEffect } from 'react'
-import UpdateDataModal from '../../../components/updateDataModal'
-import dictionary from '../../../dictionaries/employeeInfo.json'
-import IconsDictionary from '../../../dictionaries/fileIcons.json'
-import { EmployeeData, Container, Div, Info, GridDiv } from '../../../styledComponents/detailsBox'
-import Loading from '../../../components/loadingModal'
-import defaultUser from '../../../assets/images/defaultUser.png'
-import ParamsDict from '../../../dictionaries/updateInputParams.json'
-import ConfirmAction from '../../../components/confirmAction'
-import { useAnimation } from '../../../contexts/doneAnimationContext'
-import DeleteGif from '../../../assets/gif/deleted.gif'
-import SlowlyShowing from '../../../components/slowlyShowing'
+import styled from 'styled-components'
 
 
 const Box = styled.div`
@@ -34,7 +35,7 @@ export default function EmployeeInfo() {
     const EMPLOYEE_ID_DOCS_ENDPOINT = `http://127.0.0.1:8000/api/rh/download-identification-documents/Identification/${employeeId}`
     const EMPLOYEE_CONTRACT_DOCS_ENDPOINT = `http://127.0.0.1:8000/api/rh/download-identification-documents/Contract/${employeeId}`
     const DISABLE_EMPLOYEE_ENDPOINT = `http://127.0.0.1:8000/api/rh/disable-employee/${employeeId}`
-    const [result, doFetch] = useFetch(EMPLOYEE_DATA_ENDPOINT, null, "GET")
+    const [result, doFetch, ,loading] = useFetch(EMPLOYEE_DATA_ENDPOINT, null, "GET", true, null, true)
     const [idDocs] = useFetch(EMPLOYEE_ID_DOCS_ENDPOINT, null, "GET")
     const [contractDocs] = useFetch(EMPLOYEE_CONTRACT_DOCS_ENDPOINT, null, "GET")
     const [, disableEmployee, disableError, deletingLoading] = useFetch(DISABLE_EMPLOYEE_ENDPOINT, null, "PUT", false)
@@ -67,9 +68,7 @@ export default function EmployeeInfo() {
         setOpenDelete(false)
     }
 
-    useEffect(() => {
-        doFetch()
-    }, [open])
+    
 
     const handleImgError = (ev) => {
         ev.target.src = defaultUser
@@ -83,8 +82,9 @@ export default function EmployeeInfo() {
 
 
     return (
-        <SlowlyShowing time={100}>
-            <EmployeeData>
+        <>
+            <LoadingModal loading={loading} text={''} />
+            <EmployeeData className={`mt-6 rounded-lg border-2 border-gray-400 bg-white transition-opacity duration-300 ${loading ? 'opacity-0': 'opacity-100'}`}>
                 <Container className='max-h-[355px]'>
                     <ConfirmAction open={openDelete} setOpen={setOpenDelete} positiveAction={() => deleteEmployee()} negativeAction={() => setOpenDelete(false)} positiveText={'Aceptar'} negativeText={'Cancelar'} title={"Desea eliminar este empleado del sistema"}>
                         <div className='flex flex-col'>
@@ -197,6 +197,6 @@ export default function EmployeeInfo() {
                     </GridDiv>
                 </Container>
             </EmployeeData>
-        </SlowlyShowing>
+        </>
     )
 }

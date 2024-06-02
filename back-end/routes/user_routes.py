@@ -13,8 +13,6 @@ load_dotenv()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
 
 
-
-
 key_path = os.getenv("KEYS", '.')
 print(key_path)
 with open(key_path, 'r') as file:
