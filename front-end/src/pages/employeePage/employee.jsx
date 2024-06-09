@@ -1,27 +1,20 @@
 import { useParams, Outlet, Link, useLocation } from "react-router-dom";
-import { useState, useEffect, createContext } from 'react'
-import useFetch from '../../hooks/useFetch'
-import styled from 'styled-components'
-import background from '../../assets/images/3415222.jpg'
-import Header from '../../components/header';
-import image from '../../assets/images/goku.jpg'
-import Sended from '../../assets/gif/sendedRequest.gif'
-import { MagicMotion } from "react-magic-motion";
 import DoneAnimation from '../../components/doneAnimationWindow'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
 import { faFolderOpen } from '@fortawesome/free-solid-svg-icons'
+import { useState, useEffect, createContext } from 'react'
 import SlowlyShowing from '../../components/slowlyShowing'
+import Sended from '../../assets/gif/sendedRequest.gif'
+import Header from '../../components/header';
+import useFetch from '../../hooks/useFetch'
+import styled from 'styled-components'
 
 
 const Container = styled.div`
 position: relative;
 top: 0px;
-background-image: url(${background});
-background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-min-height: 560px;
+min-height: 100vh;
 `
 
 export const employeePaginationContext = createContext()
@@ -31,8 +24,8 @@ export default function Employee() {
     const MESSAGE = "Empleados"
     const DONE_MESSAGE = "Solicitud enviada correctamente"
     const { id } = useParams();
-    const DATA_URL = `http://127.0.0.1:8000/api/rh/get-info/${id}`
-    const PHOTO_ENDPOINT = `http://127.0.0.1:8000/api/rh/download-photo/${id}`
+    const DATA_URL = `http://18.119.103.188:8000/api/rh/get-info/${id}`
+    const PHOTO_ENDPOINT = `http://18.119.103.188:8000/api/rh/download-photo/${id}`
     const [result] = useFetch(DATA_URL, null, 'GET')
     const location = useLocation();
     const { pathname } = location;
@@ -46,6 +39,14 @@ export default function Employee() {
         setAdjustGridAreas(isDetailPage);
     }, [isDetailPage]);
 
+    useEffect(() => {
+        document.body.classList.add('manager-background')
+
+        return () => {
+            document.body.classList.remove('manager-background')
+        }
+    }, [])
+
 
     const [show, setShow] = useState(false);
 
@@ -57,7 +58,6 @@ export default function Employee() {
 
         <SlowlyShowing time={500}>
             <employeePaginationContext.Provider value={{ tablePage, setTablePage }}>
-
                 <Header name={result.name} lastname={result.lastname} email={result.email} message={MESSAGE} image={PHOTO_ENDPOINT} />
                 <Container className='p-10 flex column justify-center pt-40 relative '>
                     <DoneAnimation open={showAnimationWindow} setOpen={setShowAnimationWindow} message={DONE_MESSAGE} gif={Sended} />
@@ -65,7 +65,7 @@ export default function Employee() {
                         <Outlet context={[showAnimationWindow, setShowAnimationWindow]} />
                     </div>
 
-                    <div className="absolute flex row w-full my-8">
+                    <div className={`absolute flex ${adjustGridAreas ? '' : 'justify-center'} row w-full my-8`}>
                         <article className={`bg-opacity-95 transition-all duration-1000 ${adjustGridAreas ? 'w-[150px] -translate-y-[95px] translate-x-[58px] h-12 mx-1' : 'max-h-56 w-[500px] mx-6'} bg-gray-100  rounded-lg border border-gray-100  shadow-sm ease-in-out hover:shadow-2xl hover:bg-opacity-100 sm:p-6`}
 
                         >

@@ -8,7 +8,7 @@ export default function Breadcurmb() {
 
     const [id, setId] = useState()
     const [result] = useFetch(
-        `http://127.0.0.1:8000/api/rh/get-info/${id}`,
+        `http://18.119.103.188:8000/api/rh/get-info/${id}`,
         null,
         "GET"
     )

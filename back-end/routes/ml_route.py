@@ -32,7 +32,14 @@ def clear_text(text):
 
 
 def make_gpt_request(cv_list, position, requirements):
-    cv_list_json = json.dumps(cv_list)
+    cv_list_json = json.dumps(cv_list, ensure_ascii=False)
+    print(cv_list[0])
+    print("_------------------------------------------_")
+    print(cv_list)
+    print("_------------------------------------------_")
+    print(cv_list_json)
+
+
     tokens = len(cv_list) * 200
     message_content = f"""
         MUY IMPORTANTE LA RESPUEST NO DEBE DE SOBREPASAR LOS {tokens} TOKENS. 
@@ -62,7 +69,10 @@ def make_gpt_request(cv_list, position, requirements):
     y en 'position' se debe de indicar el porcentaje de requerimientos cumplidos .
     """
 
-    """   gpt-3.5-turbo gpt-4o"""
+    """ gpt-3.5-turbo gpt-4o"""
+
+
+
 
     completion = client.chat.completions.create(
         model="gpt-3.5-turbo",
@@ -70,7 +80,8 @@ def make_gpt_request(cv_list, position, requirements):
         max_tokens=tokens,
         messages=[
             {"role": "system", "content": message_content},
-            {"role": "user", "content": cv_list_json}
+            {"role": "user", "content": cv_list_json},
+            {"role": "user", "content": ""}
         ]   
     )
     response_content = completion.choices[0].message.content

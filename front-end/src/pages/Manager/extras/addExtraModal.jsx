@@ -8,9 +8,9 @@ import WarningMessage from '../../../components/warningMessage'
 
 export default function AddExtraModal({ open, setOpen, id, employeeData }) {
 
-    const EMPLOYES_URL = `http://127.0.0.1:8000/api/extras/get-employee-extras/${id}`
-    const ADDING_URL = `http://127.0.0.1:8000/api/extras/add-extras/${id}`
-    const DELETING_URL = `http://127.0.0.1:8000/api/extras/delete-extras/`
+    const EMPLOYES_URL = `http://18.119.103.188:8000/api/extras/get-employee-extras/${id}`
+    const ADDING_URL = `http://18.119.103.188:8000/api/extras/add-extras/${id}`
+    const DELETING_URL = `http://18.119.103.188:8000/api/extras/delete-extras/`
     const HEADER = "Registro de horas extras"
     const [result, getResult] = useFetch(EMPLOYES_URL, null, "GET")
     const [, addExtra] = useFetch(ADDING_URL, {}, "POST")

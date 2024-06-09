@@ -1,17 +1,18 @@
 import { Fragment, useState, useEffect } from 'react'
+
 import { Dialog, Transition } from '@headlessui/react'
 import useFetch from '../hooks/useFetch'
 import useField from '../hooks/useField'
 
 import dictionary from '../dictionaries/employeeInfo.json'
 
-export default function UpdateDataModal({ field, open, setOpen, inputParams, id, reload }) {
+export default function UpdateDataModal({ field, open, setOpen, inputParams, id, reload, setDoneUpdate }) {
 
     const inputValue = useField();
     /* const [data, setData] = useState({}) */
     const [errorMessage, setErrorMessage] = useState("")
-    const URL = `http://127.0.0.1:8000/api/rh/update-employee-info/${id}`
-    const [result, update] = useFetch(URL, null, "PUT", false)
+    const URL = `http://18.119.103.188:8000/api/rh/update-employee-info/${id}`
+    const [result, update, error, loading] = useFetch(URL, null, "PUT", false)
 
 
     const handleClick = (ev) => {
@@ -19,6 +20,7 @@ export default function UpdateDataModal({ field, open, setOpen, inputParams, id,
             const data = { [field]: inputValue.field }
             update(data).then(() => {
                 reload()
+                setDoneUpdate(true)
             })
             setOpen(false)
         } else {

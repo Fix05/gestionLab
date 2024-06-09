@@ -1,15 +1,14 @@
-import Header from '../../components/header'
 import { AnimationProvider } from '../../contexts/doneAnimationContext'
-import styled from 'styled-components'
-import { useParams, Outlet } from "react-router-dom";
-import useFetch from '../../hooks/useFetch'
-import { createContext, useEffect, useState, useContext } from 'react';
-import Aside from '../../components/aside';
-import Breadcrumb from '../../components/breadcumb'
-import image from '../../assets/images/mcloving.jpeg'
-import background from '../../assets/images/3415222.jpg'
-import PrettyView from '../../components/prettyview'
 import SlowlyShowing from '../../components/slowlyShowing'
+import background from '../../assets/images/background.jpg'
+import { useParams, Outlet } from "react-router-dom";
+import Breadcrumb from '../../components/breadcumb'
+import { createContext, useState } from 'react';
+import Header from '../../components/header'
+import useFetch from '../../hooks/useFetch'
+import Aside from '../../components/aside';
+import styled from 'styled-components'
+import {useEffect} from 'react'
 
 
 export const paginationContext = createContext()
@@ -18,11 +17,12 @@ export const breadcrumbContext = createContext()
 
 const Container = styled.div`
 
-background-image: url(${background});
+/* background-image: url(${background});
 background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-min-height: 720px;
+background-position: center;
+background-repeat: no-repeat;
+background-attachment: fixed; */
+min-height: 100vh;
 `
 
 const HEADER_BG = {
@@ -39,15 +39,24 @@ export default function Manager() {
 
     const MESSAGE = "Manager"
     const { id } = useParams();
-    const DATA_ENDPOINT = `http://127.0.0.1:8000/api/rh/get-info/${id}`
-    const PHOTO_ENDPOINT = `http://127.0.0.1:8000/api/rh/download-photo/${id}`
+    const DATA_ENDPOINT = `http://18.119.103.188:8000/api/rh/get-info/${id}`
+    const PHOTO_ENDPOINT = `http://18.119.103.188:8000/api/rh/download-photo/${id}`
     const [result] = useFetch(DATA_ENDPOINT, null, "GET")
     const [page, setPage] = useState("Manager")
     const [tablePage, setTablePage] = useState(1)
     const [breadcrumbNames, setBreadcrumbNames] = useState()
 
+
+    useEffect(()=>{
+        document.body.classList.add('manager-background');
+
+        return () => {
+            document.body.classList.remove('manager-background')
+        }
+    },[])
+
     return (
-        <Container className='bg-white'>
+        <Container className=''>
             <paginationContext.Provider value={{ tablePage, setTablePage }}>
                 <AnimationProvider>
                     <pageContext.Provider value={{ page, setPage }}>
@@ -56,10 +65,12 @@ export default function Manager() {
                                 <Header name={result.name} image={PHOTO_ENDPOINT} lastname={result.lastname} email={result.email} style={HEADER_BG} message={MESSAGE} />
                                 <Aside />
                                 <Div className='relative top-24 py-4 px-6'>
-                                    <div className='flex justify-between h-10'>
-                                        <Breadcrumb />
-                                    </div>
-                                    <Outlet />
+
+                                        <div className='flex justify-between h-10'>
+                                            <Breadcrumb />
+                                        </div>
+                                        <Outlet />
+                                    
                                 </Div>
                             </SlowlyShowing>
                         </breadcrumbContext.Provider>

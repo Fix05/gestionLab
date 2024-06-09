@@ -29,8 +29,10 @@ const useFetch = (url, data, method, shouldFetch = true, token = null, loadingIn
 
     try {
 
+      console.log("inFunctionData:", inFunctionData, "infunctionURL: ", inFnctionUrl);
+
       inFunctionData ? data = inFunctionData : null
-      inFnctionUrl ? url = inFnctionUrl : null
+      inFnctionUrl ? url = url+inFnctionUrl : null
 
       const isFormData = data instanceof FormData
 
@@ -60,6 +62,7 @@ const useFetch = (url, data, method, shouldFetch = true, token = null, loadingIn
           const jsonResponse = await response.json()
 
           if (!response.ok) {
+            setError(jsonResponse.message)
             throw new Error(jsonResponse.message || "An unknown error occurred");
           }
 

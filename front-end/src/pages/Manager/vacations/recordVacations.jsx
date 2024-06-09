@@ -10,8 +10,8 @@ import { useEffect, useState } from 'react'
 
 export default function RecordVacations() {
     const ELEMENTS_PER_PAGE = 10
-    const VACATIONS_LIST_ENDPOINT = "http://127.0.0.1:8000/api/vacations/get-vacations-record"
-    const DATE_RANGE_URL = "http://127.0.0.1:8000/api/vacations/vacations-date-range"
+    const VACATIONS_LIST_ENDPOINT = "http://18.119.103.188:8000/api/vacations/get-vacations-record"
+    const DATE_RANGE_URL = "http://18.119.103.188:8000/api/vacations/vacations-date-range"
     const [date, setDate] = useState({ month: "2024-01" })
     const [dateRange] = useFetch(DATE_RANGE_URL, null, "GET", true, null, true)
     const [listResult, , , loading] = useFetch(VACATIONS_LIST_ENDPOINT, date, "POST", true, null, true)
@@ -24,7 +24,7 @@ export default function RecordVacations() {
         setMessage } = useTransformData(listResult, VacationsMapping, ELEMENTS_PER_PAGE)
     const [open, setOpen] = useState(false)
     const { id, setId, modalData } = useBasicData(originalValues)
-    const DESCRIPTION_ENDPOINT = `http://127.0.0.1:8000/api/vacations/get-vacation-description/${id}`
+    const DESCRIPTION_ENDPOINT = `http://18.119.103.188:8000/api/vacations/get-vacation-description/${id}`
 
     const handleDateChange = (ev) => {
         const selectedDate = ev.target.value

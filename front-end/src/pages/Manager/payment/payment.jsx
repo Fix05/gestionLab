@@ -16,9 +16,9 @@ export default function Payment() {
     const SUCCESSFULLY_ADDING_MESSAGE = "Pago registrado con éxito"
     const CURRENT_DATE = new Date();
     const YEAR_MONTH = CURRENT_DATE.toISOString().split('T')[0].slice(0, 7)
-    const PAYMENT_LIST_ENDPOINT = "http://127.0.0.1:8000/api/payment/get-payment-overall"
+    const PAYMENT_LIST_ENDPOINT = "http://18.119.103.188:8000/api/payment/get-payment-overall"
     const [date, setDate] = useState({ start_date: YEAR_MONTH })
-    const [dateRange] = useFetch("http://127.0.0.1:8000/api/payment/payment-date-range", null, "GET")
+    const [dateRange] = useFetch("http://18.119.103.188:8000/api/payment/payment-date-range", null, "GET")
     const [listResult, getListResult, , loading] = useFetch(PAYMENT_LIST_ENDPOINT, date, "POST", true, null, true)
     const { changedList, setChangedList, originalValues, setOriginalValues } = useTransformData(listResult, PaymentMapping, ELEMENTS_PER_PAGE)
     const { id, setId, modalData } = useBasicData(originalValues)

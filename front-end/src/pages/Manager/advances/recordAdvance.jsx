@@ -14,8 +14,8 @@ export default function RecordAdvance() {
 
     const ELEMENTS_PER_PAGE = 10
     const DEFAULT_DATE = { month: "2024-01" }
-    const ADVANCE_LIST_URL = "http://127.0.0.1:8000/api/advances/get-advances-record"
-    const DATE_RANGE_URL = "http://127.0.0.1:8000/api/advances/advances-date-range"
+    const ADVANCE_LIST_URL = "http://18.119.103.188:8000/api/advances/get-advances-record"
+    const DATE_RANGE_URL = "http://18.119.103.188:8000/api/advances/advances-date-range"
     const [dateRange] = useFetch(DATE_RANGE_URL, null, "GET")
     const [date, setDate] = useState({ month: "2024-01" })
     const [listResult, , , loading] = useFetch(ADVANCE_LIST_URL, date, "POST", true, null, true)
@@ -23,7 +23,7 @@ export default function RecordAdvance() {
         setOriginalValues, message, setMessage } = useTransformData(listResult, AdvanceRecordMapping, ELEMENTS_PER_PAGE)
     const [open, setOpen] = useState(false)
     const { id, setId, modalData } = useBasicData(originalValues)
-    const DESCRIPTION_ENDPOINT = `http://127.0.0.1:8000/api/advances/get-advance-description/${id}`
+    const DESCRIPTION_ENDPOINT = `http://18.119.103.188:8000/api/advances/get-advance-description/${id}`
 
 
     useEffect(() => {

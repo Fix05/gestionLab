@@ -37,7 +37,7 @@ function Test({files, setFiles, compareFiles}) {
         }
 
         try {
-            const response = await fetch('http://127.0.0.1:8000/api/rh/upload-files/', {
+            const response = await fetch('http://18.119.103.188:8000/api/rh/upload-files/', {
                 method: 'POST',
                 body: formData2,
             });

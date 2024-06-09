@@ -10,7 +10,7 @@ import useFetch from '../../hooks/useFetch'
 export default function AddRequest() {
 
     const { id } = useParams()
-    const ADD_REQUEST_ENDPOINT = `http://127.0.0.1:8000/api/emplyee_requests/add-new-request/${id}`
+    const ADD_REQUEST_ENDPOINT = `http://18.119.103.188:8000/api/emplyee_requests/add-new-request/${id}`
     const [, addRequest] = useFetch(ADD_REQUEST_ENDPOINT, null, 'POST', false)
     const reason = useField()
     const explanation = useField()
@@ -56,8 +56,8 @@ export default function AddRequest() {
 
     return (
         <div className={`w-full transition duration-500 ${show ? 'opacity-100' : 'opacity-0'}`}>
-            <EmployeeData className='absolute w-full'>
-                <Container className='w-full'>
+            <EmployeeData height={'380px'} className='absolute w-full'>
+                <Container height={'350px'} className='w-full'>
                     <BoxDivider text={`Crear solicitud`} />
 
                     <Form className='w-full' onSubmit={handleSubmit}>

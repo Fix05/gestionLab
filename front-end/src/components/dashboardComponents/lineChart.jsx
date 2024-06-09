@@ -59,7 +59,7 @@ const OPTIONS = {
 
 export default function LineChart({setLoading}) {
 
-    const EXTRA_ENDPOINT = `http://127.0.0.1:8000/api/stadistics/get-extras-vs-time/MONTH`
+    const EXTRA_ENDPOINT = `http://18.119.103.188:8000/api/stadistics/get-extras-vs-time/MONTH`
     const [extraResult, , ,loading] = useFetch(EXTRA_ENDPOINT, null, "GET", true, null, true)
     const [data, setData] = useState({})
 
@@ -99,7 +99,7 @@ export default function LineChart({setLoading}) {
     }, [extraResult])
 
     return (
-        <div className='w-full'>
+        <div className='absolute top-0 w-full'>
             {Object.keys(data).length > 0 &&
                 <Line data={data} options={OPTIONS} />
             }

@@ -5,14 +5,14 @@ import ColorStates from '../../dictionaries/paymentState.json'
 
 export default function EmployeeRequestInfo({ id, open, setOpen }) {
 
-    const REQUEST_INFO_ENDPOINT = `http://127.0.0.1:8000/api/emplyee_requests/get-all-requests-info/${id}`
-    const DOWNLOAD_DOC_ENDPOINT = `http://127.0.0.1:8000/api/emplyee_requests/employee-get-request-document/${id}`
+    const REQUEST_INFO_ENDPOINT = `http://18.119.103.188:8000/api/emplyee_requests/get-all-requests-info/${id}`
+    const DOWNLOAD_DOC_ENDPOINT = `http://18.119.103.188:8000/api/emplyee_requests/employee-get-request-document/${id}`
 
     const [requestInfo] = useFetch(REQUEST_INFO_ENDPOINT, null, "GET")
 
     return (
-        <GenericModalTemplate className='' GenericModalTemplate open={open} setOpen={setOpen}>
-            <Container className='w-[700px] p-[25px] h-[300px] '>
+        <GenericModalTemplate  GenericModalTemplate open={open} setOpen={setOpen}>
+            <Container height={'400px'} className='w-[700px] p-[25px]  '>
                 <div className='grid grid-cols-3 rounded-lg border-2 border-slate-300 p-4'>
                     <div className='flex flex-col justify-left mb-7'>
                         <h1 className='text-gray-600 font-bold text-xs'>ID:</h1>

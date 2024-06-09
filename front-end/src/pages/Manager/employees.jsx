@@ -15,7 +15,7 @@ import Table from '../../components/table'
 export default function Manager() {
 
     const ELEMENTS_PER_PAGE = 10
-    const EMPLOYEE_LIST_URL = `http://127.0.0.1:8000/api/rh/get-employees-overall`
+    const EMPLOYEE_LIST_URL = `http://18.119.103.188:8000/api/rh/get-employees-overall`
     const [listResult, , , loading] = useFetch(EMPLOYEE_LIST_URL, null, "GET", true, null, true)
     const [changedList, setChangedList] = useState([{}])
     const [originalValues, setOriginalValues] = useState([{}])

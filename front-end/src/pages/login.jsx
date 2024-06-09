@@ -39,7 +39,7 @@ export default function Login() {
   const navigate = useNavigate()
   const token = localStorage.getItem('token');
   const [data, setData] = useState({})
-  const URL = "http://127.0.0.1:8000/api/user/token"
+  const URL = "http://18.119.103.188:8000/api/user/token"
   const [result] = useFetch(URL, data, "POST")
   const [open, setOpen] = useState(false)
   const [modalText, setModalText] = useState('')

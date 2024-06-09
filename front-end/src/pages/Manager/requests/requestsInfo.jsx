@@ -1,5 +1,7 @@
 import { EmployeeData, Container, Div, Info } from '../../../styledComponents/detailsBox'
 import SetResponseModal from '../../../components/setResponseModal'
+import DoneAnimation from '../../../components/doneAnimationWindow'
+import SendedResponse from '../../../assets/gif/sendedResponse.gif'
 import BoxDivider from '../../../styledComponents/boxDivider'
 import LoadingModal from '../../../components/loadingModal'
 import useField from '../../../hooks/useField'
@@ -26,11 +28,12 @@ export default function RequestInfo() {
 
     const [activeButton, setActiveButton] = useState(null);
     const { requestId } = useParams()
-    const REQUEST_INFO_ENDPOINT = `http://127.0.0.1:8000/api/employee/get-all-request-info/${requestId}`
-    const REQUEST_DOC_ENDPOINT = `http://127.0.0.1:8000/api/employee/get-request-document/${requestId}`
+    const REQUEST_INFO_ENDPOINT = `http://18.119.103.188:8000/api/employee/get-all-request-info/${requestId}`
+    const REQUEST_DOC_ENDPOINT = `http://18.119.103.188:8000/api/employee/get-request-document/${requestId}`
     const [result, doFetch, , loading] = useFetch(REQUEST_INFO_ENDPOINT, null, "GET", true, null, true)
     const [errorMessage, setErrorMessage] = useState('')
     const [open, setOpen] = useState(false)
+    const [openDone, setOpenDone] = useState(false)
     const rquestResponse = useField()
 
     const handleSubmit = (ev) => {
@@ -54,9 +57,10 @@ export default function RequestInfo() {
     return (
         <>
             <LoadingModal loading={loading} text={''} />
+            <DoneAnimation open={openDone} setOpen={setOpenDone} message={"Respuesta enviada"} gif={SendedResponse}/>
             <EmployeeData className={`transition-opacity duration-300 ${loading ? 'opacity-0': 'opacity-100'}`}>
                 <Container>
-                    <SetResponseModal open={open} setOpen={setOpen} action={activeButton} body={rquestResponse.field} requestId={requestId} reloadInfo={doFetch} />
+                    <SetResponseModal open={open} setOpen={setOpen} action={activeButton} body={rquestResponse.field} requestId={requestId} reloadInfo={doFetch} setOpenDone={setOpenDone}/>
                     <BoxDivider text={`Solicitud Nº${requestId}`} />
 
                     <Div>

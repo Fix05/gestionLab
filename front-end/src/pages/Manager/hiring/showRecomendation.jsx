@@ -78,7 +78,7 @@ export default function ShowRecomendation({ results }) {
                                 </ul>
                             </div>
                             <div className="bg-yellow-50 p-2 rounded shadow">
-                                <p className="text-gray-700 font-semibold">requerimientos cumplidos</p>
+                                <p className="text-gray-700 font-semibold">Requerimientos cumplidos</p>
                                 <ul>
                                     {results[candidate]["requirements"].map((point) => (
                                         <li className="text-sm text-gray-700">-{point}</li>

@@ -18,8 +18,8 @@ import Modal from '../../../components/modal'
 
 export default function AddEmployee() {
 
-    const ADD_EMPLOYEE_ENDPOINT = `http://127.0.0.1:8000/api/rh/add-new-employee`
-    let ADD_DOCUMENTS_ENDPOINT = `http://127.0.0.1:8000/api/rh/upload-employee-doc/`
+    const ADD_EMPLOYEE_ENDPOINT = `http://18.119.103.188:8000/api/rh/add-new-employee`
+    let ADD_DOCUMENTS_ENDPOINT = `http://18.119.103.188:8000/api/rh/upload-employee-doc/`
     const { id } = useParams()
     const navigate = useNavigate()
     const { setShowAnimation, setGif, setMessage } = useAnimation();

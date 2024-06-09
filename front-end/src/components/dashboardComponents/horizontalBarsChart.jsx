@@ -79,7 +79,7 @@ const OPTIONS = {
 
 export default function HorizontalBarsChart({setLoading}) {
 
-    const EMPLOYEE_REQUEST_ENDPOINT = `http://127.0.0.1:8000/api/stadistics/get-requests-vs-employee-vs-type`
+    const EMPLOYEE_REQUEST_ENDPOINT = `http://18.119.103.188:8000/api/stadistics/get-requests-vs-employee-vs-type`
     const [employeePerRequestResult, , , loading] = useFetch(EMPLOYEE_REQUEST_ENDPOINT, null, "GET", true, null, true)
     const [data, setData] = useState({})
 

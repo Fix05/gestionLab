@@ -48,7 +48,7 @@ const OPTIONS = {
 
 export default function PieChart({setLoading}) {
 
-    const REQUEST_TYPES_ENDPOINT = `http://127.0.0.1:8000/api/stadistics/get-count-requests-vs-type`
+    const REQUEST_TYPES_ENDPOINT = `http://18.119.103.188:8000/api/stadistics/get-count-requests-vs-type`
     const [requestsTypesResult, , , loading] = useFetch(REQUEST_TYPES_ENDPOINT, null, "GET", true, null, true)
     const [data, setData] = useState({})
 

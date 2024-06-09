@@ -12,7 +12,7 @@ export default function Manager() {
 
     const { id } = useParams()
 
-    const REQUESTS_LIST_URL = `http://127.0.0.1:8000/api/employee/get-assigned-requests/${id}`
+    const REQUESTS_LIST_URL = `http://18.119.103.188:8000/api/employee/get-assigned-requests/${id}`
     const [listResult, , , loading] = useFetch(REQUESTS_LIST_URL, null, "GET", true, null, true)
     const [changedList, setChangedList] = useState([{}])
     const [originalValues, setOriginalValues] = useState([{}])

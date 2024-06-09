@@ -44,29 +44,6 @@ class NewEmployee(BaseModel):
 with open('./src/dictionaries/table_fields.json', 'r') as file:
     FIELD_TO_TABLE_MAPPING = json.load(file)
 
-""" FIELD_TO_TABLE_MAPPING = {
-    "name_person": "person",
-    "lastname_person": "person",
-    "dni_person": "person",
-    "email_person": "person",
-    "number_person": "person",
-    "address_person": "person",
-    "birth_date_person": "person",
-    "emergency_number": "person",
-    "nationality_person": "person",
-    "gender_person": "person",
-    "duration_contract": "contract",
-    "start_day_contract": "contract",
-    "description_contract": "contract",
-    "benefits_contract": "contract",
-    "hours_per_day": "contract",
-    "bonuses_contract": "contract",
-    "special_requirements": "contract",
-    "department_employee": "employee",
-    "state_employee": "employee",
-    "base_salary": "salary_info",
-    "days_vacation": "contract",
-} """
 
 # Get basic user info, email, name,
 
@@ -350,7 +327,7 @@ async def download_employee_identification_documents(doc_type: str, id: int, db:
         if files:
             files_info = [
                 {
-                    "url": f"http://127.0.0.1:8000/employeeDocuments/{file['file_path'].split('/')[-1]}",
+                    "url": f"http://18.119.103.188:8000/employeeDocuments/{file['file_path'].split('/')[-1]}",
                     "name": file['file_name']
                 }
                 for file in files

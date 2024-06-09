@@ -5,13 +5,14 @@ import IconsDictionary from '../../../dictionaries/fileIcons.json'
 import UpdateDataModal from '../../../components/updateDataModal'
 import defaultUser from '../../../assets/images/defaultUser.png'
 import dictionary from '../../../dictionaries/employeeInfo.json'
-import SlowlyShowing from '../../../components/slowlyShowing'
+import DoneAnimation from '../../../components/doneAnimationWindow'
 import ConfirmAction from '../../../components/confirmAction'
 import LoadingModal from '../../../components/loadingModal'
 import { useParams, useNavigate } from 'react-router-dom'
 import DeleteGif from '../../../assets/gif/deleted.gif'
 import Loading from '../../../components/loadingModal'
 import useFetch from '../../../hooks/useFetch'
+import Updated from '../../../assets/gif/updated.gif'
 import { useState, useEffect } from 'react'
 import styled from 'styled-components'
 
@@ -30,16 +31,17 @@ export default function EmployeeInfo() {
 
     const { id, employeeId } = useParams()
     const navigate = useNavigate()
-    const EMPLOYEE_DATA_ENDPOINT = `http://127.0.0.1:8000/api/rh/get-all-employee-info/${employeeId}`
-    const EMPLOYEE_PHOTO_ENDPOINT = `http://127.0.0.1:8000/api/rh/download-photo/${employeeId}`
-    const EMPLOYEE_ID_DOCS_ENDPOINT = `http://127.0.0.1:8000/api/rh/download-identification-documents/Identification/${employeeId}`
-    const EMPLOYEE_CONTRACT_DOCS_ENDPOINT = `http://127.0.0.1:8000/api/rh/download-identification-documents/Contract/${employeeId}`
-    const DISABLE_EMPLOYEE_ENDPOINT = `http://127.0.0.1:8000/api/rh/disable-employee/${employeeId}`
+    const EMPLOYEE_DATA_ENDPOINT = `http://18.119.103.188:8000/api/rh/get-all-employee-info/${employeeId}`
+    const EMPLOYEE_PHOTO_ENDPOINT = `http://18.119.103.188:8000/api/rh/download-photo/${employeeId}`
+    const EMPLOYEE_ID_DOCS_ENDPOINT = `http://18.119.103.188:8000/api/rh/download-identification-documents/Identification/${employeeId}`
+    const EMPLOYEE_CONTRACT_DOCS_ENDPOINT = `http://18.119.103.188:8000/api/rh/download-identification-documents/Contract/${employeeId}`
+    const DISABLE_EMPLOYEE_ENDPOINT = `http://18.119.103.188:8000/api/rh/disable-employee/${employeeId}`
     const [result, doFetch, ,loading] = useFetch(EMPLOYEE_DATA_ENDPOINT, null, "GET", true, null, true)
     const [idDocs] = useFetch(EMPLOYEE_ID_DOCS_ENDPOINT, null, "GET")
     const [contractDocs] = useFetch(EMPLOYEE_CONTRACT_DOCS_ENDPOINT, null, "GET")
     const [, disableEmployee, disableError, deletingLoading] = useFetch(DISABLE_EMPLOYEE_ENDPOINT, null, "PUT", false)
     const [open, setOpen] = useState(false)
+    const [openDoneUpdate, setOpenDoneUpdate] = useState(false)
     const [openDelete, setOpenDelete] = useState(false)
     const [field, setField] = useState('')
     const [inputParams, setInputParams] = useState('')
@@ -84,6 +86,7 @@ export default function EmployeeInfo() {
     return (
         <>
             <LoadingModal loading={loading} text={''} />
+            <DoneAnimation open={openDoneUpdate} setOpen={setOpenDoneUpdate} message={'Información actualizada'} gif={Updated}/>
             <EmployeeData className={`mt-6 rounded-lg border-2 border-gray-400 bg-white transition-opacity duration-300 ${loading ? 'opacity-0': 'opacity-100'}`}>
                 <Container className='max-h-[355px]'>
                     <ConfirmAction open={openDelete} setOpen={setOpenDelete} positiveAction={() => deleteEmployee()} negativeAction={() => setOpenDelete(false)} positiveText={'Aceptar'} negativeText={'Cancelar'} title={"Desea eliminar este empleado del sistema"}>
@@ -93,7 +96,7 @@ export default function EmployeeInfo() {
 
                     </ConfirmAction>
                     <Loading loading={deletingLoading} text={"Eliminando"} />
-                    <UpdateDataModal field={field} open={open} setOpen={setOpen} inputParams={inputParams} id={employeeId} reload={doFetch} />
+                    <UpdateDataModal field={field} open={open} setOpen={setOpen} inputParams={inputParams} id={employeeId} reload={doFetch} setDoneUpdate={setOpenDoneUpdate}/>
                     <span className="mt-4 relative flex justify-center">
                         <div
                             className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-transparent bg-gradient-to-r from-transparent via-black to-transparent opacity-75"

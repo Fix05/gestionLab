@@ -6,23 +6,10 @@ import { jwtDecode } from 'jwt-decode';
 import { checkExpireToken } from '../components/repetitiveFunctions/authToken.js'
 import Loading from '../assets/gif/loading.gif'
 
-/* import Loading from '../styledComponents/loading.jsx' */
-/* import Loading from '../components/loadingModal.jsx' */
-
-
-
-/* const LoadinScreen = () => { 
-
-    return(
-        <div className='flex flex-row justify-center items-center w-full h-full'>
-            <Loading loading={deletingLoading} text={"Eliminando"} />
-        </div>
-    )
-} */
 
 function ProtectedRoute({ role, children }) {
 
-    const REFRESH_TOKEN_ENDPOINT = 'http://127.0.0.1:8000/api/user/refresh'
+    const REFRESH_TOKEN_ENDPOINT = 'http://18.119.103.188:8000/api/user/refresh'
     const { user, loading } = useAuth();
     const location = useLocation();
     const { id } = useParams();
@@ -32,21 +19,24 @@ function ProtectedRoute({ role, children }) {
     const [, getNewToken, error, refreshLoading] = useFetch(REFRESH_TOKEN_ENDPOINT, null, "POST", false, refreshToken)
     const tokenIsValid = checkExpireToken();
     useEffect(() => {
-        console.log("Efecto del protectRoute");
         if (token && !tokenIsValid) {
-            console.log("Token caducó");
             getNewToken().then((response) => {
-                console.log("REspuesta del refresh", response);
                 if (response && response.access_token) {
                     localStorage.setItem('token', response.access_token);
-                    console.log("Nuevo token seteado");
-                    console.log("Se va a navegar al login");
                 }
                 navigate("/")
             })
-
         }
     }, [getNewToken, refreshToken])
+
+
+  /*   if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        console.log("Abierto");
+        document.body.innerHTML = 'Este sitio solo es accesible desde una PC.';
+    }else{
+        console.log("Abierto desde PC");
+    } */
+    
 
     const checkId = () => {
         if (token) {
@@ -68,10 +58,6 @@ function ProtectedRoute({ role, children }) {
     if(token){
         if (!refreshLoading) {
             if (!user || user.role != role || !tokenIsValid) {
-                console.log("user", user);
-                console.log(user.role, "==", role);
-                console.log(tokenIsValid);
-                console.log("Usuario rol o tiempo de validez no valido, se redirigirá al login");
                 return <Navigate to="/" state={{ from: location }} replace />;
             }
         } else {

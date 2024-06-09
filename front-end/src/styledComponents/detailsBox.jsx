@@ -3,6 +3,7 @@ import styled from 'styled-components'
 
 export const EmployeeData = styled.div`
 background-color: rgb(226 232 240);
+${props => props.height ? (`height: ${props.height};`) : ''}
 margin-top: 24px;
 border-radius: 8px;
 border-width: 2px;
@@ -11,7 +12,7 @@ border-color: rgb(156 163 175);
 `
 
 export const Container = styled.div`
-max-height: 360px;
+${props => props.height ? (`max-height: ${props.height};`) : 'max-height: 360px;'}
 overflow: scroll;
 overflow-x: hidden;
 

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import LoadingModal from '../../../components/loadingModal'
 import { format, isWeekend, addDays } from 'date-fns';
 import { es } from 'date-fns/locale';
 import useFetch from '../../../hooks/useFetch'
@@ -13,10 +14,10 @@ export default function AddVacationModal({ open, setOpen, id, employeeData, setA
 
     const HEADER = "Registro de vacaciones o ausencias"
     const BUTTON_TEXT = "Registrar ausencia"
-    const DAYS_LEFT_ENDPOINT = `http://127.0.0.1:8000/api/vacations/get-vacation-days-left/${id}`
-    const ADD_VACATION_ENDPOINT = `http://127.0.0.1:8000/api/vacations/insert-new-absence/${id}`
+    const DAYS_LEFT_ENDPOINT = `http://18.119.103.188:8000/api/vacations/get-vacation-days-left/${id}`
+    const ADD_VACATION_ENDPOINT = `http://18.119.103.188:8000/api/vacations/insert-new-absence/${id}`
     const [daysLeft, getDaysLeft] = useFetch(DAYS_LEFT_ENDPOINT, null, "GET")
-    const [addingResult, addVacation, addingError] = useFetch(ADD_VACATION_ENDPOINT, {}, "POST", false)
+    const [addingResult, addVacation, addingError, addingLoading] = useFetch(ADD_VACATION_ENDPOINT, {}, "POST", false)
     const [newDaysLeft, setNewDaysLeft] = useState()
     const [pickedDays, setPickedDays] = useState()
     const type = useField()
@@ -31,7 +32,7 @@ export default function AddVacationModal({ open, setOpen, id, employeeData, setA
         endDate: null,
         key: 'selection'
     }]);
-    
+
 
     const getDays = () => {
         let count = 0;
@@ -64,27 +65,24 @@ export default function AddVacationModal({ open, setOpen, id, employeeData, setA
                 days: pickedDays,
             }
 
-            addVacation(dataToLoad).then(() => {
-                getDaysLeft()
-                reloadList()
+            addVacation(dataToLoad).then((result) => {
+                if (result.status_code == 200) {
+                    setOpen(false)
+                    setAnimation(true)
+                    getDaysLeft()
+                    reloadList()
+                }else{
+                    setAlertMessage(result.message)
+                    setOpenAlert(true)
+                }
+
+
             })
         } else {
             setWarningMessage(true)
         }
 
     }
-
-    useEffect(() => {
-        if (Object.keys(addingResult).length > 0) {
-            if (addingError) {
-                setAlertMessage(addingError)
-                setOpenAlert(true)
-            } else {
-                setOpen(false)
-                setAnimation(true)
-            }
-        }
-    }, [addingResult])
 
 
     const handleDatePicker = () => {
@@ -137,6 +135,7 @@ export default function AddVacationModal({ open, setOpen, id, employeeData, setA
 
     return (
         <ModalTemplate open={open} setOpen={setOpen} header={HEADER} employeeData={employeeData} handleClick={handleSubmit} buttonText={BUTTON_TEXT}>
+            <LoadingModal loading={addingLoading} text={'Insertando ausencia'} />
             <Modal open={openAlert} setOpen={setOpenAlert} header={"Tenemos un problema!!"} text={alertMessage} />
             <div className='flex flex-wrap self-start mb-4 text-sm'>
                 <div className='flex flex-row mr-4'>
@@ -199,7 +198,7 @@ export default function AddVacationModal({ open, setOpen, id, employeeData, setA
                         onChange={reason.handleChange}
                     />
                     <WarningMessage open={warningMessage} setOpen={setWarningMessage}>
-                        <p className="ml-2">Todos los campos deben ser completados</p>    
+                        <p className="ml-2">Todos los campos deben ser completados</p>
                     </WarningMessage>
                 </div>
             </div>

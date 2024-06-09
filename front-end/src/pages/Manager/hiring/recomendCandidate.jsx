@@ -24,7 +24,7 @@ const HiddenFileInput = styled.input`
 export default function RecomendCandidate() {
     const [files, setFiles] = useState({ 1: [], 2: [] });
 
-    const RECOMENDATION_ENDPOINT = 'http://127.0.0.1:8000/api/ml/upload-multiple-pdfs'
+    const RECOMENDATION_ENDPOINT = 'http://18.119.103.188:8000/api/ml/upload-multiple-pdfs'
     const [result, getResult, , loading] = useFetch(RECOMENDATION_ENDPOINT, null, "POST", false);
     const [formData, setFormData] = useState({
         position: '',

@@ -10,8 +10,8 @@ export default function AddPaymentModal({ open, setOpen, id, employeeData, payme
 
     const HEADER = "Registro de pago"
     const BUTON_TEXT = "Registrar pago"
-    const PAYMENT_ENDPOINT = `http://127.0.0.1:8000/api/payment/payment-extras-and-advances/${id}`
-    const ADD_PAYMENT_ENDPOINT = `http://127.0.0.1:8000/api/payment/add-new-payment/${id}`
+    const PAYMENT_ENDPOINT = `http://18.119.103.188:8000/api/payment/payment-extras-and-advances/${id}`
+    const ADD_PAYMENT_ENDPOINT = `http://18.119.103.188:8000/api/payment/add-new-payment/${id}`
     const [result] = useFetch(PAYMENT_ENDPOINT, null, "GET")
     const [dataToAdd, setDataToAdd] = useState()
     const [, addPayment] = useFetch(ADD_PAYMENT_ENDPOINT, null, "POST", false)

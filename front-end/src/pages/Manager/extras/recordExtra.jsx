@@ -14,8 +14,8 @@ export default function RecordExtra() {
 
     const ELEMENTS_PER_PAGE = 10
     const DEFAULT_DATE = { month: "2024-01" }
-    const EXTRA_LIST_URL = "http://127.0.0.1:8000/api/extras/get-extrahours-record"
-    const DATE_RANGE_URL = "http://127.0.0.1:8000/api/extras/extrahours-date-range"
+    const EXTRA_LIST_URL = "http://18.119.103.188:8000/api/extras/get-extrahours-record"
+    const DATE_RANGE_URL = "http://18.119.103.188:8000/api/extras/extrahours-date-range"
     const [dateRange] = useFetch(DATE_RANGE_URL, null, "GET")
     const [date, setDate] = useState({ month: "2024-01" })
     const [listResult, , , loading] = useFetch(EXTRA_LIST_URL, date, "POST", true, null, true)
@@ -23,7 +23,7 @@ export default function RecordExtra() {
         setOriginalValues, message, setMessage } = useTransformData(listResult, ExtraRecordMapping, ELEMENTS_PER_PAGE)
     const [open, setOpen] = useState(false)
     const { id, setId, modalData } = useBasicData(originalValues)
-    const DESCRIPTION_ENDPOINT = `http://127.0.0.1:8000/api/extras/get-extra-description/${id}`
+    const DESCRIPTION_ENDPOINT = `http://18.119.103.188:8000/api/extras/get-extra-description/${id}`
 
 
     useEffect(() => {

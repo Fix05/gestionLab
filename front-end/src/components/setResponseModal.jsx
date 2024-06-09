@@ -1,14 +1,14 @@
 import { Fragment, useState, useEffect } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
-import {useParams} from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import useFetch from '../hooks/useFetch'
 
 
-export default function SetResponseModal({ open, setOpen, action, body, requestId, reloadInfo}) {
+export default function SetResponseModal({ open, setOpen, action, body, requestId, reloadInfo, setOpenDone }) {
 
-    const SETURL = `http://127.0.0.1:8000/api/employee/set-response/${requestId}`
-    const UPDATEURL = `http://127.0.0.1:8000/api/employee/update-request-state/${requestId}`
-    const {id} = useParams() 
+    const SETURL = `http://18.119.103.188:8000/api/employee/set-response/${requestId}`
+    const UPDATEURL = `http://18.119.103.188:8000/api/employee/update-request-state/${requestId}`
+    const { id } = useParams()
     const [data, setData] = useState({})
     const [requestState, setRequestState] = useState({})
     const currentDatetime = new Date();
@@ -17,14 +17,19 @@ export default function SetResponseModal({ open, setOpen, action, body, requestI
     const [, updateStateResult] = useFetch(UPDATEURL, requestState, "PUT")
 
     const handleSubmit = async (ev) => {
-        await setResponseResult({
+        const result = await setResponseResult({
             body: body,
             date: formatedDatetime,
             rh: id
         })
-        await updateStateResult({state: action})
-        reloadInfo()
-        setOpen(false)
+        if (result.status_code == 200) {
+            const updateResult = await updateStateResult({ state: action })
+            reloadInfo()
+            setOpen(false)
+            setOpenDone(true)
+        }
+
+
     }
 
 

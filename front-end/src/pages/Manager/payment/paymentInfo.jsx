@@ -14,8 +14,8 @@ export default function PaymentInfo() {
 
     const DATA_TO_SEARCH = ["payment", "advances", "extras"]
     const { paymentId } = useParams()
-    const PAYMENT_INFO_ENDPOINT = `http://127.0.0.1:8000/api/payment/get-payment-info/${paymentId}`
-    const PAID_EXTRA_ADVANCE_ENDPOINT = `http://127.0.0.1:8000/api/payment/paid-extras-and-advances/${paymentId}`
+    const PAYMENT_INFO_ENDPOINT = `http://18.119.103.188:8000/api/payment/get-payment-info/${paymentId}`
+    const PAID_EXTRA_ADVANCE_ENDPOINT = `http://18.119.103.188:8000/api/payment/paid-extras-and-advances/${paymentId}`
     const [paymentInfo, , , loading] = useFetch(PAYMENT_INFO_ENDPOINT, null, "GET")
     const [paidInfo] = useFetch(PAID_EXTRA_ADVANCE_ENDPOINT, null, "GET")
     const { changedList } = useTransformData(paymentInfo, PaymentInfoMapping, 10)

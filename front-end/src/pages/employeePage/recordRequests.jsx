@@ -1,20 +1,20 @@
-import { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import EmployeeRequestTable from '../pageComponents/employeeRequestTable'
 import { EmployeeData, Container } from '../../styledComponents/detailsBox'
-import BoxDivider from '../../styledComponents/boxDivider'
-import useFetch from '../../hooks/useFetch'
 import useTransformData from '../../hooks/useTransformData'
 import { RequestsMapping } from '../../mapping/dataMapping'
-import Pagination from '../../components/pagination'
-import EmployeeRequestTable from '../pageComponents/employeeRequestTable'
+import BoxDivider from '../../styledComponents/boxDivider'
 import EmployeeRequestInfo from './employeeRequestInfo'
+import Pagination from '../../components/pagination'
+import { useParams } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import useFetch from '../../hooks/useFetch'
 
 
 export default function RecordRequest() {
 
     const { id } = useParams()
     const ELEMENTS_PER_PAGE = 6
-    const RRCORD_ENDPOINT = `http://127.0.0.1:8000/api/emplyee_requests/get-requests-record/${id}`
+    const RRCORD_ENDPOINT = `http://18.119.103.188:8000/api/emplyee_requests/get-requests-record/${id}`
 
     const [show, setShow] = useState(false);
     const [listResult] = useFetch(RRCORD_ENDPOINT, null, "GET")
@@ -30,7 +30,7 @@ export default function RecordRequest() {
 
     return (
 
-        <EmployeeData className={`relative w-full transition  duration-500 ${show ? 'opacity-100' : 'opacity-0'}`}>
+        <EmployeeData  className={`relative w-full transition  duration-500 ${show ? 'opacity-100' : 'opacity-0'}`}>
             <Container className='w-full'>
                 <EmployeeRequestInfo id={requestId} open={openInfo} setOpen={setOpenInfo}/>
                 <BoxDivider text={`Tus solicitudes`} />
