@@ -1,4 +1,4 @@
-import EmployeeRequestTable from '../pageComponents/employeeRequestTable'
+import EmployeeRequestTable from './pageComponents/employeeRequestTable'
 import { EmployeeData, Container } from '../../styledComponents/detailsBox'
 import useTransformData from '../../hooks/useTransformData'
 import { RequestsMapping } from '../../mapping/dataMapping'

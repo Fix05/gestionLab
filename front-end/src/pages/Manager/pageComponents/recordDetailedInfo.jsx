@@ -42,7 +42,7 @@ export default function RecordDetailedInfo({ open, setOpen, endpoint, values }) 
             {!datailedLoading &&
                 <GenericModalTemplate open={open} setOpen={setOpen} handleClick={HandleClick}>
                     <div className="flow-root px-8 w-[600px]">
-                        <dl className="flex flex-wrap mt-9 divide-y divide-gray-100 text-sm">
+                        <dl className="flex flex-wrap mt-9 divide-y divide-gray-100 text-sm ">
                             {newValues && Object.entries(newValues).map((element, index) => {
                                 const [key, value] = element
                                 const translatedKey = infoRecordDictionary[key]

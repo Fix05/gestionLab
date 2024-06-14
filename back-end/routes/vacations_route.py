@@ -55,7 +55,7 @@ def get_vacation_days_left(id: int, db: mysql.connector.MySQLConnection = Depend
 
 
 @router.post("/insert-new-absence/{id}")
-def get_vacation_days_left(id: int, data: NewAbsence, 
+def insert_absence(id: int, data: NewAbsence, 
                            db: mysql.connector.MySQLConnection = Depends(get_db)):
     try:
         cursor = db.cursor(dictionary=True)

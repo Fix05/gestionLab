@@ -1,8 +1,8 @@
 
 import {useState, useContext,useEffect} from 'react'
 import {useLocation} from 'react-router-dom'
-import SearchInput from '../../components/searchinput'
-import {employeePaginationContext} from '../employeePage/employee'
+import SearchInput from '../../../components/searchinput'
+import {employeePaginationContext} from '../employee'
 
 
 export default function EmployeeRequestTable({ values, setValues, bgcolor, originalValues, numberOfElements, setOpen, sthElse, setId }) {

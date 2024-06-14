@@ -43,6 +43,7 @@ class Token(BaseModel):
 
 @router.post("/")
 def validate_user(user: User, db: mysql.connector.MySQLConnection = Depends(get_db)):
+    print(user.email, user.password)
     if not user.email or not user.password:
         return {"status_code": 402, "message": "Missing params"}
     try:
@@ -86,6 +87,8 @@ def get_employees(id: int, db: mysql.connector.MySQLConnection = Depends(get_db)
 @router.post("/token")
 def login_for_access_token(form_data: User, 
                            db: mysql.connector.MySQLConnection = Depends(get_db)):
+    if not form_data.email or not form_data.password:
+        return {"status_code": 402, "message": "Missing params"}
     user = validate_user(form_data, db)
     if not user:
         return {"status_code": 401, "message": "Invalid user or password"}

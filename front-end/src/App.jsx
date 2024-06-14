@@ -1,12 +1,10 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from './contexts/authenticationContext'
 import ProtectedRoute from './components/protectRoute'
-import Home from './pages/home'
 import Login from './pages/login'
 import ManagerPage from './pages/Manager/manager'
-import AdminPage from './pages/admin'
+import AdminPage from './pages/Admin/admin'
 import EmployeePage from './pages/employeePage/employee'
-import MainPage from './pages/employeePage/mainPage'
 import AddRequest from './pages/employeePage/addRequest'
 import RecordRequest from './pages/employeePage/recordRequests'
 import Requests from './pages/Manager/requests'
@@ -26,7 +24,6 @@ import Dashboard from './pages/Manager/dashboard/dashboard'
 import Hiring from "./pages/Manager/hiring/hiring";
 import AddEmployee from './pages/Manager/hiring/addEmployee'
 import RecomendCandidate from './pages/Manager/hiring/recomendCandidate'
-import Search from './pages/text'
 
 import './App.css'
 
@@ -133,9 +130,6 @@ function App() {
         </Route>
         <Route path="/Admin/:id/:page" element={<AdminPage />} />
 
-
-
-
         <Route path="/User/:id" element={
           <ProtectedRoute role={'User'}>
             <EmployeePage />
@@ -156,11 +150,7 @@ function App() {
             <RecordRequest />
           </ProtectedRoute>} />
         </Route>
-
-
         <Route path="/Error" element={<ErrorPage />} />
-        <Route path="/test" element={<Search />} />
-
       </Routes>
     </AuthProvider>
   )

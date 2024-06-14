@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import LoadingModal from '../../../components/loadingModal'
-import { format, isWeekend, addDays } from 'date-fns';
+import { format, isSunday, addDays } from 'date-fns';
 import { es } from 'date-fns/locale';
 import useFetch from '../../../hooks/useFetch'
 import useField from '../../../hooks/useField'
@@ -38,7 +38,7 @@ export default function AddVacationModal({ open, setOpen, id, employeeData, setA
         let count = 0;
         let day = range[0].startDate;
         while (day <= range[0].endDate) {
-            if (!isWeekend(day)) {
+            if (!isSunday (day)) {
                 count++;
             }
             day = addDays(day, 1);
@@ -58,15 +58,16 @@ export default function AddVacationModal({ open, setOpen, id, employeeData, setA
         if (range[0].endDate && type.field && reason.field) {
             setWarningMessage(false)
             const dataToLoad = {
-                startDate: range[0].startDate,
-                endDate: range[0].endDate,
+                startDate: format(range[0].startDate, 'yyyy-MM-dd'),
+                endDate: format(range[0].endDate, 'yyyy-MM-dd'),
                 description: reason.field,
                 type: type.field,
                 days: pickedDays,
             }
 
             addVacation(dataToLoad).then((result) => {
-                if (result.status_code == 200) {
+                console.log(result);
+                if (result && result.status_code == 200) {
                     setOpen(false)
                     setAnimation(true)
                     getDaysLeft()

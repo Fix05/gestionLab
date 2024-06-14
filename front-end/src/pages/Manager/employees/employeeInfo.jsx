@@ -134,7 +134,7 @@ export default function EmployeeInfo() {
                                             <a href={file.url} download={file.name}>
                                                 <li className='text-sm my-[2px] flex items-center justify-between'>
                                                     <div className='flex flex-row'>
-                                                        <img className='w-[3%] mr-[5px]' src={IconsDictionary[getFormat(file.name)]} alt="" />
+                                                        <img className='max-w-[22px] mr-[5px]' src={IconsDictionary[getFormat(file.name)]} alt="" />
                                                         <p className='max-w-[600px] truncate'>{file.name}</p>
                                                     </div>
                                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="-1 -1 26 26" strokeWidth={1.5} stroke="currentColor" className="flex justify-center items-center transition-all hover:text-blue-600 hover:bg-blue-50 rounded-full min-w-[24px] h-6 cursor-pointer ">
@@ -180,7 +180,7 @@ export default function EmployeeInfo() {
                                             <a href={file.url} download={file.name}>
                                                 <li className='text-sm my-[2px] flex items-center justify-between'>
                                                     <div className='flex flex-row'>
-                                                        <img className='w-[3%] mr-[5px]' src={IconsDictionary[getFormat(file.name)]} alt="" />
+                                                        <img className='max-w-[22px] mr-[5px]' src={IconsDictionary[getFormat(file.name)]} alt="" />
                                                         <p className='max-w-[600px] truncate'>{file.name}</p>
                                                     </div>
                                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="-1 -1 26 26" strokeWidth={1.5} stroke="currentColor" className="flex justify-center items-center transition-all hover:text-blue-600 hover:bg-blue-50 rounded-full min-w-[24px] h-6 cursor-pointer ">

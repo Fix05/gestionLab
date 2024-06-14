@@ -2,9 +2,7 @@ from dotenv import load_dotenv
 import mysql.connector
 import json
 import os
-
 load_dotenv()
-
 def get_db():
     db_parameters = os.getenv("RDS_CREDENTIALS", '.')
     with open(db_parameters, 'r') as file:

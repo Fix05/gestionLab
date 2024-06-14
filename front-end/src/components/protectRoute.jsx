@@ -1,10 +1,10 @@
-import { useEffect } from 'react';
+import { checkExpireToken } from '../components/repetitiveFunctions/authToken.js'
 import { Navigate, useLocation, useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/authenticationContext';
+import Loading from '../assets/gif/loading.gif'
 import useFetch from '../hooks/useFetch.jsx'
 import { jwtDecode } from 'jwt-decode';
-import { checkExpireToken } from '../components/repetitiveFunctions/authToken.js'
-import Loading from '../assets/gif/loading.gif'
+import { useEffect } from 'react';
 
 
 function ProtectedRoute({ role, children }) {
@@ -30,12 +30,12 @@ function ProtectedRoute({ role, children }) {
     }, [getNewToken, refreshToken])
 
 
-  /*   if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
         console.log("Abierto");
         document.body.innerHTML = 'Este sitio solo es accesible desde una PC.';
     }else{
         console.log("Abierto desde PC");
-    } */
+    }
     
 
     const checkId = () => {

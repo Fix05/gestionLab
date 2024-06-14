@@ -58,30 +58,6 @@ APP.include_router(ml_router, prefix="/api/ml", tags=["recomendation"])
 
 
 
-class LastExecutionDate:
-    def __init__(self):
-        self._last_execution_date = None
-    
-    def get_last_execution_date(self):
-        return self._last_execution_date
-    
-    def set_last_execution_date(self, date):
-        self._last_execution_date = date
-
-paymentExecution = LastExecutionDate()
-
-def background_task():
-    while True:
-        """ run_tasks(paymentExecution) """
-        time.sleep(10) 
-
-
-
-background_thread = threading.Thread(target=background_task)
-background_thread.daemon = True
-background_thread.start()
-""" Payment and employee state, update days of vacation every year """
-
 #run server
 if __name__ == "__main__":
     uvicorn.run(APP, host="127.0.0.1", port=8000)

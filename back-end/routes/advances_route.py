@@ -150,6 +150,7 @@ def add_advance(id: int, data: NewAdvance, db: mysql.connector.MySQLConnection =
     try:
         current_date = datetime.now().strftime("%Y-%m-%d")
         cursor = db.cursor(dictionary=True)
+        
         query = f"""
             INSERT INTO advance_record 
             VALUES (0, %s, %s, 'Por cobrar', %s,

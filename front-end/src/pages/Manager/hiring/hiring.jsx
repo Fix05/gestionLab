@@ -16,7 +16,7 @@ export default function Hiring() {
                     <img className='w-[35%]' src={AddLogo} alt="" />
                 </Link>
                 <Link to={"recomendCandidate"} className='w-[94%] flex flex-row items-center p-[30px] z-10 mx-[30px] border-2 border-solid border-gray-400 rounded-[10px] bg-gray-50 transition-all hover:bg-gray-200 hover:translate-x-[1px] hover:translate-y-[1px]'>
-                    <p className='text-left'>Selección de personal para un puesto laboral</p>
+                    <p className='text-left'>Análisis de curriculos con Inteligencia Artificial</p>
                     <img className='w-[35%]' src={AILogo} alt="" />
                 </Link>
             </div>

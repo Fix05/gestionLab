@@ -8,9 +8,9 @@ import WarningMessage from '../../../components/warningMessage'
 
 export default function AddAdvanceModal({ open, setOpen, id, employeeData }) {
 
-    const EMPLOYES_URL = `http://18.119.103.188:8000/api/advances/get-employee-advances/${id}`
-    const ADDING_URL = `http://18.119.103.188:8000/api/advances/add-advances/${id}`
-    const DELETING_URL = `http://18.119.103.188:8000/api/advances/delete-advances/`
+    const EMPLOYES_URL = `http://127.0.0.1:8000/api/advances/get-employee-advances/${id}`
+    const ADDING_URL = `http://127.0.0.1:8000/api/advances/add-advances/${id}`
+    const DELETING_URL = `http://127.0.0.1:8000/api/advances/delete-advances/`
     const HEADER = "Registro de adelantos"
     const [result, getResult] = useFetch(EMPLOYES_URL, null, "GET")
     const [, addAdvance] = useFetch(ADDING_URL, {}, "POST")
@@ -38,7 +38,7 @@ export default function AddAdvanceModal({ open, setOpen, id, employeeData }) {
     }
 
     const handleDelete = (id) => {
-        deleteAdvance(null, id).then(() => {
+        deleteAdvance(null, DELETING_URL+id).then(() => {
             getResult()
         })
     }

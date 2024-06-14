@@ -1,5 +1,3 @@
-import logo from '../assets/images/logoBlanco_beta.png'
-
 export default function Admin (){
 
     return (

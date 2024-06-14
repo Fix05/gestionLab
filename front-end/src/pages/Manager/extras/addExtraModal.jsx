@@ -38,7 +38,7 @@ export default function AddExtraModal({ open, setOpen, id, employeeData }) {
     }
 
     const handleDelete = (id) => {
-        deleteExtra(null, id).then(() => {
+        deleteExtra(null, DELETING_URL+id).then(() => {
             getResult()
         })
     }
